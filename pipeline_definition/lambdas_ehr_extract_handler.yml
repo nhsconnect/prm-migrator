@@ -13,7 +13,7 @@ phases:
   build:
     commands:
       - env 
-      - aws sts assume-role --role-arn "$ASSUME_ROLE_NAME" --role-session-name "my-task"
+      - $(aws sts assume-role --role-arn "$ASSUME_ROLE_NAME" --role-session-name "my-task")
       - cd ./lambda/ehr_extract_handler
       - zip ../../ehr_extract_handler.zip main.js
       - cd -
