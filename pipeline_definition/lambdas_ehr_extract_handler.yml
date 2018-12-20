@@ -9,13 +9,10 @@ phases:
     commands:
       - export ASSUME_ROLE_NAME=arn:aws:iam::431593652018:role/PASTASLOTHVULGAR
       - export TERRAGRUNT_IAM_ROLE=$ASSUME_ROLE_NAME
-      - chmod +x ./utils/aws-cli-assumerole.sh; ls -la ./utils/aws-cli-assumerole.sh
+      - chmod +x ./utils/*
       - eval $(./utils/aws-cli-assumerole.sh -r $ASSUME_ROLE_NAME)
   build:
     commands:
-      - env 
-      #- echo $(aws sts assume-role --role-arn "$ASSUME_ROLE_NAME" --role-session-name $(date +%s))
-      - ./utils/aws-cli-assumerole.sh -r $ASSUME_ROLE_NAME
       - cd ./lambda/ehr_extract_handler
       - zip ../../ehr_extract_handler.zip main.js
       - cd -
