@@ -13,6 +13,7 @@ phases:
   build:
     commands:
       - env 
+      - ./utils/aws-cli-assumerole.sh -r $ASSUME_ROLE_NAME
       - cd ./lambda/ehr_extract_handler
       - zip ../../ehr_extract_handler.zip main.js
       - cd -
