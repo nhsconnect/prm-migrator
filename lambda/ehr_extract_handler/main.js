@@ -98,38 +98,26 @@ exports.main = async function(dbClient) {
     new ProcessStatusWrapper(dbClient)
   );
   const result = await event.accept();
-  return event;
+  return result;
 };
 
-const INITIAL_STATUS = "PROCESSING";
+const client = new AWS.DynamoDB.DocumentClient();
 exports.handler = function(event, context, callback) {
-  const uuid = uniqid();
-  const params = {
-    TableName: "PROCESS_STORAGE",
-    Item: {
-      PROCESS_ID: { S: `${uuid}` },
-      PROCESS_PAYLOAD: { S: `${INITIAL_STATUS}` }
+    // handle AWS specific stuff here
+        
+    async function wrapper(){
+        // call the businesss logic
+        const result = await main(client);
+        // handle converting back to AWS
+        return {
+            statusCode: 200,
+            body: JSON.stringify({
+              uuid: result.correlationId,
+              status: result.currentStatus
+            }),
+            isBase64Encoded: false
+        }
     }
-  };
-
-  ddb.putItem(params, function(err, data) {
-    if (err) {
-      console.log("Error", err);
-    } else {
-      console.log("Success", data);
-    }
-  });
-  const response = {
-    statusCode: 200,
-    headers: {
-      my_header: "my_value"
-    },
-    body: JSON.stringify({
-      uuid: `${uuid}`,
-      status: `${INITIAL_STATUS}`
-    }),
-    isBase64Encoded: false
-  };
-
-  callback(null, response);
-};
+        
+    callback(wrapper())
+}
