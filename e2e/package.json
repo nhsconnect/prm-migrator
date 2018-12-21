@@ -4,7 +4,7 @@
   "description": "The e2e tests for PRM",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "PRM_ENDPOINT=https://j4dbzo021j.execute-api.eu-west-2.amazonaws.com/dev jest"
   },
   "author": "",
   "license": "ISC",
