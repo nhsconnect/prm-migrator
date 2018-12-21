@@ -1,9 +1,32 @@
-const uniqid = require('uuid/v4');
+const uuid = require('uuid/v4');
 const AWS = require('aws-sdk');
-AWS.config.update({region: 'eu-west-2'});
 const ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
-const INITIAL_STATUS = "PROCESSING";
 
+AWS.config.update({region: 'eu-west-2'});
+
+const MigrationEventStates = {
+    ACCEPTED: "ACCEPTED",
+    REJECTED: "REJECTED",
+    PROCESSING: "PROCESSING",
+    COMPLETED: "COMPLETED",
+    FAILED: "FAILED",
+}
+
+class MigrationEventStateMachine {
+    constructor(initialState) {
+        this.state = MigrationEventStates.REJECTED;
+    }
+
+    get currentState() {
+        return this.state;
+    }
+}
+
+exports.main = function() {
+    return new MigrationEventStateMachine()
+}
+
+const INITIAL_STATUS = "PROCESSING";
 exports.handler = function (event, context, callback) {
     const uuid = uniqid();
     const params = {
