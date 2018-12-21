@@ -1,4 +1,6 @@
 const ehrExtract = require("./main");
+const AWS = require("aws-sdk");
+const uuid = require('uuid/v4');
 
 class ErrorDBMock {
   constructor() {}
@@ -39,3 +41,26 @@ describe("REJECTED responses", () => {
     expect(result.currentStatus).toBe("ACCEPTED");
   });
 });
+
+
+describe("Integration tests", () => {
+    test("Can successfully manage a PROCESS record", async () => {
+        const wrapper = new ehrExtract.ProcessStatusWrapper(
+            new AWS.DynamoDB.DocumentClient()
+        )
+        const uniqueId = uuid();
+        const putTesult = await wrapper.put({
+            PROCESS_ID: uniqueId,
+            PROCESS_STATUS: "TESTING"
+        });
+
+        const getResult = await wrapper.get(uniqueId);
+        const item = getResult.Item;
+        expect(item.PROCESS_ID).toBe(uniqueId);
+        expect(item.PROCESS_STATUS).toBe("TESTING");
+
+        await wrapper.delete(uniqueId);
+
+        expect(await wrapper.get(uniqueId)).toMatchObject({});
+    });
+})

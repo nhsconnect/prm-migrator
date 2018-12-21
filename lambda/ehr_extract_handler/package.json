@@ -4,7 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "jest"
+    "test": "AWS_SDK_LOAD_CONFIG=true AWS_PROFILE=PASTASLOTHVULGAR jest"
   },
   "author": "",
   "license": "ISC",

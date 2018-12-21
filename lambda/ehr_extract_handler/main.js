@@ -67,7 +67,31 @@ class ProcessStatusWrapper {
       .promise();    
     return item;
   }
+
+  async get(key) {
+      return await this.dbClient.get(
+        {
+            TableName : 'PROCESS_STORAGE',
+            Key: {
+              PROCESS_ID: key
+            }
+        }
+      ).promise();
+  }
+
+  async delete(key) {
+      return await this.dbClient.delete(
+        {
+            TableName : 'PROCESS_STORAGE',
+            Key: {
+              PROCESS_ID: key
+            }
+        }          
+      ).promise();
+  }
 }
+
+exports.ProcessStatusWrapper = ProcessStatusWrapper;
 
 exports.main = async function(dbClient) {
   const event = new MigrationEventStateMachine(
