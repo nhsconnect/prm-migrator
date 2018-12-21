@@ -39,7 +39,9 @@ describe("REJECTED responses", () => {
     const result = await ehrExtract.main(new ErrorDBMock());
     expect(result.currentStatus).toBe("REJECTED");
   });
+});
 
+describe("ACCEPTED responses", () => {
   test("That if there is no error, it generates an ACCEPTED response", async () => {
     const result = await ehrExtract.main(new DynamoDBMock());
     expect(result.currentStatus).toBe("ACCEPTED");

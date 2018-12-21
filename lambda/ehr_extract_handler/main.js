@@ -1,8 +1,8 @@
 const uuid = require("uuid/v4");
 const AWS = require("aws-sdk");
-const ddb = new AWS.DynamoDB({ apiVersion: "2012-08-10" });
 
 AWS.config.update({ region: "eu-west-2" });
+const client = new AWS.DynamoDB.DocumentClient();
 
 const MigrationEventStates = {
   ACCEPTED: "ACCEPTED",
@@ -39,7 +39,7 @@ class MigrationEventStateMachine {
     } catch (err) {
       console.log(err);
     }
-    
+
     return this;
   }
 
@@ -64,30 +64,30 @@ class ProcessStatusWrapper {
         Item: item,
         ReturnValues: "ALL_OLD"
       })
-      .promise();    
+      .promise();
     return item;
   }
 
   async get(key) {
-      return await this.dbClient.get(
-        {
-            TableName : 'PROCESS_STORAGE',
-            Key: {
-              PROCESS_ID: key
-            }
+    return await this.dbClient
+      .get({
+        TableName: "PROCESS_STORAGE",
+        Key: {
+          PROCESS_ID: key
         }
-      ).promise();
+      })
+      .promise();
   }
 
   async delete(key) {
-      return await this.dbClient.delete(
-        {
-            TableName : 'PROCESS_STORAGE',
-            Key: {
-              PROCESS_ID: key
-            }
-        }          
-      ).promise();
+    return await this.dbClient
+      .delete({
+        TableName: "PROCESS_STORAGE",
+        Key: {
+          PROCESS_ID: key
+        }
+      })
+      .promise();
   }
 }
 
@@ -101,23 +101,19 @@ exports.main = async function(dbClient) {
   return result;
 };
 
-const client = new AWS.DynamoDB.DocumentClient();
-exports.handler = function(event, context, callback) {
-    // handle AWS specific stuff here
-        
-    async function wrapper(){
-        // call the businesss logic
-        const result = await main(client);
-        // handle converting back to AWS
-        return {
-            statusCode: 200,
-            body: JSON.stringify({
-              uuid: result.correlationId,
-              status: result.currentStatus
-            }),
-            isBase64Encoded: false
-        }
-    }
-        
-    callback(wrapper())
-}
+exports.handler = async (event, context) => {
+  // handle AWS specific stuff here
+
+  // call the businesss logic
+  const result = await module.exports.main(client);
+  
+  // handle converting back to AWS
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      uuid: result.correlationId,
+      status: result.currentStatus
+    }),
+    isBase64Encoded: false
+  };
+};
