@@ -3,11 +3,12 @@ AWS.config.update({region: 'eu-west-2'});
 const ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 
 exports.handler = function (event, context, callback) {
+    const uuid = event.pathParameters.uuid;
 
     const params = {
         TableName: "PROCESS_STORAGE",
         Key: {
-            "PROCESS_ID": {"S": "00fd04b8-90fa-4a0e-aa20-152a5f551fd9"}
+            "PROCESS_ID": {"S": uuid}
         },
         ProjectionExpression: "PROCESS_PAYLOAD"
     };
@@ -25,7 +26,7 @@ exports.handler = function (event, context, callback) {
                 },
                 "body": JSON.stringify(
                     {
-                        "uuid": 'blah',
+                        "uuid": uuid,
                         "status": `${status}`
                     }),
                 "isBase64Encoded": false
@@ -46,7 +47,7 @@ exports.handler = function (event, context, callback) {
                 },
                 "body": JSON.stringify(
                     {
-                        "uuid": 'blah',
+                        "uuid": uuid,
                         "status": `${status}`
                     }),
                 "isBase64Encoded": false
