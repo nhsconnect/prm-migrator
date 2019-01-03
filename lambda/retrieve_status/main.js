@@ -10,7 +10,7 @@ exports.handler = function (event, context, callback) {
         Key: {
             "PROCESS_ID": {"S": uuid}
         },
-        ProjectionExpression: "PROCESS_PAYLOAD"
+        ProjectionExpression: "PROCESS_STATUS"
     };
 
     var status;
@@ -35,7 +35,7 @@ exports.handler = function (event, context, callback) {
             callback(null, response);
 
         } else {
-            status = data.Item.PROCESS_PAYLOAD.S;
+            status = data.Item.PROCESS_STATUS.S;
             console.log(status)
             console.log("Success", data);
 
