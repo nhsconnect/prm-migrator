@@ -7,7 +7,7 @@ exports.handler = function (event, context, callback) {
     const params = {
         TableName: "PROCESS_STORAGE",
         Key: {
-            "PROCESS_ID": {"S": "24c7e489-16ee-463f-ba7b-2098e0cb2b03"}
+            "PROCESS_ID": {"S": "00fd04b8-90fa-4a0e-aa20-152a5f551fd9"}
         },
         ProjectionExpression: "PROCESS_PAYLOAD"
     };
