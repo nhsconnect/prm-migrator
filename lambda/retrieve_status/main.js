@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 AWS.config.update({region: 'eu-west-2'});
-const ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+const ddb = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = function (event, context, callback) {
     const uuid = event.pathParameters.uuid;
@@ -8,14 +8,14 @@ exports.handler = function (event, context, callback) {
     const params = {
         TableName: "PROCESS_STORAGE",
         Key: {
-            "PROCESS_ID": {"S": uuid}
+            "PROCESS_ID":  uuid
         },
         ProjectionExpression: "PROCESS_STATUS"
     };
 
     var status;
 
-    ddb.getItem(params, function (err, data) {
+    ddb.get(params, function (err, data) {
 
 
         if (err) {
@@ -35,7 +35,7 @@ exports.handler = function (event, context, callback) {
             callback(null, response);
 
         } else {
-            status = data.Item.PROCESS_STATUS.S;
+            status = data.Item.PROCESS_STATUS;
             console.log(status)
             console.log("Success", data);
 
