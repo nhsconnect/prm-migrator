@@ -15,7 +15,7 @@ exports.handler = function (event, context, callback) {
         ProjectionExpression: "PROCESS_STATUS"
     };
 
-    var status;
+    let status;
 
     ddb.get(params, function (err, data) {
 
@@ -25,11 +25,8 @@ exports.handler = function (event, context, callback) {
             status = data.Item.PROCESS_STATUS;
             console.log("Success", data);
 
-            var response = {
+            let response = {
                 "statusCode": 200,
-                "headers": {
-                    "my_header": "my_value"
-                },
                 "body": JSON.stringify(
                     {
                         "uuid": uuid,
@@ -68,7 +65,7 @@ function updateStatusToProcessing(uuid, callback) {
 }
 
 function handleError(err, uuid, callback) {
-    var response = {
+    let response = {
         "statusCode": 500,
         "headers": {
             "my_header": "my_value"
