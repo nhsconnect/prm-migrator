@@ -22,7 +22,7 @@ class MigrationEventStateMachine {
   async accept() {
     if (this.uuid !== undefined) {
       throw new Error(
-        `INVALID STATE TRANSITION: Cannot move from ${this.state} to ${
+        `INVALID STATE TRANSITION: Cannot move from ${this.status} to ${
           MigrationEventStates.ACCEPTED
         }`
       );
@@ -58,7 +58,7 @@ class ProcessStatusWrapper {
   }
 
   async put(item) {
-    const result = await this.dbClient
+    await this.dbClient
       .put({
         TableName: "PROCESS_STORAGE",
         Item: item,
@@ -104,7 +104,7 @@ exports.main = async function(dbClient) {
 exports.handler = async (event, context) => {
   // handle AWS specific stuff here
 
-  // call the businesss logic
+  // call the business logic
   const result = await module.exports.main(client);
   
   // handle converting back to AWS
