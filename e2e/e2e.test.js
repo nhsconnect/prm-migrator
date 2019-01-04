@@ -32,7 +32,7 @@ test("As a supplier, I can see my message is being processed", async () => {
     expect(status).toBe("PROCESSING");
 });
 
-test("As a supplier, I can retrieve my processed ehrExtract in form of a payload", async () => {
+test.skip("As a supplier, I can retrieve my processed ehrExtract in form of a payload", async () => {
     const sendUrl = `${PRM_URL.origin}${PRM_URL.pathname}/send`;
     const sendResponse = await request.post(sendUrl, {
         resolveWithFullResponse: true
