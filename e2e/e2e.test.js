@@ -44,7 +44,7 @@ test("As a supplier, I can see my message is being processed", async () => {
     const sendResponse = await request.post(options);
 
     const {uuid} = JSON.parse(sendResponse.body);
-    await sleep(1000);
+    await sleep(3000);
 
     const statusUrl = `${PRM_URL.origin}${PRM_URL.pathname}/status/${uuid}`;
     const statusResponse = await request.post(statusUrl, {
