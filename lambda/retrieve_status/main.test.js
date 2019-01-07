@@ -30,18 +30,13 @@ class DynamoDBMock {
 
                 return new Promise((resolve, reject) => {
                     setTimeout(() => {
-                        console.log("LOGGING PARAMS", params)
                         const uuid = params.Key.PROCESS_ID;
                         let tableEntry
-                        console.log(this.mockTable)
-                        console.log(this.mockTable[uuid])
-                        if (this.mockTable[uuid] !== undefined) {
+                        if (this.mockTable[uuid]) {
                             tableEntry = {Item: this.mockTable[uuid]}
                             resolve(tableEntry)
                         }
                         reject({})
-
-
                     }, 100)
                 })
             }

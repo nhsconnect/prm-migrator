@@ -19,7 +19,6 @@ exports.handler = async (event, context) => {
 
 exports.main = async function (dbClient, uuid) {
     let params = {Key: {PROCESS_ID: uuid}}
-    console.log("i'm in main")
     try {
         let result = await dbClient.get(params).promise()
         return {currentStatus: result.Item.PROCESS_STATUS}
