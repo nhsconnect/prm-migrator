@@ -1,45 +1,69 @@
 const AWS = require('aws-sdk');
 AWS.config.update({region: 'eu-west-2'});
-const ddb = new AWS.DynamoDB.DocumentClient();
+const client = new AWS.DynamoDB.DocumentClient();
 
-exports.handler = function (event, context, callback) {
+exports.handler = async (event, context) => {
+
     const uuid = event.pathParameters.uuid;
 
-    updateStatusToProcessing(uuid, callback);
-
-    const params = {
-        TableName: "PROCESS_STORAGE",
-        Key: {
-            "PROCESS_ID":  uuid
-        },
-        ProjectionExpression: "PROCESS_STATUS"
+    // call the business logic
+    const result = await module.exports.main(client, uuid);
+    // handle converting back to AWS
+    return {
+        statusCode: 200,
+        body: JSON.stringify({
+            uuid: result.correlationId,
+            status: result.currentStatus,
+        }),
+        isBase64Encoded: false
     };
-
-    let status;
-
-    ddb.get(params, function (err, data) {
-
-        if (err) {
-            handleError(err, uuid, callback)
-        } else {
-            status = data.Item.PROCESS_STATUS;
-            console.log("Success", data);
-
-            let response = {
-                "statusCode": 200,
-                "body": JSON.stringify(
-                    {
-                        "uuid": uuid,
-                        "status": `${status}`
-                    }),
-                "isBase64Encoded": false
-            };
-
-            callback(null, response);
-        }
-    });
-
 };
+
+exports.main = async function (dbClient, uuid) {
+    // console.log(uuid)
+    let params = { Key: {PROCESS_ID : uuid}}
+    let result = await dbClient.get(params).promise()
+    console.log(result)
+    return { currentStatus : result.Item.PROCESS_STATUS}
+};
+// exports.main = function (event, context, callback) {
+//     const uuid = event.pathParameters.uuid;
+//
+//     updateStatusToProcessing(uuid, callback);
+//
+//     const params = {
+//         TableName: "PROCESS_STORAGE",
+//         Key: {
+//             "PROCESS_ID":  uuid
+//         },
+//         ProjectionExpression: "PROCESS_STATUS"
+//     };
+//
+//     let status;
+//
+//     ddb.get(params, function (err, data) {
+//
+//         if (err) {
+//             handleError(err, uuid, callback)
+//         } else {
+//             status = data.Item.PROCESS_STATUS;
+//             console.log("Success", data);
+//
+//             let response = {
+//                 "statusCode": 200,
+//                 "body": JSON.stringify(
+//                     {
+//                         "uuid": uuid,
+//                         "status": `${status}`
+//                     }),
+//                 "isBase64Encoded": false
+//             };
+//
+//             callback(null, response);
+//         }
+//     });
+//
+// };
 
 function updateStatusToProcessing(uuid, callback) {
     const params = {
