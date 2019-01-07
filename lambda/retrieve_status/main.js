@@ -3,9 +3,7 @@ AWS.config.update({region: 'eu-west-2'});
 const client = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event, context) => {
-
     const uuid = event.pathParameters.uuid;
-
     // call the business logic
     const result = await module.exports.main(client, uuid);
     // handle converting back to AWS
@@ -20,11 +18,15 @@ exports.handler = async (event, context) => {
 };
 
 exports.main = async function (dbClient, uuid) {
-    // console.log(uuid)
-    let params = { Key: {PROCESS_ID : uuid}}
-    let result = await dbClient.get(params).promise()
-    console.log(result)
-    return { currentStatus : result.Item.PROCESS_STATUS}
+    let params = {Key: {PROCESS_ID: uuid}}
+    console.log("i'm in main")
+    try {
+        let result = await dbClient.get(params).promise()
+        return {currentStatus: result.Item.PROCESS_STATUS}
+    } catch (err) {
+        return {currentStatus: `NOT FOUND`}
+    }
+
 };
 // exports.main = function (event, context, callback) {
 //     const uuid = event.pathParameters.uuid;
@@ -69,15 +71,15 @@ function updateStatusToProcessing(uuid, callback) {
     const params = {
         TableName: "PROCESS_STORAGE",
         Key: {
-            "PROCESS_ID":  uuid
+            "PROCESS_ID": uuid
         },
         UpdateExpression: "set PROCESS_STATUS = :p",
-        ExpressionAttributeValues:{
-            ":p":"PROCESSING",
+        ExpressionAttributeValues: {
+            ":p": "PROCESSING",
         },
-        ReturnValues:"UPDATED_NEW"
+        ReturnValues: "UPDATED_NEW"
     };
-    ddb.update(params, function(err, data) {
+    ddb.update(params, function (err, data) {
         if (err) {
             handleError(err, uuid, callback)
         } else {

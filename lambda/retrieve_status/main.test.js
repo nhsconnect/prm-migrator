@@ -4,6 +4,12 @@ const uuid = require("uuid/v4");
 
 class DynamoDBMock {
     constructor() {
+        this.mockTable = {
+            '1': {PROCESS_STATUS: 'ACCEPTED'},
+            '2': {PROCESS_STATUS: 'PROCESSING'},
+            '3': {PROCESS_STATUS: 'COMPLETED'},
+            '4': {PROCESS_STATUS: 'FAILED'}
+        }
     }
 
     put(params) {
@@ -24,22 +30,18 @@ class DynamoDBMock {
 
                 return new Promise((resolve, reject) => {
                     setTimeout(() => {
-                        console.log("LOGING PARAMS", params)
-                        if (params.Key.PROCESS_ID === '1') {
-                            resolve(
-                                {
-                                    Item: {
-                                        PROCESS_STATUS: "ACCEPTED"
-                                    }
-                                })
-                        } else {
-                            resolve(
-                                {
-                                    Item: {
-                                        PROCESS_STATUS: "PROCESSING"
-                                    }
-                                })
+                        console.log("LOGGING PARAMS", params)
+                        const uuid = params.Key.PROCESS_ID;
+                        let tableEntry
+                        console.log(this.mockTable)
+                        console.log(this.mockTable[uuid])
+                        if (this.mockTable[uuid] !== undefined) {
+                            tableEntry = {Item: this.mockTable[uuid]}
+                            resolve(tableEntry)
                         }
+                        reject({})
+
+
                     }, 100)
                 })
             }
@@ -61,23 +63,23 @@ describe("PROCESSING responses", () => {
     });
 });
 
-xdescribe("COMPLETED responses", () => {
+describe("COMPLETED responses", () => {
     test("That when asked for a status given a UUID, if present, it generates a COMPLETED response", async () => {
-        const result = await retrieveStatus.main(new DynamoDBMock());
+        const result = await retrieveStatus.main(new DynamoDBMock(), '3');
         expect(result.currentStatus).toBe("COMPLETED");
     });
 });
 
-xdescribe("FAILED responses", () => {
+describe("FAILED responses", () => {
     test("That when asked for a status given a UUID, if present, it generates a FAILED response", async () => {
-        const result = await retrieveStatus.main(new DynamoDBMock());
+        const result = await retrieveStatus.main(new DynamoDBMock(), '4');
         expect(result.currentStatus).toBe("FAILED");
     });
 });
 
-xdescribe("NOT FOUND", () => {
+describe("NOT FOUND", () => {
     test("That when asked for a status given a UUID, if present, it generates a NOT FOUND response", async () => {
-        const result = await retrieveStatus.main(new DynamoDBMock());
+        const result = await retrieveStatus.main(new DynamoDBMock(), '5');
         expect(result.currentStatus).toBe("NOT FOUND");
     });
 });
