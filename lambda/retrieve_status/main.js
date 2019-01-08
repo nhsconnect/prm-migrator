@@ -18,15 +18,46 @@ exports.handler = async (event, context) => {
 };
 
 exports.main = async function (dbClient, uuid) {
-    let params = {Key: {PROCESS_ID: uuid}}
     try {
-        let result = await dbClient.get(params).promise()
+        const processStatusWrapper = new ProcessStatusWrapper(dbClient)
+        let result = await processStatusWrapper.get(uuid)
+        if (result.Item.PROCESS_STATUS === "ACCEPTED") {
+            const params = {
+                TableName: "PROCESS_STORAGE",
+                Key: {
+                    "PROCESS_ID": uuid
+                },
+                UpdateExpression: "set PROCESS_STATUS = :p",
+                ExpressionAttributeValues: {
+                    ":p": "PROCESSING",
+                },
+                ReturnValues: "UPDATED_NEW"
+            };
+            await dbClient.update(params).promise();
+        }
         return {currentStatus: result.Item.PROCESS_STATUS}
     } catch (err) {
         return {currentStatus: `NOT FOUND`}
     }
-
 };
+
+class ProcessStatusWrapper {
+    constructor(dbClient) {
+        this.dbClient = dbClient;
+    }
+
+    async get(key) {
+        return await this.dbClient
+            .get({
+                TableName: "PROCESS_STORAGE",
+                Key: {
+                    PROCESS_ID: key
+                }
+            })
+            .promise()
+    }
+}
+
 // exports.main = function (event, context, callback) {
 //     const uuid = event.pathParameters.uuid;
 //
