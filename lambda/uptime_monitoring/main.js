@@ -1,18 +1,18 @@
 const http = require('https');
 const URL = require('url');
-const xmlData = '<?xml version="1.0" encoding="UTF-8"?>'
 
 exports.handler = async (event, context) => {
     const myURL = new URL.URL(process.env.url);
-    const path = process.env.stage;
+    const apiStage = process.env.stage;
+    const pathPart = process.env.endpoint;
 
     const response1 = new Promise((resolve, reject) => {
         const options = {
             host: myURL.host,
-            path: "/dev",
+            path: `${apiStage}/${pathPart}`,
             method: 'POST',
             headers: {
-                'Content-Type': 'text/xml',
+                'Content-Type': 'application/json',
                 'Content-Length': Buffer.byteLength(xmlData)
             }
         };
@@ -26,7 +26,11 @@ exports.handler = async (event, context) => {
             reject(e.message);
         });
 
-        req.write(xmlData);
+        var exampleEhrExtractPayload = querystring.stringify({
+            'payload' : 'TestEhrExtractPayload'
+        });
+
+        req.write(exampleEhrExtractPayload);
         req.end();
     });
 
