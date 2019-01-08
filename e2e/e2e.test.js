@@ -47,7 +47,7 @@ test("As a supplier, I can see my message is being processed", async () => {
     await sleep(3000);
 
     const statusUrl = `${PRM_URL.origin}${PRM_URL.pathname}/status/${uuid}`;
-    const statusResponse = await request.post(statusUrl, {
+    const statusResponse = await request.get(statusUrl, {
         resolveWithFullResponse: true
     });
     const {status} = JSON.parse(statusResponse.body);
