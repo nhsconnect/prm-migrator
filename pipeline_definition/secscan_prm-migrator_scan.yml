@@ -4,7 +4,7 @@ phases:
   install:
     commands:
       - apt-get update
-      - apt-get install -y jq zip unzip python-setuptools python-dev build-essential 
+      - apt-get install -y jq zip unzip python-setuptools python-dev build-essential default-jdk
       - pip install --upgrade pip
   pre_build:
     commands:
