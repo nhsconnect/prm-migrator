@@ -4,13 +4,15 @@ phases:
   install:
     commands:
       - apt-get update
-      - apt-get install -y jq zip unzip nodejs npm
+      - apt-get install -y jq zip unzip # nodejs npm
   pre_build:
     commands:
       - chmod a+x ./utils/*
   build:
     commands:
       # Installing npm packages 
+      - wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+      - node -v
       - npm -v
       - npm install -g recursive-install
       - # cd ./dynamo; npm install 
