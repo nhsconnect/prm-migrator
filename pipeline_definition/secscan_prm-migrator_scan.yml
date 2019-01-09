@@ -4,8 +4,7 @@ phases:
   install:
     commands:
       - apt-get update
-      - apt-get install -y jq zip unzip python-setuptools python-dev build-essential openjdk-8-jdk
-      - apt-cache search openjdk
+      - apt-get install -y jq zip unzip python3.6 python-setuptools python-dev build-essential #openjdk-8-jdk
       - pip install --upgrade pip
   pre_build:
     commands:
