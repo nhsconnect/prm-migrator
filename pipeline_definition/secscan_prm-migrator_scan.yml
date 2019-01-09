@@ -24,3 +24,6 @@ phases:
       # Running Yelp detect-secrets
       - pip install detect-secrets
       - detect-secrets scan --no-keyword-scan $CODEBUILD_SRC_DIR
+      # Running npm retire.js
+      - npm install -g retire
+      - retire
