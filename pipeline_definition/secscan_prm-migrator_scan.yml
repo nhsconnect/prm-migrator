@@ -25,5 +25,6 @@ phases:
       - pip install detect-secrets
       - detect-secrets scan --no-keyword-scan $CODEBUILD_SRC_DIR
       # Running npm retire.js
+      - npm 
       - npm install -g retire
       - retire
