@@ -4,14 +4,16 @@ phases:
   install:
     commands:
       - apt-get update
-      - apt-get install -y jq zip unzip 
+      - apt-get install -y jq zip unzip nodejs npm
       - pip install --upgrade pip
   pre_build:
     commands:
       - chmod a+x ./utils/*
   build:
     commands:
+      # Installing npm packages 
+      - npm -v
+      - cd ./dynamo; npm install 
       # Running Owasp dependency-check
       - cd $TMPDIR; wget -nv https://dl.bintray.com/jeremy-long/owasp/dependency-check-4.0.2-release.zip; unzip -q dependency-check-4.0.2-release.zip
-      - cd ./dynamo; npm install
       - ./dependency-check/bin/dependency-check.sh  --project secscaprj --enableRetired --scan $CODEBUILD_SRC_DIR
