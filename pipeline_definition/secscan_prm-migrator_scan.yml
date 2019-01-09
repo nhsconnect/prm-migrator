@@ -4,7 +4,7 @@ phases:
   install:
     commands:
       - apt-get update
-      - apt-get install -y jq zip unzip python-setuptools python-dev build-essential default-jdk
+      - apt-get install -y jq zip unzip python-setuptools python-dev build-essential openjdk-7-jdk
       - pip install --upgrade pip
   pre_build:
     commands:
@@ -25,5 +25,5 @@ phases:
       - pip install detect-secrets
       - detect-secrets scan --no-keyword-scan $CODEBUILD_SRC_DIR
       # Running Owasp dependency-check
-      - cd $TMPDIR; wget https://dl.bintray.com/jeremy-long/owasp/dependency-check-4.0.2-release.zip; unzip dependency-check-4.0.2-release.zip
+      - cd $TMPDIR; wget -nv https://dl.bintray.com/jeremy-long/owasp/dependency-check-4.0.2-release.zip; unzip dependency-check-4.0.2-release.zip
       - ./dependency-check/bin/dependency-check.sh  --project secscaprj --enableRetired --scan $CODEBUILD_SRC_DIR
