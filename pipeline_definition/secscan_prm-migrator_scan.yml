@@ -3,15 +3,22 @@ version: 0.2
 phases:
   install:
     commands:
-      - add-apt-repository ppa:jonathonf/python-3.6
+      - # add-apt-repository ppa:jonathonf/python-3.6
       - apt-get update
-      - apt-get install -y jq zip unzip python3.6 python-setuptools python-dev build-essential #openjdk-8-jdk
+      - apt-get install -y jq zip unzip python-setuptools python-dev build-essential #openjdk-8-jdk
       - pip install --upgrade pip
   pre_build:
     commands:
       - chmod a+x ./utils/*
   build:
     commands:
+      
+      - wget -nv https://www.python.org/ftp/python/3.7.2/Python-3.7.2.tgz
+      - tar xvf Python-3.7.2.tgz
+      - cd Python-3.7.2
+      - ./configure --enable-optimizations
+      - make -j8
+      - make install
       # Re-initialising the repo as a valid git history is needed by the following tools
       - git init; git config user.email "secscapipeline@example.com"; git config user.name "secscan pipeline" 
       - git add . -A; git commit -vm "Dummy commit to reinitialise the repo because of the GitHub integration"
