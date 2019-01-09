@@ -12,5 +12,6 @@ phases:
   build:
     commands:
       # Running Owasp dependency-check
-      - cd $TMPDIR; wget -nv https://dl.bintray.com/jeremy-long/owasp/dependency-check-4.0.2-release.zip; unzip dependency-check-4.0.2-release.zip
+      - cd $TMPDIR; wget -nv https://dl.bintray.com/jeremy-long/owasp/dependency-check-4.0.2-release.zip; unzip -q dependency-check-4.0.2-release.zip
+      - cd ./dynamo; npm install
       - ./dependency-check/bin/dependency-check.sh  --project secscaprj --enableRetired --scan $CODEBUILD_SRC_DIR
