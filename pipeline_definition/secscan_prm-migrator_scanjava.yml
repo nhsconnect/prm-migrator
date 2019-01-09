@@ -1,0 +1,16 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - apt-get update
+      - apt-get install -y jq zip unzip 
+      - pip install --upgrade pip
+  pre_build:
+    commands:
+      - chmod a+x ./utils/*
+  build:
+    commands:
+      # Running Owasp dependency-check
+      - cd $TMPDIR; wget -nv https://dl.bintray.com/jeremy-long/owasp/dependency-check-4.0.2-release.zip; unzip dependency-check-4.0.2-release.zip
+      - ./dependency-check/bin/dependency-check.sh  --project secscaprj --enableRetired --scan $CODEBUILD_SRC_DIR
