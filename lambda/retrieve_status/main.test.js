@@ -9,7 +9,8 @@ class DynamoDBMock {
             '2': {PROCESS_STATUS: 'PROCESSING'},
             '3': {PROCESS_STATUS: 'COMPLETED'},
             '4': {PROCESS_STATUS: 'FAILED'},
-            '6': {PROCESS_STATUS: 'ACCEPTED'}
+            '6': {PROCESS_STATUS: 'ACCEPTED'},
+            '7': {PROCESS_STATUS: 'PROCESSING'}
         }
     }
 
@@ -50,6 +51,10 @@ class DynamoDBMock {
                 return new Promise((resolve, reject) => {
                     setTimeout(() => {
                         const uuid = params.Key.PROCESS_ID;
+                        if (this.mockTable[uuid].PROCESS_STATUS === "PROCESSING") {
+                            this.mockTable[uuid].PROCESS_STATUS = "COMPLETED"
+                            resolve()
+                        }
                         if (this.mockTable[uuid].PROCESS_STATUS === "ACCEPTED") {
                             this.mockTable[uuid].PROCESS_STATUS = "PROCESSING"
                             resolve()
@@ -104,6 +109,16 @@ describe("ACCEPTED to PROCESSING", () => {
         expect(result.currentStatus).toBe("ACCEPTED");
         const result2 = await retrieveStatus.main(dbMock, "6");
         expect(result2.currentStatus).toBe("PROCESSING");
+    });
+});
+
+describe("PROCESSING to COMPLETED", () => {
+    test("That when asked for a status given a UUID, PROCESSING can be changed to COMPLETED", async () => {
+        const dbMock = new DynamoDBMock()
+        const result = await retrieveStatus.main(dbMock, "7");
+        expect(result.currentStatus).toBe("PROCESSING");
+        const result2 = await retrieveStatus.main(dbMock, "7");
+        expect(result2.currentStatus).toBe("COMPLETED");
     });
 });
 

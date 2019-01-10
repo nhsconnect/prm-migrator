@@ -21,6 +21,20 @@ exports.main = async function (dbClient, uuid) {
     try {
         const processStatusWrapper = new ProcessStatusWrapper(dbClient)
         let result = await processStatusWrapper.get(uuid)
+        if (result.Item.PROCESS_STATUS === "PROCESSING") {
+            const params = {
+                TableName: "PROCESS_STORAGE",
+                Key: {
+                    "PROCESS_ID": uuid
+                },
+                UpdateExpression: "set PROCESS_STATUS = :p",
+                ExpressionAttributeValues: {
+                    ":p": "COMPLETED",
+                },
+                ReturnValues: "UPDATED_NEW"
+            };
+            await dbClient.update(params).promise();
+        }
         if (result.Item.PROCESS_STATUS === "ACCEPTED") {
             const params = {
                 TableName: "PROCESS_STORAGE",
@@ -55,6 +69,23 @@ class ProcessStatusWrapper {
                 }
             })
             .promise()
+    }
+
+    async update(item) {
+        await this.dbClient
+            .put({
+                TableName: "PROCESS_STORAGE",
+                Key: {
+                    "PROCESS_ID": uuid
+                },
+                UpdateExpression: "set PROCESS_STATUS = :p",
+                ExpressionAttributeValues: {
+                    ":p": "PROCESSING",
+                },
+                ReturnValues: "UPDATED_NEW"
+            })
+            .promise();
+        return item;
     }
 }
 
