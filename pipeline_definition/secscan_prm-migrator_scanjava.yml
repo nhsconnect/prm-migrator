@@ -4,7 +4,7 @@ phases:
   install:
     commands:
       - apt-get update
-      - apt-get install -y jq zip unzip nodejs npm
+      - apt-get install -y jq zip unzip # nodejs npm
   pre_build:
     commands:
       - chmod a+x ./utils/*
