@@ -1,6 +1,4 @@
 const retrieveStatus = require("./main");
-const AWS = require("aws-sdk");
-const uuid = require("uuid/v4");
 
 class DynamoDBMock {
     constructor() {
@@ -12,18 +10,6 @@ class DynamoDBMock {
             '6': {PROCESS_STATUS: 'ACCEPTED'},
             '7': {PROCESS_STATUS: 'PROCESSING'}
         }
-    }
-
-    put(params) {
-        return {
-            promise: () => {
-                return new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        resolve();
-                    }, 100);
-                });
-            }
-        };
     }
 
     get(params) {

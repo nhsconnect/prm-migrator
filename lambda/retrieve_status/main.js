@@ -2,6 +2,88 @@ const AWS = require('aws-sdk');
 AWS.config.update({region: 'eu-west-2'});
 const client = new AWS.DynamoDB.DocumentClient();
 
+class MigrationEventStateMachine {
+    constructor(client) {
+        this.uuid = undefined;
+        this.status = undefined;
+        this.client = client;
+    }
+
+    async get(uuid) {
+        try {
+            let result = await this.client.get(uuid)
+            this.uuid = uuid;
+            this.status = result.Item.PROCESS_STATUS;
+        } catch (err) {
+            this.status = 'NOT FOUND';
+        }
+
+        return this;
+    }
+
+    get currentStatus() {
+        return this.status;
+    }
+
+    get correlationId() {
+        return this.uuid;
+    }
+}
+
+exports.main = async function (dbClient, uuid) {
+    var event = new MigrationEventStateMachine(new ProcessStatusWrapper(dbClient));
+    return event.get(uuid);
+};
+
+class ProcessStatusWrapper {
+    constructor(dbClient) {
+        this.dbClient = dbClient;
+    }
+
+    async get(key) {
+        let result = await this.dbClient
+            .get({
+                TableName: "PROCESS_STORAGE",
+                Key: {
+                    PROCESS_ID: key
+                }
+            })
+            .promise();
+
+        if (result.Item.PROCESS_STATUS === "PROCESSING") {
+            const params = {
+                TableName: "PROCESS_STORAGE",
+                Key: {
+                    "PROCESS_ID": key
+                },
+                UpdateExpression: "set PROCESS_STATUS = :p",
+                ExpressionAttributeValues: {
+                    ":p": "COMPLETED",
+                },
+                ReturnValues: "UPDATED_NEW"
+            };
+            await this.dbClient.update(params).promise();
+        }
+
+        if (result.Item.PROCESS_STATUS === "ACCEPTED") {
+            const params = {
+                TableName: "PROCESS_STORAGE",
+                Key: {
+                    "PROCESS_ID": key
+                },
+                UpdateExpression: "set PROCESS_STATUS = :p",
+                ExpressionAttributeValues: {
+                    ":p": "PROCESSING",
+                },
+                ReturnValues: "UPDATED_NEW"
+            };
+            await this.dbClient.update(params).promise();
+        }
+
+        return result;
+    }
+}
+
 exports.handler = async (event, context) => {
     const uuid = event.pathParameters.uuid;
     // call the business logic
@@ -17,152 +99,3 @@ exports.handler = async (event, context) => {
     };
 };
 
-exports.main = async function (dbClient, uuid) {
-    try {
-        const processStatusWrapper = new ProcessStatusWrapper(dbClient)
-        let result = await processStatusWrapper.get(uuid)
-        if (result.Item.PROCESS_STATUS === "PROCESSING") {
-            const params = {
-                TableName: "PROCESS_STORAGE",
-                Key: {
-                    "PROCESS_ID": uuid
-                },
-                UpdateExpression: "set PROCESS_STATUS = :p",
-                ExpressionAttributeValues: {
-                    ":p": "COMPLETED",
-                },
-                ReturnValues: "UPDATED_NEW"
-            };
-            await dbClient.update(params).promise();
-        }
-        if (result.Item.PROCESS_STATUS === "ACCEPTED") {
-            const params = {
-                TableName: "PROCESS_STORAGE",
-                Key: {
-                    "PROCESS_ID": uuid
-                },
-                UpdateExpression: "set PROCESS_STATUS = :p",
-                ExpressionAttributeValues: {
-                    ":p": "PROCESSING",
-                },
-                ReturnValues: "UPDATED_NEW"
-            };
-            await dbClient.update(params).promise();
-        }
-        return {currentStatus: result.Item.PROCESS_STATUS}
-    } catch (err) {
-        return {currentStatus: `NOT FOUND`}
-    }
-};
-
-class ProcessStatusWrapper {
-    constructor(dbClient) {
-        this.dbClient = dbClient;
-    }
-
-    async get(key) {
-        return await this.dbClient
-            .get({
-                TableName: "PROCESS_STORAGE",
-                Key: {
-                    PROCESS_ID: key
-                }
-            })
-            .promise()
-    }
-
-    async update(item) {
-        await this.dbClient
-            .put({
-                TableName: "PROCESS_STORAGE",
-                Key: {
-                    "PROCESS_ID": uuid
-                },
-                UpdateExpression: "set PROCESS_STATUS = :p",
-                ExpressionAttributeValues: {
-                    ":p": "PROCESSING",
-                },
-                ReturnValues: "UPDATED_NEW"
-            })
-            .promise();
-        return item;
-    }
-}
-
-// exports.main = function (event, context, callback) {
-//     const uuid = event.pathParameters.uuid;
-//
-//     updateStatusToProcessing(uuid, callback);
-//
-//     const params = {
-//         TableName: "PROCESS_STORAGE",
-//         Key: {
-//             "PROCESS_ID":  uuid
-//         },
-//         ProjectionExpression: "PROCESS_STATUS"
-//     };
-//
-//     let status;
-//
-//     ddb.get(params, function (err, data) {
-//
-//         if (err) {
-//             handleError(err, uuid, callback)
-//         } else {
-//             status = data.Item.PROCESS_STATUS;
-//             console.log("Success", data);
-//
-//             let response = {
-//                 "statusCode": 200,
-//                 "body": JSON.stringify(
-//                     {
-//                         "uuid": uuid,
-//                         "status": `${status}`
-//                     }),
-//                 "isBase64Encoded": false
-//             };
-//
-//             callback(null, response);
-//         }
-//     });
-//
-// };
-
-function updateStatusToProcessing(uuid, callback) {
-    const params = {
-        TableName: "PROCESS_STORAGE",
-        Key: {
-            "PROCESS_ID": uuid
-        },
-        UpdateExpression: "set PROCESS_STATUS = :p",
-        ExpressionAttributeValues: {
-            ":p": "PROCESSING",
-        },
-        ReturnValues: "UPDATED_NEW"
-    };
-    ddb.update(params, function (err, data) {
-        if (err) {
-            handleError(err, uuid, callback)
-        } else {
-            let status = data.Attributes;
-            console.log("Update Data Attributes", data);
-            return;
-        }
-    });
-}
-
-function handleError(err, uuid, callback) {
-    let response = {
-        "statusCode": 500,
-        "headers": {
-            "my_header": "my_value"
-        },
-        "body": JSON.stringify(
-            {
-                "message": `Could not retrieve the process status for process id ${uuid}.`
-            }),
-        "isBase64Encoded": false
-    };
-    console.log("Error", err);
-    callback(null, response);
-}
