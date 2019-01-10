@@ -17,6 +17,7 @@ phases:
       - chmod +x install.sh; ./install.sh; export NVM_DIR="$HOME/.nvm"; \. "$NVM_DIR/nvm.sh" 
       - # \. "$NVM_DIR/nvm.sh"
       - # chmod +x $NVM_DIR/*.sh; . $NVM_DIR/nvm.sh
+      - find / | grep nvm
       - nvm --version
       - npm -v
       - node -v
