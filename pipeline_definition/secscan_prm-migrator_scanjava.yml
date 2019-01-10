@@ -11,7 +11,10 @@ phases:
   build:
     commands:
       # Installing npm packages 
+      - curl -sL https://deb.nodesource.com/setup | bash -
+      - sudo apt-get install nodejs build-essential
       - npm -v
+      - node -v
       - cd ./dynamo
       - pwd
       - npm install
