@@ -18,7 +18,7 @@ phases:
       - export NVM_DIR="$HOME/.nvm"; env | grep NVM
       - env | grep HOME
       - ls -la $NVM_DIR
-      - ./$NVM_DIR/nvm.sh
+      - .$NVM_DIR/nvm.sh
       - npm -v
       - node -v
       - cd $CODEBUILD_SRC_DIR/dynamo; npm install
