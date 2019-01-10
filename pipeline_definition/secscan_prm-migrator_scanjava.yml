@@ -11,7 +11,6 @@ phases:
   build:
     commands:
       # Installing npm packages 
-      - node -v
       - npm -v
       - cd ./dynamo; npm install; cd -
       # Running Owasp dependency-check
