@@ -19,7 +19,7 @@ phases:
       - # chmod +x $NVM_DIR/*.sh; . $NVM_DIR/nvm.sh
       - find / | grep nvm.sh
       - ls -la ~/.bashrc
-      - \. "~/.bashrc"
+      - \. "$HOME/.bashrc"
       - env | grep PATH
       - nvm --version
       - npm -v
