@@ -16,7 +16,7 @@ phases:
       - cd $TMPDIR; git clone https://github.com/creationix/nvm.git; cd nvm
       - chmod +x install.sh; ./install.sh; export NVM_DIR="$HOME/.nvm"; \. "$NVM_DIR/nvm.sh" 
       - find / | grep nvm.sh
-      - cmod a+x $HOME/.nvm/nvm.sh
+      - chmod a+x $HOME/.nvm/nvm.sh
       - ls -la $HOME/.nvm/nvm.sh
       - exec bash
       - export PATH=$PATH:/root/.nvm
