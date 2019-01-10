@@ -18,8 +18,8 @@ phases:
       - # \. "$NVM_DIR/nvm.sh"
       - # chmod +x $NVM_DIR/*.sh; . $NVM_DIR/nvm.sh
       - find / | grep nvm.sh
-      - env | grep HOME
-      - source ~/.bashrc
+      - \. "~/.bashrc"
+      - env | grep PATH
       - nvm --version
       - npm -v
       - node -v
