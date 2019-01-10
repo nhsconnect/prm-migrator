@@ -11,7 +11,7 @@ phases:
   build:
     commands:
       # Installing npm packages 
-      - curl -sL https://deb.nodesource.com/setup_11.x | bash -
+      - curl -sL https://deb.nodesource.com/setup_8.x | bash -
       - sudo apt-get install nodejs build-essential
       - npm -v
       - node -v
