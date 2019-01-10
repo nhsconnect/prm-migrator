@@ -12,7 +12,11 @@ phases:
     commands:
       # Installing npm packages 
       - npm -v
-      - cd ./dynamo; npm install; cd -
+      - cd ./dynamo
+      - pwd
+      - npm install
+      - cd -
+      - pwd
       # Running Owasp dependency-check
       - cd $TMPDIR; wget -nv https://dl.bintray.com/jeremy-long/owasp/dependency-check-4.0.2-release.zip; unzip -q dependency-check-4.0.2-release.zip
       - ./dependency-check/bin/dependency-check.sh  --project secscaprj --enableRetired --scan $CODEBUILD_SRC_DIR
