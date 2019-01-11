@@ -16,12 +16,8 @@ phases:
       - cd $TMPDIR; git clone https://github.com/creationix/nvm.git; cd nvm
       - ./install.sh; export NVM_DIR="$HOME/.nvm"; \. "$NVM_DIR/nvm.sh" 
       - chmod a+x $HOME/.nvm/nvm.sh; export PATH=$PATH:/$HOME/.nvm
-      - #$HOME/.nvm/nvm.sh --version
-      - #$HOME/.nvm/nvm.sh install node
       - . $NVM_DIR/nvm.sh && nvm --version
-      - nvm --version
-      - cd /$HOME/.nvm
-      - nvm --version
+      - . $NVM_DIR/nvm.sh && nvm install node npm 
       - npm -v
       - node -v
       - cd $CODEBUILD_SRC_DIR/dynamo; npm install
