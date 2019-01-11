@@ -1,57 +1,82 @@
 const AWS = require("aws-sdk");
 const ddb = new AWS.DynamoDB.DocumentClient();
 
-exports.handler = async (event, context, callback) => {
-    const uuid = event.pathParameters.uuid;
-
-    const params = {
-        TableName: "PROCESS_STORAGE",
-        Key: {
-            "PROCESS_ID":  uuid
-        }
-    };
-
-    ddb.get(params, function (err, data) {
-        if (err) {
-            handleError(err, uuid, callback)
-        } else {
-            let status = data.Item.PROCESS_STATUS;
-            let processedEhrExtract = data.Item.PROCESS_PAYLOAD;
-
-            console.log("Success", data);
-
-            var response = {
-                "statusCode": 200,
-                "headers": {
-                    "my_header": "my_value"
-                },
-                "body": JSON.stringify(
-                    {
-                        "uuid": uuid,
-                        "status": `${status}`,
-                        "payload": processedEhrExtract
-                    }),
-                "isBase64Encoded": false
-            };
-
-            callback(null, response);
-        }
-    });
-
+const MigrationEventStates = {
+    ACCEPTED: "ACCEPTED",
+    REJECTED: "REJECTED",
+    PROCESSING: "PROCESSING",
+    COMPLETED: "COMPLETED",
+    FAILED: "FAILED"
 };
 
-function handleError(err, uuid, callback) {
-    var response = {
-        "statusCode": 500,
-        "headers": {
-            "my_header": "my_value"
-        },
-        "body": JSON.stringify(
-            {
-                "message": `Could not retrieve the process status for process id ${uuid}.`
-            }),
-        "isBase64Encoded": false
-    };
-    console.log("Error", err);
-    callback(err, response);
+class MigrationEventStateMachine {
+    constructor(client) {
+        this.uuid = undefined;
+        this.status = MigrationEventStates.REJECTED;
+        this.client = client;
+    }
+
+    async get(uuid) {
+        try {
+            const result = await this.client.get(uuid);
+            this.uuid = uuid;
+            this.status = result.Item.PROCESS_STATUS;
+            this.payload = result.Item.PROCESS_PAYLOAD;
+        } catch (err) {
+            console.log(err);
+        }
+
+        return this;
+    }
+    
+    get currentPayload() {
+        return this.payload;
+    }
 }
+
+class ProcessStatusWrapper {
+    constructor(dbClient) {
+        this.dbClient = dbClient;
+    }
+
+    async put(item) {
+        await this.dbClient
+            .put({
+                TableName: "PROCESS_STORAGE",
+                Item: item,
+                ReturnValues: "ALL_OLD"
+            })
+            .promise();
+        return item;
+    }
+
+    async get(key) {
+        return await this.dbClient
+            .get({
+                TableName: "PROCESS_STORAGE",
+                Key: {
+                    PROCESS_ID: key
+                }
+            })
+            .promise();
+    }
+
+    async delete(key) {
+        return await this.dbClient
+            .delete({
+                TableName: "PROCESS_STORAGE",
+                Key: {
+                    PROCESS_ID: key
+                }
+            })
+            .promise();
+    }
+}
+
+exports.main = async function (dbClient, uuid) {
+    const event = new MigrationEventStateMachine(
+        new ProcessStatusWrapper(dbClient)
+    );
+    const result = await event.get(uuid);
+    return result;
+};
