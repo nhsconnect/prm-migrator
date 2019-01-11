@@ -23,7 +23,7 @@ class MigrationEventStateMachine {
             this.status = result.Item.PROCESS_STATUS;
             this.payload = result.Item.PROCESS_PAYLOAD;
         } catch (err) {
-            console.log(err);
+            return "Entry not found";
         }
 
         return this;
@@ -39,31 +39,9 @@ class ProcessStatusWrapper {
         this.dbClient = dbClient;
     }
 
-    async put(item) {
-        await this.dbClient
-            .put({
-                TableName: "PROCESS_STORAGE",
-                Item: item,
-                ReturnValues: "ALL_OLD"
-            })
-            .promise();
-        return item;
-    }
-
     async get(key) {
         return await this.dbClient
             .get({
-                TableName: "PROCESS_STORAGE",
-                Key: {
-                    PROCESS_ID: key
-                }
-            })
-            .promise();
-    }
-
-    async delete(key) {
-        return await this.dbClient
-            .delete({
                 TableName: "PROCESS_STORAGE",
                 Key: {
                     PROCESS_ID: key

@@ -27,10 +27,16 @@ class DynamoDBMock {
     }
 }
 
-describe("ACCEPTED responses", () => {
-    test("That when asked for a resonse given a UUID, if present, it generates an ACCEPTED response", async () => {
+describe("Return payload", () => {
+    test("That when asked for a response given a UUID, if present, it returns a payload", async () => {
         const result = await retrieveProcessed.main(new DynamoDBMock(), "1");
         expect(result.currentPayload).toBe("bar");
     });
 });
 
+describe("Error when entry doesn't exist", () => {
+    test("That when asked for a response given a non-existing UUID, it throws an error", async () => {
+        const result = await retrieveProcessed.main(new DynamoDBMock(), "-1"); //?
+        expect(result).toBe('Entry not found');
+    });
+});
