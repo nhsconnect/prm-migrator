@@ -16,4 +16,4 @@ phases:
       - zip ../../retrieve_status.zip main.js
       - cd -
       - aws s3 cp retrieve_status.zip s3://prm-431593652018-codebuild-lambda-artifact/retrieve_status.zip
-      - aws lambda update-function-code --region $AWS_REGION --function-name RetrieveStatus --s3-bucket prm-431593652018-codebuild-lambda-artifact --s3-key retrieve_status.zip
+      - aws lambda update-function-code --region $AWS_REGION --function-name dev-RetrieveStatus --s3-bucket prm-431593652018-codebuild-lambda-artifact --s3-key retrieve_status.zip

@@ -18,6 +18,7 @@ phases:
       - chmod a+x $HOME/.nvm/nvm.sh; export PATH=$PATH:/$HOME/.nvm
       - #$HOME/.nvm/nvm.sh --version
       - #$HOME/.nvm/nvm.sh install node
+      - . $NVM_DIR/nvm.sh && nvm --version
       - nvm --version
       - cd /$HOME/.nvm
       - nvm --version

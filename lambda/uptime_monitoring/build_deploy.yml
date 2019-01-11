@@ -16,4 +16,4 @@ phases:
       - zip ../../uptime_monitoring.zip main.js
       - cd -
       - aws s3 cp uptime_monitoring.zip s3://prm-431593652018-codebuild-lambda-artifact/uptime_monitoring.zip
-      - aws lambda update-function-code --region $AWS_REGION --function-name UptimeMonitoring --s3-bucket prm-431593652018-codebuild-lambda-artifact --s3-key uptime_monitoring.zip 
+      - aws lambda update-function-code --region $AWS_REGION --function-name dev-UptimeMonitoring --s3-bucket prm-431593652018-codebuild-lambda-artifact --s3-key uptime_monitoring.zip 
