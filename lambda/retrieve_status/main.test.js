@@ -88,6 +88,14 @@ describe("NOT FOUND responses", () => {
     });
 });
 
+describe("ACCEPTED", () => {
+    test("That when asked for a status given a UUID, and the message is just in the queue, it generates a ACCEPTED response", async () => {
+        const dbMock = new DynamoDBMock()
+        const result = await retrieveStatus.main(dbMock, "6");
+        expect(result.currentStatus).toBe("ACCEPTED");
+    });
+});
+
 describe("ACCEPTED to PROCESSING", () => {
     test("That when asked for a status given a UUID, ACCEPTED can be changed to PROCESSING", async () => {
         const dbMock = new DynamoDBMock()
