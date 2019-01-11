@@ -24,10 +24,6 @@ class MigrationEventStateMachine {
     get currentStatus() {
         return this.status;
     }
-
-    get correlationId() {
-        return this.uuid;
-    }
 }
 
 exports.main = async function (dbClient, uuid) {
@@ -40,6 +36,23 @@ class ProcessStatusWrapper {
         this.dbClient = dbClient;
     }
 
+    async transitionState(result, key, from, to) {
+        if (result.Item.PROCESS_STATUS === from) {
+            const params = {
+                TableName: "PROCESS_STORAGE",
+                Key: {
+                    "PROCESS_ID": key
+                },
+                UpdateExpression: "set PROCESS_STATUS = :p",
+                ExpressionAttributeValues: {
+                    ":p": to,
+                },
+                ReturnValues: "UPDATED_NEW"
+            };
+            await this.dbClient.update(params).promise();
+        }
+    }
+
     async get(key) {
         let result = await this.dbClient
             .get({
@@ -49,36 +62,9 @@ class ProcessStatusWrapper {
                 }
             })
             .promise();
-
-        if (result.Item.PROCESS_STATUS === "PROCESSING") {
-            const params = {
-                TableName: "PROCESS_STORAGE",
-                Key: {
-                    "PROCESS_ID": key
-                },
-                UpdateExpression: "set PROCESS_STATUS = :p",
-                ExpressionAttributeValues: {
-                    ":p": "COMPLETED",
-                },
-                ReturnValues: "UPDATED_NEW"
-            };
-            await this.dbClient.update(params).promise();
-        }
-
-        if (result.Item.PROCESS_STATUS === "ACCEPTED") {
-            const params = {
-                TableName: "PROCESS_STORAGE",
-                Key: {
-                    "PROCESS_ID": key
-                },
-                UpdateExpression: "set PROCESS_STATUS = :p",
-                ExpressionAttributeValues: {
-                    ":p": "PROCESSING",
-                },
-                ReturnValues: "UPDATED_NEW"
-            };
-            await this.dbClient.update(params).promise();
-        }
+        
+        await this.transitionState(result, key, "PROCESSING", "COMPLETED");
+        await this.transitionState(result, key, "ACCEPTED", "PROCESSING");
 
         return result;
     }
