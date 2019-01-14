@@ -1,6 +1,5 @@
 const AWS = require('aws-sdk');
 AWS.config.update({region: 'eu-west-2'});
-const client = new AWS.DynamoDB.DocumentClient();
 
 class MigrationEventStateMachine {
     constructor(client) {
@@ -11,7 +10,7 @@ class MigrationEventStateMachine {
 
     async get(uuid) {
         try {
-            let result = await this.client.get(uuid)
+            let result = await this.client.get(uuid);
             this.uuid = uuid;
             this.status = result.Item.PROCESS_STATUS;
         } catch (err) {
@@ -72,8 +71,9 @@ class ProcessStatusWrapper {
 
 exports.handler = async (event, context) => {
     const uuid = event.pathParameters.uuid;
+    const client = new AWS.DynamoDB.DocumentClient(); //?
     // call the business logic
-    const result = await module.exports.main(client, uuid);
+    const result = await module.exports.main(client, uuid); //?
     // handle converting back to AWS
     return {
         statusCode: 200,

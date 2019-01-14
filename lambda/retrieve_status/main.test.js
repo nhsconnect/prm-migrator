@@ -1,4 +1,5 @@
 const retrieveStatus = require("./main");
+var AWS = require('aws-sdk-mock');
 
 class DynamoDBMock {
     constructor() {
@@ -113,6 +114,29 @@ describe("PROCESSING to COMPLETED", () => {
         expect(result.currentStatus).toBe("PROCESSING");
         const result2 = await retrieveStatus.main(dbMock, "7");
         expect(result2.currentStatus).toBe("COMPLETED");
+    });
+});
+
+describe("Building a handler", () => {
+    test("That when asked for a status given a UUID, PROCESSING can be changed to COMPLETED", async () => {
+        AWS.mock('DynamoDB.DocumentClient', 'get', function (params, callback){
+            callback(null, {Item: {PROCESS_STATUS: 'PROCESSING'}});
+          });
+        AWS.mock('DynamoDB.DocumentClient', 'update', function (params, callback){
+            callback(null, {});
+          });
+        let event = {pathParameters: {uuid: "7"}};
+        const result = await retrieveStatus.handler(event); //?
+        expect(result.statusCode).toBe(200);
+        expect(result.body).toBe('{"status":"PROCESSING"}');
+
+        AWS.remock('DynamoDB.DocumentClient', 'get', function (params, callback){
+            callback(null, {Item: {PROCESS_STATUS: 'COMPLETED'}});
+          });
+        const result2 = await retrieveStatus.handler(event);
+        expect(result2.body).toBe('{"status":"COMPLETED"}');
+
+        AWS.restore('DynamoDB');
     });
 });
 
