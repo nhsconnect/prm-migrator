@@ -126,7 +126,7 @@ describe("Building a handler", () => {
             callback(null, {});
           });
         let event = {pathParameters: {uuid: "7"}};
-        const result = await retrieveStatus.handler(event); //?
+        const result = await retrieveStatus.handler(event);
         expect(result.statusCode).toBe(200);
         expect(result.body).toBe('{"status":"PROCESSING"}');
 

@@ -71,9 +71,9 @@ class ProcessStatusWrapper {
 
 exports.handler = async (event, context) => {
     const uuid = event.pathParameters.uuid;
-    const client = new AWS.DynamoDB.DocumentClient(); //?
+    const client = new AWS.DynamoDB.DocumentClient();
     // call the business logic
-    const result = await module.exports.main(client, uuid); //?
+    const result = await module.exports.main(client, uuid);
     // handle converting back to AWS
     return {
         statusCode: 200,
