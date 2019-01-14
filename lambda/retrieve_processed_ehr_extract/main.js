@@ -1,5 +1,4 @@
 const AWS = require("aws-sdk");
-const ddb = new AWS.DynamoDB.DocumentClient();
 
 const MigrationEventStates = {
     ACCEPTED: "ACCEPTED",
@@ -58,3 +57,16 @@ exports.main = async function (dbClient, uuid) {
     const result = await event.get(uuid);
     return result;
 };
+
+exports.handler = async function (event) {
+    const uuid = event.pathParameters.uuid;
+    const client = new AWS.DynamoDB.DocumentClient();
+    const result = await module.exports.main(client, uuid);
+    return {
+        statusCode: 200,
+        body: JSON.stringify({
+            payload: result.currentPayload
+        }),
+        isBase64Encoded: false
+    };
+}
