@@ -62,7 +62,7 @@ class ProcessStatusWrapper {
     async put(item) {
         await this.dbClient
             .put({
-                TableName: "PROCESS_STORAGE",
+                TableName: "PROCESS_STORAGE2",
                 Item: item,
                 ReturnValues: "ALL_OLD"
             })
@@ -73,7 +73,7 @@ class ProcessStatusWrapper {
     async get(key) {
         return await this.dbClient
             .get({
-                TableName: "PROCESS_STORAGE",
+                TableName: "PROCESS_STORAGE2",
                 Key: {
                     PROCESS_ID: key
                 }
@@ -84,7 +84,7 @@ class ProcessStatusWrapper {
     async delete(key) {
         return await this.dbClient
             .delete({
-                TableName: "PROCESS_STORAGE",
+                TableName: "PROCESS_STORAGE2",
                 Key: {
                     PROCESS_ID: key
                 }

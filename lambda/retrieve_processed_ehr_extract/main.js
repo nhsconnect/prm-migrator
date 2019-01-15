@@ -41,7 +41,7 @@ class ProcessStatusWrapper {
     async get(key) {
         return await this.dbClient
             .get({
-                TableName: "PROCESS_STORAGE",
+                TableName: "PROCESS_STORAGE2",
                 Key: {
                     PROCESS_ID: key
                 }

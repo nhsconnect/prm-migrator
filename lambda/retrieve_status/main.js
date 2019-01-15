@@ -47,7 +47,7 @@ class ProcessStatusWrapper {
     async get(key) {
         let result = await this.dbClient
             .get({
-                TableName: "PROCESS_STORAGE",
+                TableName: "PROCESS_STORAGE2",
                 Key: {
                     PROCESS_ID: key
                 }
@@ -59,7 +59,7 @@ class ProcessStatusWrapper {
 
     async update(uuid, status) {
         return await this.dbClient.update({
-            TableName: "PROCESS_STORAGE",
+            TableName: "PROCESS_STORAGE2",
             Key: {
                 "PROCESS_ID": uuid
             },
