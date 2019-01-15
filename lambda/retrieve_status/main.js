@@ -13,11 +13,20 @@ class MigrationEventStateMachine {
             let result = await this.client.get(uuid);
             this.uuid = uuid;
             this.status = result.Item.PROCESS_STATUS;
+
+            await this.transitionState(result, uuid, "PROCESSING", "COMPLETED");
+            await this.transitionState(result, uuid, "ACCEPTED", "PROCESSING");
         } catch (err) {
             this.status = 'NOT FOUND';
         }
 
         return this;
+    }
+
+    async transitionState(result, key, from, to) {
+        if (result.Item.PROCESS_STATUS === from) {
+            await this.client.update(key, to);
+        }
     }
 
     get currentStatus() {
@@ -35,23 +44,6 @@ class ProcessStatusWrapper {
         this.dbClient = dbClient;
     }
 
-    async transitionState(result, key, from, to) {
-        if (result.Item.PROCESS_STATUS === from) {
-            const params = {
-                TableName: "PROCESS_STORAGE",
-                Key: {
-                    "PROCESS_ID": key
-                },
-                UpdateExpression: "set PROCESS_STATUS = :p",
-                ExpressionAttributeValues: {
-                    ":p": to,
-                },
-                ReturnValues: "UPDATED_NEW"
-            };
-            await this.dbClient.update(params).promise();
-        }
-    }
-
     async get(key) {
         let result = await this.dbClient
             .get({
@@ -62,10 +54,21 @@ class ProcessStatusWrapper {
             })
             .promise();
         
-        await this.transitionState(result, key, "PROCESSING", "COMPLETED");
-        await this.transitionState(result, key, "ACCEPTED", "PROCESSING");
-
         return result;
+    }
+
+    async update(uuid, status) {
+        return await this.dbClient.update({
+            TableName: "PROCESS_STORAGE",
+            Key: {
+                "PROCESS_ID": uuid
+            },
+            UpdateExpression: "set PROCESS_STATUS = :p",
+            ExpressionAttributeValues: {
+                ":p": status,
+            },
+            ReturnValues: "UPDATED_NEW"
+        }).promise();
     }
 }
 
