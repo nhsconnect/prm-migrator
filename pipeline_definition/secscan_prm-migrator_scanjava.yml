@@ -20,11 +20,11 @@ phases:
       - . $NVM_DIR/nvm.sh && nvm install node npm 
       - npm -v
       - node -v
-      - cd $CODEBUILD_SRC_DIR/dynamo; npm install --no-optional --no-shrinkwrap
-      - cd $CODEBUILD_SRC_DIR/e2e; npm install --no-optional --no-shrinkwrap
-      - cd $CODEBUILD_SRC_DIR/lambda/ehr_extract_handler; npm install --no-optional --no-shrinkwrap
+      - cd $CODEBUILD_SRC_DIR/dynamo; rm package-lock.json; npm install --no-optional --no-shrinkwrap
+      - cd $CODEBUILD_SRC_DIR/e2e; rm package-lock.json; npm install --no-optional --no-shrinkwrap
+      - cd $CODEBUILD_SRC_DIR/lambda/ehr_extract_handler; rm package-lock.json; npm install --no-optional --no-shrinkwrap
 #      - cd $CODEBUILD_SRC_DIR/lambda/retrieve_processed_ehr_extract; npm install
-      - cd $CODEBUILD_SRC_DIR/lambda/retrieve_status; npm install --no-optional --no-shrinkwrap
+      - cd $CODEBUILD_SRC_DIR/lambda/retrieve_status; rm package-lock.json; npm install --no-optional --no-shrinkwrap
 #      - cd $CODEBUILD_SRC_DIR/uptime_monitoring; npm install
 #       Running Owasp dependency-check
       - cd $TMPDIR; wget -nv https://dl.bintray.com/jeremy-long/owasp/dependency-check-4.0.2-release.zip; unzip -q dependency-check-4.0.2-release.zip
