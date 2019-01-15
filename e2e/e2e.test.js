@@ -5,6 +5,8 @@ const sleep = m => new Promise(r => setTimeout(r, m));
 
 const PRM_URL = new Url.URL(process.env.PRM_ENDPOINT);
 
+let testUuid;
+
 test("As a supplier, I can see my message has been accepted", async () => {
     const url = `${PRM_URL.origin}${PRM_URL.pathname}/send`;
     const testPayload = "foo";
@@ -22,35 +24,27 @@ test("As a supplier, I can see my message has been accepted", async () => {
 
     expect(response.statusCode).toBe(200);
     const {uuid, status, payload} = JSON.parse(response.body);
+    testUuid = uuid;
     expect(uuid).toBeDefined();
     expect(status).toBe("ACCEPTED");
     expect(payload).toBe('foo');
 });
 
 test("As a supplier, I can see my message is being processed", async () => {
-    const sendUrl = `${PRM_URL.origin}${PRM_URL.pathname}/send`;
+    const sendUrl = `${PRM_URL.origin}${PRM_URL.pathname}/status/${testUuid}`;
 
-    const testPayload = "foo";
+    console.log(sendUrl);
 
     var options = {
-        method: 'POST',
+        method: 'GET',
         uri: sendUrl,
-        body: JSON.stringify({
-            payload: testPayload
-        }),
         resolveWithFullResponse: true
     };
 
-    const sendResponse = await request.post(options);
+    await request.get(options);
+    const response = await request.get(options);
 
-    const {uuid} = JSON.parse(sendResponse.body);
-    await sleep(3000);
-
-    const statusUrl = `${PRM_URL.origin}${PRM_URL.pathname}/status/${uuid}`;
-    const statusResponse = await request.get(statusUrl, {
-        resolveWithFullResponse: true
-    });
-    const {status} = JSON.parse(statusResponse.body);
+    const {status} = JSON.parse(response.body);
     expect(status).toBe("PROCESSING");
 });
 
