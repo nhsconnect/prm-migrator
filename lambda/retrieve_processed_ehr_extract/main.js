@@ -64,9 +64,7 @@ exports.handler = async function (event) {
     const result = await module.exports.main(client, uuid);
     return {
         statusCode: 200,
-        body: JSON.stringify({
-            payload: result.currentPayload
-        }),
+        body: result.currentPayload,
         isBase64Encoded: false
     };
 }

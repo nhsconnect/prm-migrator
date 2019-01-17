@@ -36,19 +36,20 @@ describe("Return payload", () => {
 
 describe("Error when entry doesn't exist", () => {
     test("That when asked for a response given a non-existing UUID, it throws an error", async () => {
-        const result = await retrieveProcessed.main(new DynamoDBMock(), "-1"); //?
+        const result = await retrieveProcessed.main(new DynamoDBMock(), "-1");
         expect(result).toBe('Entry not found');
     });
 });
 
 describe("Build handler", () => {
     test("That when asked for a response given a UUID, if present, it returns a payload", async () => {
+        const payload = `<Patient><identifier><value>1234567890</value></identifier></Patient>`;
         AWS.mock('DynamoDB.DocumentClient', 'get', function (params, callback){
-            callback(null, {Item: {PROCESS_PAYLOAD: 'bar'}});
+            callback(null, {Item: {PROCESS_PAYLOAD: payload}});
           });
         let event = {pathParameters: {uuid: "7"}};
         const result = await retrieveProcessed.handler(event);
         expect(result.statusCode).toBe(200);
-        expect(result.body).toBe('{"payload":"bar"}');
+        expect(result.body).toBe(payload);
     });
 });
