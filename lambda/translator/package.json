@@ -1,0 +1,14 @@
+{
+  "name": "translator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "AWS_SDK_LOAD_CONFIG=true AWS_PROFILE=PASTASLOTHVULGAR jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^23.6.0"
+  }
+}
