@@ -27,7 +27,7 @@ test("As a supplier, I can send my message and see that it has been accepted", a
     testUuid = uuid;
     expect(uuid).toBeDefined();
     expect(status).toBe("ACCEPTED");
-    expect(payload).toBe('foo');
+    expect(payload).toBe(testPayload);
 });
 
 test("As a supplier, I can see my message has been accepted", async () => {
