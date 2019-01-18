@@ -13,6 +13,8 @@
     "jest": "^23.6.0"
   },
   "dependencies": {
-    "aws-sdk": "^2.390.0"
+    "aws-sdk": "^2.390.0",
+    "easyxml": "^2.0.1",
+    "js2xmlparser": "^3.0.0"
   }
 }
