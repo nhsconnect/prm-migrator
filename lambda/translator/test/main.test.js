@@ -1,4 +1,4 @@
-const translator = require("./main");
+const translator = require("../main");
 
 describe("Calling lambda", () => {
   let result;  
