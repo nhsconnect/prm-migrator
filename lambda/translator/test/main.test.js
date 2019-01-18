@@ -24,6 +24,24 @@ describe("Calling lambda", () => {
     expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
   });
 
+  test("it should update payload with transformed xml", async () => {
+    var patientPayloadXmlOptions = {
+      rootElement: 'Patient',
+      manifest: true,
+    };
+    
+    let serializer = new EasyXml(patientPayloadXmlOptions);
+
+    let payload = {
+        identifier: {
+            value: '1234567890'
+        }
+    };
+
+    var expectedParams = dbQueryHelper.changePayloadTo(serializer.render(payload), '101');
+    expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
+  });
+
   test("it should update status to COMPLETED", async () => {
     var expectedParams = dbQueryHelper.changeStatusTo('COMPLETED', '101');
     expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
@@ -34,18 +52,6 @@ describe("Calling lambda", () => {
   });
 
   test("returns the expected body", async () => {
-    var patientPayloadXmlOptions = {
-        rootElement: 'Patient',
-        manifest: true,
-    };
-    let serializer = new EasyXml(patientPayloadXmlOptions);
-
-    let payload = {
-        identifier: {
-            value: '1234567890'
-        }
-    };
-
-    expect(result.body).toBe(serializer.render(payload));
+    expect(result.body).toBe('');
   });
 });

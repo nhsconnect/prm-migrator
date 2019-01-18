@@ -17,17 +17,19 @@ exports.handler = (event, context) => {
         }
     };
 
-    client.update(dbQueryHelper.changeStatusTo('COMPLETED', uuid));
-
     var patientPayloadXmlOptions = {
         rootElement: 'Patient',
         manifest: true,
     };
     let serializer = new EasyXml(patientPayloadXmlOptions);
+    let payloadXml = serializer.render(payload);
+
+    client.update(dbQueryHelper.changePayloadTo(payloadXml, uuid));
+    client.update(dbQueryHelper.changeStatusTo('COMPLETED', uuid));
 
     return {
         statusCode: 200,
-        body: serializer.render(payload),
+        body: '',
         isBase64Encoded: false
     };
 };
