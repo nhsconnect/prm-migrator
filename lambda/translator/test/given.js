@@ -3,19 +3,22 @@ exports.aRecord = {
     "eventVersion": "1.0",
     "dynamodb": {
         "Keys": {
-            "Id": {
-                "N": "101"
+            "PROCESS_ID": {
+                "S": "101"
             }
         },
         "NewImage": {
-            "Message": {
-                "S": "New item!"
+            "PROCESS_PAYLOAD": {
+                "S": "1234567890"
             },
-            "Id": {
-                "N": "101"
+            "PROCESS_STATUS": {
+                "S": "PROCESSING"
+            },
+            "PROCESS_ID": {
+                "S": "101"
             }
         },
-        "StreamViewType": "NEW_AND_OLD_IMAGES",
+        "StreamViewType": "NEW_IMAGE",
         "SequenceNumber": "111",
         "SizeBytes": 26
     },
