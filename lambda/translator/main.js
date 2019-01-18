@@ -2,7 +2,9 @@ const translate = require('./translate');
 
 exports.handler = (event, context) => {
 
-    translate.blat(event);
+    event.Records.forEach(record => {
+        translate.blat(record);    
+    });
 
     return {
         statusCode: 200,

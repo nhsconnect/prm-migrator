@@ -11,7 +11,7 @@ describe("Calling lambda", () => {
 
   beforeAll(() => {
     AWS.mock('DynamoDB.DocumentClient', 'update', updateSpy);
-    let event = given.aRecord;
+    let event = { "Records": [given.aNewRecord]};
     result = translator.handler(event);
   });
 
@@ -19,12 +19,12 @@ describe("Calling lambda", () => {
     AWS.restore('DynamoDB.DocumentClient');
   });
 
-  test("it should update status to PROCESSING", async () => {
+  test("it should update the status to PROCESSING", async () => {
     var expectedParams = dbQueryHelper.changeStatusTo('PROCESSING', '101');
     expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
   });
 
-  test("it should update payload with transformed xml", async () => {
+  test("it should update the payload with transformed xml", async () => {
     var patientPayloadXmlOptions = {
       rootElement: 'Patient',
       manifest: true,
