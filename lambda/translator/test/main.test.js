@@ -2,24 +2,11 @@ const translator = require("../main");
 const given = require("./given")
 const AWS = require('aws-sdk-mock');
 const sinon = require('sinon');
+const helper = require('../helper');
 
 describe("Calling lambda", () => {
   let result;
   var updateSpy = sinon.spy();
-
-  function changeStatusTo(status, uuid) {
-      return {
-        TableName: "PROCESS_STORAGE",
-        Key: {
-            "PROCESS_ID": uuid
-        },
-        UpdateExpression: "set PROCESS_STATUS = :p",
-        ExpressionAttributeValues: {
-            ":p": status,
-        },
-        ReturnValues: "UPDATED_NEW"
-    };
-  };
 
   beforeAll(() => {
     AWS.mock('DynamoDB.DocumentClient', 'update', updateSpy);
@@ -32,7 +19,12 @@ describe("Calling lambda", () => {
   });
 
   test("it should update status to PROCESSING", async () => {
-    var expectedParams = changeStatusTo('PROCESSING', '101');
+    var expectedParams = helper.changeStatusTo('PROCESSING', '101');
+    expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
+  });
+
+  test("it should update status to COMPLETED", async () => {
+    var expectedParams = helper.changeStatusTo('COMPLETED', '101');
     expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
   });
 
