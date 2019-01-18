@@ -4,11 +4,15 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "AWS_SDK_LOAD_CONFIG=true AWS_PROFILE=PASTASLOTHVULGAR jest"
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "aws-sdk-mock": "^4.3.0",
     "jest": "^23.6.0"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.390.0"
   }
 }

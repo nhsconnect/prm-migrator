@@ -1,5 +1,6 @@
 const retrieveProcessed = require("./main");
 const AWS = require('aws-sdk-mock');
+
 class DynamoDBMock {
     constructor() {
         this.mockTable = {
