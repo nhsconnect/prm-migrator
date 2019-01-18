@@ -10,11 +10,19 @@ exports.handler = (event, context) => {
 
     client.update(dbQueryHelper.changeStatusTo('PROCESSING', uuid));
 
+    let payload = {
+        Patient: {
+          identifier: {
+            value: nhsNumber
+          }        
+        }
+      };
+
     client.update(dbQueryHelper.changeStatusTo('COMPLETED', uuid));
 
     return {
         statusCode: 200,
-        body: `<Patient><identifier><value>${nhsNumber}</value></identifier></Patient>`,
+        body: JSON.stringify(payload),
         isBase64Encoded: false
     };
 };

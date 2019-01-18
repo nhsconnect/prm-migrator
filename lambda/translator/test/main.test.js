@@ -33,6 +33,14 @@ describe("Calling lambda", () => {
   });
 
   test("returns the expected body", async () => {
-    expect(result.body).toBe(`<Patient><identifier><value>1234567890</value></identifier></Patient>`);
+    let expectedPayload = {
+      Patient: {
+        identifier: {
+          value: '1234567890'
+        }        
+      }
+    };
+
+    expect(result.body).toBe(JSON.stringify(expectedPayload));
   });
 });
