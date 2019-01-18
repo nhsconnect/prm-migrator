@@ -2,7 +2,7 @@ const translator = require("../main");
 const given = require("./given")
 const AWS = require('aws-sdk-mock');
 const sinon = require('sinon');
-const helper = require('../helper');
+const helper = require('../dbQueryHelper');
 
 describe("Calling lambda", () => {
   let result;
