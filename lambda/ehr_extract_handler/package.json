@@ -9,7 +9,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "jest": "^23.6.0"
+    "aws-sdk-mock": "^4.3.0",
+    "jest": "^23.6.0",
+    "sinon": "^7.2.3"
   },
   "dependencies": {
     "aws-sdk": "^2.381.0"

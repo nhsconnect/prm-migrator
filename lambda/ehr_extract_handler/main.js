@@ -1,8 +1,6 @@
 const uuid = require("uuid/v4");
 const AWS = require("aws-sdk");
-
 AWS.config.update({region: "eu-west-2"});
-const client = new AWS.DynamoDB.DocumentClient();
 
 const MigrationEventStates = {
     ACCEPTED: "ACCEPTED",
@@ -16,7 +14,7 @@ class MigrationEventStateMachine {
     constructor(client) {
         this.uuid = undefined;
         this.status = MigrationEventStates.REJECTED;
-        this.client = client;
+        this.client = client; 
     }
 
     async accept(ehrExtract) {
@@ -33,7 +31,7 @@ class MigrationEventStateMachine {
             const result = await this.client.put({
                 PROCESS_ID: expectedID,
                 PROCESS_STATUS: expectedState,
-                PROCESS_PAYLOAD: ehrExtract
+                PROCESS_PAYLOAD: ehrExtract 
             });
             this.uuid = result.PROCESS_ID;
             this.status = result.PROCESS_STATUS;
@@ -107,6 +105,7 @@ exports.handler = async (event, context) => {
     // handle AWS specific stuff here
 
     const {payload} = JSON.parse(event.body);
+    let client = new AWS.DynamoDB.DocumentClient();
 
     // call the business logic
     const result = await module.exports.main(client, payload);
