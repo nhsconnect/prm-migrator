@@ -14,10 +14,6 @@ describe("Calling lambda", () => {
     result = translator.blat(given.aNewRecord);
   });
 
-  afterAll(() => {
-    AWS.restore('DynamoDB.DocumentClient');
-  });
-
   test("it should update the status to PROCESSING", async () => {
     var expectedParams = dbQueryHelper.changeStatusTo('PROCESSING', '101');
     expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
@@ -44,5 +40,9 @@ describe("Calling lambda", () => {
   test("it should update status to COMPLETED", async () => {
     var expectedParams = dbQueryHelper.changeStatusTo('COMPLETED', '101');
     expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
+  });
+
+  afterAll(() => {
+    AWS.restore('DynamoDB.DocumentClient');
   });
 });

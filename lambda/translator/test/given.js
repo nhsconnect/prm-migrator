@@ -28,7 +28,7 @@ exports.aNewRecord = {
     "eventSource": "aws:dynamodb"
 };
 
-exports.someNewRecords = {
+exports.twoNewRecords = {
     "Records": [
         {
             "eventID": "1",
