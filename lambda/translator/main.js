@@ -1,9 +1,9 @@
-const translate = require('./translate');
+const translator = require('./translator');
 
 exports.handler = (event, context) => {
 
     event.Records.forEach(record => {
-        translate.blat(record);    
+        translator.translate(record);    
     });
 
     return {

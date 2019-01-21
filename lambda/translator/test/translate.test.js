@@ -1,4 +1,4 @@
-const translator = require("../translate");
+const translator = require("../translator");
 const given = require("./given")
 const AWS = require('aws-sdk-mock');
 const sinon = require('sinon');
@@ -11,7 +11,7 @@ describe("Calling lambda", () => {
 
   beforeAll(() => {
     AWS.mock('DynamoDB.DocumentClient', 'update', updateSpy);
-    result = translator.blat(given.aNewRecord);
+    result = translator.translate(given.aNewRecord);
   });
 
   test("it should update the status to PROCESSING", async () => {
