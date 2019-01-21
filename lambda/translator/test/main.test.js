@@ -30,7 +30,7 @@ describe("Calling lambda", () => {
       manifest: true,
     };
     
-    let serializer = new EasyXml(patientPayloadXmlOptions);
+    let xmlSerializer = new EasyXml(patientPayloadXmlOptions);
 
     let payload = {
         identifier: {
@@ -38,7 +38,7 @@ describe("Calling lambda", () => {
         }
     };
 
-    var expectedParams = dbQueryHelper.changePayloadTo(serializer.render(payload), '101');
+    var expectedParams = dbQueryHelper.changePayloadTo(xmlSerializer.render(payload), '101');
     expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
   });
 

@@ -21,8 +21,8 @@ exports.blat = function(event){
         rootElement: 'Patient',
         manifest: true,
     };
-    let serializer = new EasyXml(patientPayloadXmlOptions);
-    let payloadXml = serializer.render(payload);
+    let xmlSerializer = new EasyXml(patientPayloadXmlOptions);
+    let payloadXml = xmlSerializer.render(payload);
 
     client.update(dbQueryHelper.changePayloadTo(payloadXml, uuid));
     client.update(dbQueryHelper.changeStatusTo('COMPLETED', uuid));
