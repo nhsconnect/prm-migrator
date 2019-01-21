@@ -6,7 +6,7 @@ const sleep = m => new Promise(r => setTimeout(r, m));
 const PRM_URL = new Url.URL(process.env.PRM_ENDPOINT);
 
 let testUuid;
-const testPayload = `<Patient><identifier><value>1234567890</value></identifier></Patient>`;
+const testPayload = `1234567890`;
 
 test("As a supplier, I can send my message and see that it has been accepted", async () => {
     const url = `${PRM_URL.origin}${PRM_URL.pathname}/send`;
