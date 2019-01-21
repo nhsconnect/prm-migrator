@@ -49,7 +49,7 @@ describe("ACCEPTED responses", () => {
 });
 
 describe("Integration tests", () => {
-  test("Can successfully manage a PROCESS record", async () => {
+  test.skip("Can successfully manage a PROCESS record", async () => {
     const wrapper = new ehrExtract.ProcessStatusWrapper(
       new AWS.DynamoDB.DocumentClient()
     );
