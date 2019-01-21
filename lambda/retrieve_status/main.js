@@ -13,20 +13,11 @@ class MigrationEventStateMachine {
             let result = await this.client.get(uuid);
             this.uuid = uuid;
             this.status = result.Item.PROCESS_STATUS;
-
-            await this.transitionState(result, uuid, "PROCESSING", "COMPLETED");
-            await this.transitionState(result, uuid, "ACCEPTED", "PROCESSING");
         } catch (err) {
             this.status = 'NOT FOUND';
         }
 
         return this;
-    }
-
-    async transitionState(result, key, from, to) {
-        if (result.Item.PROCESS_STATUS === from) {
-            await this.client.update(key, to);
-        }
     }
 
     get currentStatus() {
