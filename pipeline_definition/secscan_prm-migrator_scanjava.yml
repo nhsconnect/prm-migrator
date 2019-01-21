@@ -20,12 +20,8 @@ phases:
       - . $NVM_DIR/nvm.sh && nvm install node npm 
       - npm -v
       - node -v
-      - cd $CODEBUILD_SRC_DIR/dynamo; npm install -f
-      - cd $CODEBUILD_SRC_DIR/e2e; npm install -f
-      - cd $CODEBUILD_SRC_DIR/lambda/ehr_extract_handler; npm install -f
-      - cd $CODEBUILD_SRC_DIR/lambda/retrieve_processed_ehr_extract; npm install -f
-      - cd $CODEBUILD_SRC_DIR/lambda/retrieve_status; npm install -f
-      - cd $CODEBUILD_SRC_DIR/lambda/translator; npm install -f
+      - npm i -g recursive-install
+      - npm-recursive-install
 #       Running Owasp dependency-check
       - cd $TMPDIR; wget -nv https://dl.bintray.com/jeremy-long/owasp/dependency-check-4.0.2-release.zip; unzip -q dependency-check-4.0.2-release.zip
       - ./dependency-check/bin/dependency-check.sh  --project secscaprj --enableRetired --scan $CODEBUILD_SRC_DIR
