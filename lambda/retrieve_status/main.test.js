@@ -1,142 +1,114 @@
 const retrieveStatus = require("./main");
 var AWS = require('aws-sdk-mock');
 
-class DynamoDBMock {
-    constructor() {
-        this.mockTable = {
-            '1': {PROCESS_STATUS: 'ACCEPTED'},
-            '2': {PROCESS_STATUS: 'PROCESSING'},
-            '3': {PROCESS_STATUS: 'COMPLETED'},
-            '4': {PROCESS_STATUS: 'FAILED'},
-            '6': {PROCESS_STATUS: 'ACCEPTED'},
-            '7': {PROCESS_STATUS: 'PROCESSING'}
-        }
-    }
+describe("When asked for a status given a UUID, and the payload is not yet being processed", () => {
+    let result;
 
-    get(params) {
-        return {
-            promise: () => {
+    beforeAll(async () => {
+        AWS.mock('DynamoDB.DocumentClient', 'get', function (params, callback){
+            callback(null, {Item: {PROCESS_STATUS: 'ACCEPTED'}});
+          });
 
-                return new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        const uuid = params.Key.PROCESS_ID;
-                        let tableEntry;
-                        if (this.mockTable[uuid]) {
-                            tableEntry = {Item: {...this.mockTable[uuid]}}
-                            resolve(tableEntry)
-                        }
-                        reject({})
-                    }, 100)
-                })
-            }
-        }
-    }
+          AWS.mock('DynamoDB.DocumentClient', 'update', function (params, callback){
+            callback(null, {Item: {PROCESS_STATUS: 'ACCEPTED'}});
+          });
 
-    update(params) {
-        return {
-            promise: () => {
-                return new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        const uuid = params.Key.PROCESS_ID;
-                        if (this.mockTable[uuid].PROCESS_STATUS === "PROCESSING") {
-                            this.mockTable[uuid].PROCESS_STATUS = "COMPLETED"
-                            resolve()
-                        }
-                        if (this.mockTable[uuid].PROCESS_STATUS === "ACCEPTED") {
-                            this.mockTable[uuid].PROCESS_STATUS = "PROCESSING"
-                            resolve()
-                        }
-                        reject({})
-                    }, 100)
-                })
-            }
-        }
-    }
-}
+        let event = {pathParameters: {uuid: "7"}};
+        result = await retrieveStatus.handler(event);
+    });
 
-describe("ACCEPTED responses", () => {
-    test("That when asked for a status given a UUID, if present, it generates an ACCEPTED response", async () => {
-        const result = await retrieveStatus.main(new DynamoDBMock(), "1");
-        expect(result.currentStatus).toBe("ACCEPTED");
+    test("It should return a successful status code", async () => {
+        expect(result.statusCode).toBe(200);
+    });
+
+    test("It should return ACCEPTED status", async () => {
+        expect(result.body).toBe('{"status":"ACCEPTED"}');
+    });
+
+    afterAll(() => {
+        AWS.restore('DynamoDB.DocumentClient');
     });
 });
 
-describe("PROCESSING responses", () => {
-    test("That when asked for a status given a UUID, if present, it generates a PROCESSING response", async () => {
-        const result = await retrieveStatus.main(new DynamoDBMock(), "2");
-        expect(result.currentStatus).toBe("PROCESSING");
-    });
-});
+describe("When asked for a status given a UUID, and the payload is being processed", () => {
+    let result;
 
-describe("COMPLETED responses", () => {
-    test("That when asked for a status given a UUID, if present, it generates a COMPLETED response", async () => {
-        const result = await retrieveStatus.main(new DynamoDBMock(), '3');
-        expect(result.currentStatus).toBe("COMPLETED");
-    });
-});
-
-describe("FAILED responses", () => {
-    test("That when asked for a status given a UUID, if present, it generates a FAILED response", async () => {
-        const result = await retrieveStatus.main(new DynamoDBMock(), '4');
-        expect(result.currentStatus).toBe("FAILED");
-    });
-});
-
-describe("NOT FOUND responses", () => {
-    test("That when asked for a status given a UUID, if present, it generates a NOT FOUND response", async () => {
-        const result = await retrieveStatus.main(new DynamoDBMock(), '5');
-        expect(result.currentStatus).toBe("NOT FOUND");
-    });
-});
-
-describe("ACCEPTED", () => {
-    test("That when asked for a status given a UUID, and the message is just in the queue, it generates a ACCEPTED response", async () => {
-        const dbMock = new DynamoDBMock()
-        const result = await retrieveStatus.main(dbMock, "6");
-        expect(result.currentStatus).toBe("ACCEPTED");
-    });
-});
-
-describe("ACCEPTED to PROCESSING", () => {
-    test("That when asked for a status given a UUID, ACCEPTED can be changed to PROCESSING", async () => {
-        const dbMock = new DynamoDBMock()
-        const result = await retrieveStatus.main(dbMock, "6");
-        expect(result.currentStatus).toBe("ACCEPTED");
-        const result2 = await retrieveStatus.main(dbMock, "6");
-        expect(result2.currentStatus).toBe("PROCESSING");
-    });
-});
-
-describe("PROCESSING to COMPLETED", () => {
-    test("That when asked for a status given a UUID, PROCESSING can be changed to COMPLETED", async () => {
-        const dbMock = new DynamoDBMock()
-        const result = await retrieveStatus.main(dbMock, "7");
-        expect(result.currentStatus).toBe("PROCESSING");
-        const result2 = await retrieveStatus.main(dbMock, "7");
-        expect(result2.currentStatus).toBe("COMPLETED");
-    });
-});
-
-describe("Building a handler", () => {
-    test("That when asked for a status given a UUID, PROCESSING can be changed to COMPLETED", async () => {
+    beforeAll(async () => {
         AWS.mock('DynamoDB.DocumentClient', 'get', function (params, callback){
             callback(null, {Item: {PROCESS_STATUS: 'PROCESSING'}});
           });
-        AWS.mock('DynamoDB.DocumentClient', 'update', function (params, callback){
-            callback(null, {});
+
+          AWS.mock('DynamoDB.DocumentClient', 'update', function (params, callback){
+            callback(null, {Item: {PROCESS_STATUS: 'PROCESSING'}});
           });
+
         let event = {pathParameters: {uuid: "7"}};
-        const result = await retrieveStatus.handler(event);
+        result = await retrieveStatus.handler(event);
+    });
+
+    test("It should return a successful status code", async () => {
         expect(result.statusCode).toBe(200);
+    });
+
+    test("It should return PROCESSING status", async () => {
         expect(result.body).toBe('{"status":"PROCESSING"}');
+    });
 
-        AWS.remock('DynamoDB.DocumentClient', 'get', function (params, callback){
-            callback(null, {Item: {PROCESS_STATUS: 'COMPLETED'}});
-          });
-        const result2 = await retrieveStatus.handler(event);
-        expect(result2.body).toBe('{"status":"COMPLETED"}');
-
-        AWS.restore('DynamoDB');
+    afterAll(() => {
+        AWS.restore('DynamoDB.DocumentClient');
     });
 });
 
+describe("When asked for a status given a UUID, and the payload has been processed", () => {
+    let result;
+
+    beforeAll(async () => {
+        AWS.mock('DynamoDB.DocumentClient', 'get', function (params, callback){
+            callback(null, {Item: {PROCESS_STATUS: 'COMPLETED'}});
+          });
+
+        AWS.mock('DynamoDB.DocumentClient', 'update', function (params, callback){
+            callback(null, {Item: {PROCESS_STATUS: 'COMPLETED'}});
+          });
+
+        let event = {pathParameters: {uuid: "7"}};
+        result = await retrieveStatus.handler(event);
+    });
+
+    test("It should return a successful status code", async () => {
+        expect(result.statusCode).toBe(200);
+    });
+
+    test("It should return COMPLETED status", async () => {
+        expect(result.body).toBe('{"status":"COMPLETED"}');
+    });
+
+    afterAll(() => {
+        AWS.restore('DynamoDB.DocumentClient');
+    });
+});
+
+describe("When asked for a status given a UUID, and the there is an error when searching the db", () => {
+    let result;
+
+    beforeAll(async () => {
+        AWS.mock('DynamoDB.DocumentClient', 'get', function (params, callback){
+            callback(null, Promise.reject('Oops!'));
+        });
+
+        let event = {pathParameters: {uuid: "7"}};
+        result = await retrieveStatus.handler(event);
+    });
+
+    test("It should return a successful status code", async () => {
+        expect(result.statusCode).toBe(200);
+    });
+
+    test("It should return NOT FOUND status", async () => {
+        expect(result.body).toBe('{"status":"NOT FOUND"}');
+    });
+
+    afterAll(() => {
+        AWS.restore('DynamoDB.DocumentClient');
+    });
+});
