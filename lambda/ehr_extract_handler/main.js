@@ -53,8 +53,8 @@ class MigrationEventStateMachine {
 }
 
 class ProcessStatusWrapper {
-    constructor(dbClient) {
-        this.dbClient = dbClient;
+    constructor() {
+        this.dbClient = new AWS.DynamoDB.DocumentClient();
     }
 
     async put(item) {
@@ -67,35 +67,13 @@ class ProcessStatusWrapper {
             .promise();
         return item;
     }
-
-    async get(key) {
-        return await this.dbClient
-            .get({
-                TableName: "PROCESS_STORAGE",
-                Key: {
-                    PROCESS_ID: key
-                }
-            })
-            .promise();
-    }
-
-    async delete(key) {
-        return await this.dbClient
-            .delete({
-                TableName: "PROCESS_STORAGE",
-                Key: {
-                    PROCESS_ID: key
-                }
-            })
-            .promise();
-    }
 }
 
 exports.ProcessStatusWrapper = ProcessStatusWrapper;
 
-exports.main = async function (dbClient, ehrExtract) {
+exports.main = async function (ehrExtract) {
     const event = new MigrationEventStateMachine(
-        new ProcessStatusWrapper(dbClient)
+        new ProcessStatusWrapper()
     );
     const result = await event.accept(ehrExtract);
     return result;
@@ -105,10 +83,9 @@ exports.handler = async (event, context) => {
     // handle AWS specific stuff here
 
     const {payload} = JSON.parse(event.body);
-    let client = new AWS.DynamoDB.DocumentClient();
 
     // call the business logic
-    const result = await module.exports.main(client, payload);
+    const result = await module.exports.main(payload);
     // handle converting back to AWS
     return {
         statusCode: 200,

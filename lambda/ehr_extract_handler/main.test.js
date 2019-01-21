@@ -57,16 +57,27 @@ describe("REJECTED responses", () => {
 
 describe("ACCEPTED responses", () => {
   let result;
-  var putSpy = sinon.spy();
 
   beforeAll(async () => {
-    AWS.mock('DynamoDB.DocumentClient', 'put', putSpy);
-    result = await ehrExtract.main(new ErrorDBMock());
+    AWS.mock('DynamoDB.DocumentClient', 'put', function(params, callback) {
+      callback(null, {});
+    });
+    let event = {'body': '{"payload": "something"}'};
+    result = await ehrExtract.handler(event);
+  });
+
+  test("returns a successful response", async () => {
+    expect(result.statusCode).toBe(200);
   });
 
   test("That if there is no error, it generates an ACCEPTED response", async () => {
-    const result = await ehrExtract.main(new DynamoDBMock());
-    expect(result.currentStatus).toBe("ACCEPTED");
+    var jsonBody = JSON.parse(result.body);
+    expect(jsonBody.status).toBe("ACCEPTED");
+  });
+
+  test("It should return the payload", async () => {
+    var jsonBody = JSON.parse(result.body);
+    expect(jsonBody.payload).toBe("something");
   });
 
   afterAll(() => {
