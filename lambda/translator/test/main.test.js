@@ -15,8 +15,7 @@ describe("Calling lambda", () => {
   });
 
   test("it should translate the record if its given NHS number is valid", () => {
-    let event = given.invalidNhsNoRecord;
-
+    let event = given.twoNewRecords;
     result = translator.handler(event);
 
     expect(result.statusCode).toBe(200);
