@@ -14,6 +14,7 @@
     "sinon": "^7.2.3"
   },
   "dependencies": {
-    "aws-sdk": "^2.381.0"
+    "aws-sdk": "^2.381.0",
+    "xml-js": "^1.6.9"
   }
 }

@@ -82,7 +82,7 @@ exports.main = async function (ehrExtract) {
 exports.handler = async (event, context) => {
     // handle AWS specific stuff here
 
-    const {payload} = JSON.parse(event.body);
+    const {payload} = JSON.parse(event.body.payload);
 
     // call the business logic
     const result = await module.exports.main(payload);
@@ -91,8 +91,7 @@ exports.handler = async (event, context) => {
         statusCode: 200,
         body: JSON.stringify({
             uuid: result.correlationId,
-            status: result.currentStatus,
-            payload: result.payload
+            status: result.currentStatus
         }),
         isBase64Encoded: false
     };

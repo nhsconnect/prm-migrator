@@ -1,7 +1,9 @@
 const ehrExtract = require("./main");
+const given = require('./given')
 const AWS = require("aws-sdk-mock");
 const uuid = require("uuid/v4");
 const sinon = require('sinon');
+
 
 class ErrorDBMock {
   constructor() {}
@@ -42,7 +44,7 @@ describe("ERROR responses", () => {
     AWS.mock('DynamoDB.DocumentClient', 'put', function (params, callback){
       callback(null, Promise.reject('Oops!'));
     });
-    let event = {'body': '{"payload": "something"}'};
+    let event = {"body": { "payload": given.tpp_sample}};
     result = await ehrExtract.handler(event);
   });
 
@@ -62,7 +64,7 @@ describe("ACCEPTED responses", () => {
     AWS.mock('DynamoDB.DocumentClient', 'put', function(params, callback) {
       callback(null, {});
     });
-    let event = {'body': '{"payload": "something"}'};
+    let event = {"body": { "payload": given.tpp_sample}};
     result = await ehrExtract.handler(event);
   });
 
@@ -73,11 +75,6 @@ describe("ACCEPTED responses", () => {
   test("That if there is no error, it generates an ACCEPTED response", async () => {
     var jsonBody = JSON.parse(result.body);
     expect(jsonBody.status).toBe("ACCEPTED");
-  });
-
-  test("It should return the payload", async () => {
-    var jsonBody = JSON.parse(result.body);
-    expect(jsonBody.payload).toBe("something");
   });
 
   afterAll(() => {
