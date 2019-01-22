@@ -4,7 +4,6 @@ const AWS = require("aws-sdk-mock");
 const uuid = require("uuid/v4");
 const sinon = require('sinon');
 
-
 class ErrorDBMock {
   constructor() {}
 

@@ -1,6 +1,6 @@
 const uuid = require("uuid/v4");
 const AWS = require("aws-sdk");
-AWS.config.update({region: "eu-west-2"});
+AWS.config.update({ region: "eu-west-2" });
 
 const MigrationEventStates = {
     ACCEPTED: "ACCEPTED",
@@ -14,30 +14,23 @@ class MigrationEventStateMachine {
     constructor(client) {
         this.uuid = undefined;
         this.status = MigrationEventStates.FAILED;
-        this.client = client; 
+        this.client = client;
     }
 
     async accept(ehrExtract) {
-        if (this.uuid !== undefined) {
-            throw new Error(
-                `INVALID STATE TRANSITION: Cannot move from ${this.status} to ${
-                    MigrationEventStates.ACCEPTED
-                    }`
-            );
-        }
         try {
             const expectedID = uuid();
             const expectedState = MigrationEventStates.ACCEPTED;
             const result = await this.client.put({
                 PROCESS_ID: expectedID,
                 PROCESS_STATUS: expectedState,
-                PROCESS_PAYLOAD: ehrExtract 
+                PROCESS_PAYLOAD: ehrExtract
             });
             this.uuid = result.PROCESS_ID;
             this.status = result.PROCESS_STATUS;
             this.payload = result.PROCESS_PAYLOAD;
         } catch (err) {
-            console.log(err);
+            this.status = MigrationEventStates.ERROR;
         }
 
         return this;
@@ -80,13 +73,9 @@ exports.main = async function (ehrExtract) {
 };
 
 exports.handler = async (event, context) => {
-    // handle AWS specific stuff here
-
-    const {payload} = JSON.parse(event.body.payload);
-
-    // call the business logic
+    const { payload } = JSON.parse(event.body.payload);
     const result = await module.exports.main(payload);
-    // handle converting back to AWS
+
     return {
         statusCode: 200,
         body: JSON.stringify({
