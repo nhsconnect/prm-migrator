@@ -29,7 +29,7 @@ describe("Calling lambda", () => {
 
     let payload = {
         identifier: {
-            value: '1234567890'
+            value: '3474710087'
         }
     };
 
