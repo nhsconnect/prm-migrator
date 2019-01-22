@@ -13,7 +13,8 @@ phases:
   build:
     commands:
       - cd ./lambda/translator
-      - zip ../../translator.zip main.js translator.js dbQueryHelper.js
+      - npm install
+      - zip ../../translator.zip . -r -x test/**\* -x wallaby.js
       - cd -
       - aws s3 cp translator.zip s3://prm-431593652018-codebuild-lambda-artifact/translator.zip
       - aws lambda update-function-code --region $AWS_REGION --function-name dev-Translator --s3-bucket prm-431593652018-codebuild-lambda-artifact --s3-key translator.zip
