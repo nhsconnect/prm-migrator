@@ -14,6 +14,14 @@ describe("Calling lambda", () => {
     result = translator.handler(event);
   });
 
+  test("it should translate the record if its given NHS number is valid", () => {
+    let event = given.invalidNhsNoRecord;
+
+    result = translator.handler(event);
+
+    expect(result.statusCode).toBe(200);
+  });
+
   test("it should update status of the first record to COMPLETED", async () => {
     var expectedParams = dbQueryHelper.changeStatusTo('COMPLETED', '101');
     expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
