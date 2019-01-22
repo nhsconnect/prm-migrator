@@ -20,20 +20,16 @@ describe("Calling lambda", () => {
   });
 
   test("it should update the payload with transformed xml", async () => {
-    var patientPayloadXmlOptions = {
-      rootElement: 'Patient',
-      manifest: true,
-    };
-    
-    let xmlSerializer = new EasyXml(patientPayloadXmlOptions);
 
     let payload = {
+      patient: {
         identifier: {
-            value: '3474710087'
+          value: '3474710087'
         }
+      }
     };
 
-    var expectedParams = dbQueryHelper.changePayloadTo(xmlSerializer.render(payload), '101');
+    var expectedParams = dbQueryHelper.changePayloadTo(payload, '101');
     expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
   });
 

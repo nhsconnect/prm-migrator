@@ -14,18 +14,13 @@ exports.translate = function(event){
     client.update(dbQueryHelper.changeStatusTo('PROCESSING', uuid));
 
     let payload = {
-        identifier: {
+        patient: {
+          identifier: {
             value: nhsNumber
+          }
         }
-    };
+      };
 
-    var patientPayloadXmlOptions = {
-        rootElement: 'Patient',
-        manifest: true,
-    };
-    let xmlSerializer = new EasyXml(patientPayloadXmlOptions);
-    let payloadXml = xmlSerializer.render(payload);
-
-    client.update(dbQueryHelper.changePayloadTo(payloadXml, uuid));
+    client.update(dbQueryHelper.changePayloadTo(payload, uuid));
     client.update(dbQueryHelper.changeStatusTo('COMPLETED', uuid));
 };
