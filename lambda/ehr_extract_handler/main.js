@@ -4,7 +4,7 @@ AWS.config.update({region: "eu-west-2"});
 
 const MigrationEventStates = {
     ACCEPTED: "ACCEPTED",
-    REJECTED: "REJECTED",
+    ERROR: "ERROR",
     PROCESSING: "PROCESSING",
     COMPLETED: "COMPLETED",
     FAILED: "FAILED"
@@ -13,7 +13,7 @@ const MigrationEventStates = {
 class MigrationEventStateMachine {
     constructor(client) {
         this.uuid = undefined;
-        this.status = MigrationEventStates.REJECTED;
+        this.status = MigrationEventStates.FAILED;
         this.client = client; 
     }
 

@@ -35,7 +35,7 @@ class DynamoDBMock {
   }
 }
 
-describe("REJECTED responses", () => {
+describe("ERROR responses", () => {
   let result;
 
   beforeAll(async () => {
@@ -46,8 +46,8 @@ describe("REJECTED responses", () => {
     result = await ehrExtract.handler(event);
   });
 
-  test("That if there is an error when saving the data, it generates a REJECTED response", async () => {
-    expect(result.body).toBe("{\"status\":\"REJECTED\"}");
+  test("That if there is an error when saving the data, it generates a ERROR response", async () => {
+    expect(result.body).toBe("{\"status\":\"ERROR\"}");
   });
 
   afterAll(() => {
