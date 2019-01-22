@@ -2,7 +2,7 @@ const AWS = require("aws-sdk");
 
 const MigrationEventStates = {
     ACCEPTED: "ACCEPTED",
-    REJECTED: "REJECTED",
+    ERROR: "ERROR",
     PROCESSING: "PROCESSING",
     COMPLETED: "COMPLETED",
     FAILED: "FAILED"
