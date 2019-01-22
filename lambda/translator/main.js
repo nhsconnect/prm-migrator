@@ -24,15 +24,16 @@ exports.handler = async (event, context) => {
 
 exports.main = function (record) {
     if (validator.isNhsNoValid(record) === true) {
-    return {
-        status: "COMPLETED",
-        correlationId: "101",
-        translation: {
-            patient: {
-                nhsNumber: "3474710087"
-            }
+        return {
+            status: "COMPLETED",
+            correlationId: "101",
+            translation: {
+                patient: {
+                    nhsNumber: "3474710087"
+                }
+            },
+            original: record
         }
-    }
 
     } else {
         return {
@@ -41,6 +42,8 @@ exports.main = function (record) {
             reason: {
                 code: "PATIENT_VALIDATION_10001",
                 message: "Given NHS Number could not be found on PDS"
-            }
+            },
+            original: record
         }
-}};
+    }
+};
