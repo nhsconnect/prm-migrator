@@ -4,7 +4,57 @@ const AWS = require('aws-sdk-mock');
 const sinon = require('sinon');
 const dbQueryHelper = require('../dbQueryHelper');
 
-describe("Calling lambda", () => {
+describe('Broadly speaking, translations work', () =>{
+  test("we can translate an individual patient", ()=>{
+    expect(translator.main(given.aNewRecord)).toEqual({
+      status: "COMPLETED",
+      correlationId: "101",
+      translation: {
+        patient: {
+          nhsNumber: "3474710087"
+        }
+      }
+    })
+  });
+  test("that when an invalid patient is sent, it causes a failure", ()=>{
+    expect(translator.main(given.invalidNhsNoRecord)).toEqual({
+      status: "FAILED",
+      correlationId: "101",
+      reason: {
+        code: "PATIENT_VALIDATION_10001",
+        message: "Given NHS Number could not be found on PDS"
+      }
+    })
+  });
+});
+
+xdescribe("Broadly speaking, we integrate our logic with AWS", ()=>{
+  test("we can translate an individual patient", async ()=>{
+    expect(await translator.handler(given.twoNewRecordsOneThatPassesOneThatFails)).toEqual(
+        {
+          status: "COMPLETED",
+          correlationId: "101",
+          translation: {
+            patient: {
+              nhsNumber: "3474710087"
+            }
+          }
+        },
+        {
+          status: "FAILED",
+          correlationId: "101",
+          translation: {
+            patient: {
+              nhsNumber: "1234567"
+            }
+          }
+        }
+    )
+  });
+})
+
+
+xdescribe("Calling lambda", () => {
   let result;
   var updateSpy = sinon.spy();
 
@@ -18,7 +68,16 @@ describe("Calling lambda", () => {
     let event = given.twoNewRecords;
     result = translator.handler(event);
 
-    expect(result.statusCode).toBe(200);
+    var expectedParams = dbQueryHelper.changeStatusTo('COMPLETED', '101');
+    expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
+  });
+
+  test("it should not translate the record if its given NHS number is invalid", () => {
+    let event = given.invalidNhsNoRecords;
+    result = translator.handler(event);
+
+    var expectedParams = dbQueryHelper.changeStatusTo('FAILED', '101');
+    expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
   });
 
   test("it should update status of the first record to COMPLETED", async () => {
@@ -38,7 +97,7 @@ describe("Calling lambda", () => {
   test("returns the expected body", async () => {
     expect(result.body).toBe('');
   });
-  
+
   afterAll(() => {
     AWS.restore('DynamoDB.DocumentClient');
   });
