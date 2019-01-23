@@ -23,6 +23,8 @@ test("As a supplier, I can send my message and see that it has been accepted", a
     expect(response.statusCode).toBe(200);
     const {uuid, status} = JSON.parse(response.body);
     testUuid = uuid;
+
+    console.log(testUuid);
     expect(uuid).toBeDefined();
     expect(status).toBe("ACCEPTED");
 });

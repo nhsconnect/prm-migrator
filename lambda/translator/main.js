@@ -6,6 +6,7 @@ const dbQueryHelper = require('./dbQueryHelper');
 
 // AWS specific stuff
 exports.handler = async (event, context) => {
+    console.log("Processing started");
     const client = new AWS.DynamoDB.DocumentClient();
     let translatedRecords = [];
 
@@ -24,7 +25,7 @@ exports.handler = async (event, context) => {
         client.update(dbQueryHelper.changeStatusTo(status, translationResult.correlationId));
     });
 
-
+    console.log(`Processing complete: ${translatedRecords}`);
     return translatedRecords;
 };
 
