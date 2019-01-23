@@ -1,11 +1,21 @@
-const translator = require('./translator');
+const AWS = require('aws-sdk');
+AWS.config.update({ region: "eu-west-2" });
+const translator = require('./translate');
 const validator = require('./validation');
+const dbQueryHelper = require('./dbQueryHelper');
 
+// AWS specific stuff
 exports.handler = async (event, context) => {
-
+    const client = new AWS.DynamoDB.DocumentClient();
     event.Records.forEach(record => {
+
         if (validator.isNhsNoValid(record) === true) {
-            translator.translate(record);
+            const uuid = record.dynamodb.Keys.PROCESS_ID.S;
+            const payload = translator.translate(record);
+
+            client.update(dbQueryHelper.changeStatusTo('PROCESSING', uuid));
+            client.update(dbQueryHelper.changePayloadTo(payload, uuid));
+            client.update(dbQueryHelper.changeStatusTo('COMPLETED', uuid));
         } else {
             return {
                 statusCode: 404,

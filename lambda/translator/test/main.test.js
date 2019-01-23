@@ -4,6 +4,30 @@ const AWS = require('aws-sdk-mock');
 const sinon = require('sinon');
 const dbQueryHelper = require('../dbQueryHelper');
 
+describe("The db has to be updated with the correct payload", () => {
+    let result;
+    var updateSpy = sinon.spy();
+
+    beforeAll(async () => {
+        AWS.mock('DynamoDB.DocumentClient', 'update', updateSpy);
+        result = await translator.handler(given.twoNewRecords);
+    });
+
+    test("it should update the status to PROCESSING", async () => {
+        var expectedParams = dbQueryHelper.changeStatusTo('PROCESSING', '101');
+        expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
+    });
+
+    test("it should update status to COMPLETED", async () => {
+        var expectedParams = dbQueryHelper.changeStatusTo('COMPLETED', '101');
+        expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
+    });
+
+    afterAll(() => {
+        AWS.restore('DynamoDB.DocumentClient');
+    });
+});
+
 describe('Broadly speaking, translations work', () => {
     test("we can translate an individual patient", () => {
         expect(translator.main(given.aNewRecord)).toEqual({
