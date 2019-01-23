@@ -4,7 +4,6 @@ const AWS = require('aws-sdk-mock');
 const sinon = require('sinon');
 const dbQueryHelper = require('../dbQueryHelper');
 
-
 describe('Broadly speaking, translations work', () => {
     test("we can translate an individual patient", () => {
         expect(translator.main(given.aNewRecord)).toEqual({
@@ -94,32 +93,41 @@ describe("Broadly speaking, we integrate our logic with AWS proxy", () => {
 
 });
 
-    // test("we can translate an individual patient", async () => {
-    //     expect(await translator.main(given.twoNewRecords)).toEqual(
-    //         {
-    //             status: "COMPLETED",
-    //             correlationId: "101",
-    //             translation: {
-    //                 patient: {
-    //                     identifier: {
-    //                         value: "3474710087"
-    //                     }
-    //                 }
-    //             }
-    //         },
-    //         {
-    //             status: "FAILED",
-    //             correlationId: "101",
-    //             translation: {
-    //                 patient: {
-    //                     identifier: {
-    //                         value: "1234567"
-    //                     }
+test("we can translate a group of patients with invalid NHS numbers", async () => {
+    var updateSpy = sinon.spy();
+    AWS.mock('DynamoDB.DocumentClient', 'update', updateSpy);
+
+    await translator.handler(given.invalidNhsNoRecords);
+    var expectedParams = dbQueryHelper.changeStatusTo('FAILED', '101');
+    expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
+
+    var expectedParams2 = dbQueryHelper.changeStatusTo('FAILED', '102');
+    expect(updateSpy.calledWith(expectedParams2)).toBeTruthy();
+    // expect(await translator.handler(given.twoNewRecords)).toEqual(
+    //     {
+    //         status: "COMPLETED",
+    //         correlationId: "101",
+    //         translation: {
+    //             patient: {
+    //                 identifier: {
+    //                     value: "3474710087"
     //                 }
     //             }
     //         }
-    //     )
-    // });
+    //     },
+    //     {
+    //         status: "FAILED",
+    //         correlationId: "101",
+    //         translation: {
+    //             patient: {
+    //                 identifier: {
+    //                     value: "1234567"
+    //                 }
+    //             }
+    //         }
+    //     }
+    // )
+});
 
 
 xdescribe("Calling lambda", () => {

@@ -34,14 +34,14 @@ exports.main = function (record) {
     if (validator.isNhsNoValid(record) === true) {
         return {
             status: "COMPLETED",
-            correlationId: "101",
+            correlationId: record.dynamodb.Keys.PROCESS_ID.S,
             translation: translator.translate(record),
             original: record
         }
     } else {
         return {
             status: "FAILED",
-            correlationId: "101",
+            correlationId: record.dynamodb.Keys.PROCESS_ID.S,
             reason: {
                 code: "PATIENT_VALIDATION_10001",
                 message: "Given NHS Number could not be found on PDS"
