@@ -4,29 +4,6 @@ const AWS = require('aws-sdk-mock');
 const sinon = require('sinon');
 const dbQueryHelper = require('../dbQueryHelper');
 
-describe("The db has to be updated with the correct payload", () => {
-    let result;
-    var updateSpy = sinon.spy();
-
-    beforeAll(async () => {
-        AWS.mock('DynamoDB.DocumentClient', 'update', updateSpy);
-        result = await translator.handler(given.twoNewRecords);
-    });
-
-    test("it should update the status to PROCESSING", async () => {
-        var expectedParams = dbQueryHelper.changeStatusTo('PROCESSING', '101');
-        expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
-    });
-
-    test("it should update status to COMPLETED", async () => {
-        var expectedParams = dbQueryHelper.changeStatusTo('COMPLETED', '101');
-        expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
-    });
-
-    afterAll(() => {
-        AWS.restore('DynamoDB.DocumentClient');
-    });
-});
 
 describe('Broadly speaking, translations work', () => {
     test("we can translate an individual patient", () => {
@@ -67,30 +44,82 @@ describe('Broadly speaking, translations work', () => {
     });
 });
 
-xdescribe("Broadly speaking, we integrate our logic with AWS", () => {
-    test("we can translate an individual patient", async () => {
-        expect(await translator.handler(given.twoNewRecordsOneThatPassesOneThatFails)).toEqual(
-            {
-                status: "COMPLETED",
-                correlationId: "101",
-                translation: {
-                    patient: {
-                        nhsNumber: "3474710087"
-                    }
-                }
-            },
-            {
-                status: "FAILED",
-                correlationId: "101",
-                translation: {
-                    patient: {
-                        nhsNumber: "1234567"
-                    }
-                }
-            }
-        )
+describe("Broadly speaking, we integrate our logic with AWS DynamoDB", () => {
+    var updateSpy = sinon.spy();
+
+    beforeAll(async () => {
+        AWS.mock('DynamoDB.DocumentClient', 'update', updateSpy);
+        await translator.handler(given.twoNewRecords);
     });
-})
+
+    test("it should update the status to PROCESSING", async () => {
+        var expectedParams = dbQueryHelper.changeStatusTo('PROCESSING', '101');
+        expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
+    });
+
+    test("it should update status to COMPLETED", async () => {
+        var expectedParams = dbQueryHelper.changeStatusTo('COMPLETED', '101');
+        expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
+    });
+
+    test("it should update status to FAILED", async () => {
+        var expectedParams = dbQueryHelper.changeStatusTo('FAILED', '101');
+
+        await translator.handler(given.invalidNhsNoRecords);
+        expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
+    });
+
+    afterAll(() => {
+        AWS.restore('DynamoDB.DocumentClient');
+    });
+});
+
+describe("Broadly speaking, we integrate our logic with AWS proxy", () => {
+    test("we can send back an AWS response with the right status code if the translation was successful", async () => {
+        expect(await translator.handler(given.twoNewRecords)).toEqual({
+            statusCode: 200,
+            body: '',
+            isBase64Encoded: false
+        });
+    });
+
+    test("we can send back an AWS response with the right status code if the translation was unsuccessful", async () => {
+        expect(await translator.handler(given.invalidNhsNoRecords)).toEqual({
+            statusCode: 404,
+            body: '',
+            isBase64Encoded: false
+        });
+    });
+
+
+});
+
+    // test("we can translate an individual patient", async () => {
+    //     expect(await translator.main(given.twoNewRecords)).toEqual(
+    //         {
+    //             status: "COMPLETED",
+    //             correlationId: "101",
+    //             translation: {
+    //                 patient: {
+    //                     identifier: {
+    //                         value: "3474710087"
+    //                     }
+    //                 }
+    //             }
+    //         },
+    //         {
+    //             status: "FAILED",
+    //             correlationId: "101",
+    //             translation: {
+    //                 patient: {
+    //                     identifier: {
+    //                         value: "1234567"
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     )
+    // });
 
 
 xdescribe("Calling lambda", () => {

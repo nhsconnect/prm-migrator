@@ -7,26 +7,24 @@ const dbQueryHelper = require('./dbQueryHelper');
 // AWS specific stuff
 exports.handler = async (event, context) => {
     const client = new AWS.DynamoDB.DocumentClient();
+    let httpStatusCode;
+
     event.Records.forEach(record => {
+        const uuid = record.dynamodb.Keys.PROCESS_ID.S;
+        client.update(dbQueryHelper.changeStatusTo('PROCESSING', uuid));
 
-        if (validator.isNhsNoValid(record) === true) {
-            const uuid = record.dynamodb.Keys.PROCESS_ID.S;
-            const payload = translator.translate(record);
+        const translationResult = this.main(record);
+        const { status } = translationResult;
+        const { translation } = translationResult;
 
-            client.update(dbQueryHelper.changeStatusTo('PROCESSING', uuid));
-            client.update(dbQueryHelper.changePayloadTo(payload, uuid));
-            client.update(dbQueryHelper.changeStatusTo('COMPLETED', uuid));
-        } else {
-            return {
-                statusCode: 404,
-                body: '',
-                isBase64Encoded: false
-            }
-        }
+        httpStatusCode = translationResult.status === 'COMPLETED' ? 200 : 404;
+
+
+        client.update(dbQueryHelper.changePayloadTo(translation, uuid));
+        client.update(dbQueryHelper.changeStatusTo(status, uuid));
     });
-
     return {
-        statusCode: 200,
+        statusCode: httpStatusCode,
         body: '',
         isBase64Encoded: false
     };
@@ -34,14 +32,12 @@ exports.handler = async (event, context) => {
 
 exports.main = function (record) {
     if (validator.isNhsNoValid(record) === true) {
-
         return {
             status: "COMPLETED",
             correlationId: "101",
             translation: translator.translate(record),
             original: record
         }
-
     } else {
         return {
             status: "FAILED",
