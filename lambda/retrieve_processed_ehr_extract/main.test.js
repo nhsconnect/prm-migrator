@@ -38,11 +38,11 @@ describe("Error when entry doesn't exist", () => {
 describe("Build handler", () => {
     test("That when asked for a response given a UUID, if present, it returns a payload", async () => {
         AWS.mock('DynamoDB.DocumentClient', 'get', function (params, callback) {
-            callback(null, { Item: { PROCESS_PAYLOAD: given.tpp_sample_json } });
+            callback(null, { Item: { PROCESS_PAYLOAD: given.processed_ehr_extract_json } });
         });
         let event = { pathParameters: { uuid: "7" } };
         const result = await retrieveProcessed.handler(event);
         expect(result.statusCode).toBe(200);
-        expect(result.body).toBe(given.tpp_sample_encodedXml);
+        expect(result.body).toBe(given.processed_ehr_extract_encodedXml);
     });
 });
