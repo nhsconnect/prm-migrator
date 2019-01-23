@@ -1,6 +1,8 @@
 const uuid = require("uuid/v4");
 const AWS = require("aws-sdk");
 AWS.config.update({ region: "eu-west-2" });
+const Entities = require('html-entities').XmlEntities;
+let convert = require('xml-js');
 
 const MigrationEventStates = {
     ACCEPTED: "ACCEPTED",
@@ -72,9 +74,13 @@ exports.main = async function (ehrExtract) {
     return result;
 };
 
-exports.handler = async (event, context) => {
-    const { payload } = JSON.parse(event.body.payload);
-    const result = await module.exports.main(payload);
+exports.handler = async (event) => {
+
+    const entities = new Entities();
+    let xml = entities.decode(event.body);
+    let ehrExtract = convert.xml2json(xml, {compact: true, spaces: 4}); 
+
+    const result = await module.exports.main(ehrExtract);
 
     return {
         statusCode: 200,

@@ -1,40 +1,7 @@
 const ehrExtract = require("./main");
 const given = require('./given')
-const AWS = require("aws-sdk-mock");
-const uuid = require("uuid/v4");
 const sinon = require('sinon');
-
-class ErrorDBMock {
-  constructor() {}
-
-  put(params, callback) {
-    return {
-      promise: () => {
-        return new Promise((resolve, reject) => {
-          setTimeout(() => {
-            reject();
-          }, 100);
-        });
-      }
-    };
-  }
-}
-
-class DynamoDBMock {
-  constructor() {}
-
-  put(params) {
-    return {
-      promise: () => {
-        return new Promise((resolve, reject) => {
-          setTimeout(() => {
-            resolve();
-          }, 100);
-        });
-      }
-    };
-  }
-}
+const AWS = require("aws-sdk-mock");
 
 describe("ERROR responses", () => {
   let result;
@@ -43,7 +10,7 @@ describe("ERROR responses", () => {
     AWS.mock('DynamoDB.DocumentClient', 'put', function (params, callback){
       callback(null, Promise.reject('Oops!'));
     });
-    let event = {"body": { "payload": given.tpp_sample}};
+    let event = {"body": given.tpp_sample_encodedXml };
     result = await ehrExtract.handler(event);
   });
 
@@ -58,17 +25,26 @@ describe("ERROR responses", () => {
 
 describe("ACCEPTED responses", () => {
   let result;
+  let dynamoDbPutCallCount = 0;
 
   beforeAll(async () => {
     AWS.mock('DynamoDB.DocumentClient', 'put', function(params, callback) {
+      dynamoDbPutCallCount++;
+      if (params.Item.PROCESS_PAYLOAD !== given.tpp_sample_json) {
+        throw "Payload does not match expected";
+      } 
       callback(null, {});
     });
-    let event = {"body": { "payload": given.tpp_sample}};
+    let event = {"body": given.tpp_sample_encodedXml};
     result = await ehrExtract.handler(event);
   });
 
   test("returns a successful response", async () => {
     expect(result.statusCode).toBe(200);
+  });
+
+  test("it should store data", async () => {
+    expect(dynamoDbPutCallCount).toBe(1);
   });
 
   test("That if there is no error, it generates an ACCEPTED response", async () => {

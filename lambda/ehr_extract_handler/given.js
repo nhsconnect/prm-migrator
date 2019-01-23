@@ -1,7 +1,8 @@
-let convert = require('xml-js');
+const convert = require('xml-js');
+const Entities = require('html-entities').XmlEntities;
+const entities = new Entities();
 
 let xml = `
-            <?xml version="1.0" encoding="UTF-8"?>
             <EhrExtract classCode="EXTRACT" moodCode="EVN">
                 <recordTarget typeCode="RCT">
                     <patient classCode="PAT">
@@ -11,6 +12,7 @@ let xml = `
             </EhrExtract>
         `;
 
-let convertedXml = convert.xml2json(xml, {compact: true, spaces: 4});
+let encodedPayload = entities.encode(xml);
 
-exports.tpp_sample = convertedXml;
+exports.tpp_sample_encodedXml = encodedPayload;
+exports.tpp_sample_json = convert.xml2json(xml, {compact: true, spaces: 4});
