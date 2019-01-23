@@ -15,7 +15,7 @@ phases:
     commands:
       - cd ./lambda/translator
       - npm install
-      - zip ../../translator.zip . -r -x test/**\* -x wallaby.js
+      - zip ../../translator.zip . -r -x wallaby.js
       - cd -
       - aws s3 cp translator.zip s3://prm-431593652018-codebuild-lambda-artifact/translator.zip
       - aws lambda update-function-code --region $AWS_REGION --function-name dev-Translator --s3-bucket prm-431593652018-codebuild-lambda-artifact --s3-key translator.zip
