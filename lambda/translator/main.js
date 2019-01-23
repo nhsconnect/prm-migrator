@@ -19,7 +19,6 @@ exports.handler = async (event, context) => {
 
         httpStatusCode = translationResult.status === 'COMPLETED' ? 200 : 404;
 
-
         client.update(dbQueryHelper.changePayloadTo(translation, uuid));
         client.update(dbQueryHelper.changeStatusTo(status, uuid));
     });
