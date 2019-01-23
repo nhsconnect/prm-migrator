@@ -1,30 +1,29 @@
 const convert = require('xml-js');
 
 const NHS_NUMBER_VALIDITY_MAP = {
-  "9999345201": true,
-  "444444444444": false,
+    "9999345201": true,
+    "444444444444": false,
 };
 
-
-exports.verifyNhsNumber = function(queryXml) {
-  return new Promise((resolve, reject) => {
-    const nhsNumber = getNHSNumber(queryXml);
-    if (NHS_NUMBER_VALIDITY_MAP[nhsNumber]){
-      resolve(successfulPayload)
-    } else {
-      reject(failedPayload)
-    }
-  });
+exports.verifyNhsNumber = async function (queryXml) {
+    return new Promise((resolve, reject) => {
+        const nhsNumber = getNHSNumber(queryXml);
+        if (NHS_NUMBER_VALIDITY_MAP[nhsNumber]) {
+            resolve(successfulPayload);
+        } else {
+            reject(failedPayload);
+        }
+    });
 };
 
 function getNHSNumber(queryXml) {
-  const options = {compact: true, spaces: 4};
-  const jsonQuery = JSON.parse(convert.xml2json(queryXml, options));
-  return jsonQuery['soap:Envelope']['soap:Body']
-      ['itk:DistributionEnvelope']['itk:payloads']['itk:payload']
-      ['verifyNHSNumberRequest-v1-0']['queryEvent']['Person.NHSNumber']
-      ['value']['_attributes']['extension'];
-}
+    const options = {compact: true, spaces: 4};
+    const jsonQuery = JSON.parse(convert.xml2json(queryXml, options));
+    return jsonQuery['soap:Envelope']['soap:Body']
+        ['itk:DistributionEnvelope']['itk:payloads']['itk:payload']
+        ['verifyNHSNumberRequest-v1-0']['queryEvent']['Person.NHSNumber']
+        ['value']['_attributes']['extension'];
+};
 
 var successfulPayload = `<?xml version="1.0" encoding="UTF-8"?>
 <!--This example message is provided for illustrative purposes only. It has had no clinical validation. Whilst every effort has been taken to ensure that the examples are consistent with the message specification, where there are conflicts with the written message specification or schema, the specification or schema shall be considered to take precedence-->
@@ -79,7 +78,7 @@ var successfulPayload = `<?xml version="1.0" encoding="UTF-8"?>
 			</itk:payloads>
 		</itk:DistributionEnvelope>
 	</soap:Body>
-</soap:Envelope>`
+</soap:Envelope>`;
 
 var failedPayload = `<?xml version="1.0" encoding="UTF-8"?>
 <!--This example message is provided for illustrative purposes only. It has had no clinical validation. Whilst every effort has been taken to ensure that the examples are consistent with the message specification, where there are conflicts with the written message specification or schema, the specification or schema shall be considered to take precedence-->
@@ -187,4 +186,4 @@ var verifyNhsNoInvalidRequest = `<?xml version="1.0" encoding="UTF-8"?>
 			</itk:payloads>
 		</itk:DistributionEnvelope>
 	</soap:Body>
-</soap:Envelope>`
+</soap:Envelope>`;

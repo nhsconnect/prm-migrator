@@ -378,7 +378,7 @@ exports.verifyNhsNoResponse = `<?xml version="1.0" encoding="UTF-8"?>
 	</soap:Body>
 </soap:Envelope>`;
 
-exports.verifyNhsNoRequest = `<?xml version="1.0" encoding="UTF-8"?>
+exports.buildNhsNoValidationQuery = (nhsNo) => { return `<?xml version="1.0" encoding="UTF-8"?>
 <!--This example message is provided for illustrative purposes only. It has had no clinical validation. Whilst every effort has been taken to ensure that the examples are consistent with the message specification, where there are conflicts with the written message specification or schema, the specification or schema shall be considered to take precedence-->
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:itk="urn:nhs-itk:ns:201005">
 	<soap:Header>
@@ -420,7 +420,7 @@ exports.verifyNhsNoRequest = `<?xml version="1.0" encoding="UTF-8"?>
 								<semanticsText>Person.DateOfBirth</semanticsText>
 							</Person.DateOfBirth>
 							<Person.NHSNumber>
-								<value root="2.16.840.1.113883.2.1.4.1" extension="9999345201"/>
+								<value root="2.16.840.1.113883.2.1.4.1" extension="${nhsNo}"/>
 								<semanticsText>Person.NHSNumber</semanticsText>
 							</Person.NHSNumber>
 						</queryEvent>
@@ -429,7 +429,7 @@ exports.verifyNhsNoRequest = `<?xml version="1.0" encoding="UTF-8"?>
 			</itk:payloads>
 		</itk:DistributionEnvelope>
 	</soap:Body>
-</soap:Envelope>`;
+</soap:Envelope>`};
 
 exports.verifyNhsNoInvalidResponse = `<?xml version="1.0" encoding="UTF-8"?>
 <!--This example message is provided for illustrative purposes only. It has had no clinical validation. Whilst every effort has been taken to ensure that the examples are consistent with the message specification, where there are conflicts with the written message specification or schema, the specification or schema shall be considered to take precedence-->
