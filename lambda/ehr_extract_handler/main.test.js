@@ -1,6 +1,5 @@
 const ehrExtract = require("./main");
 const given = require('./given')
-const sinon = require('sinon');
 const AWS = require("aws-sdk-mock");
 
 describe("ERROR responses", () => {
