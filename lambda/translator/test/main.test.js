@@ -1,4 +1,4 @@
-const translator = require("../main");
+const main = require("../main");
 const given = require("./given");
 const AWS = require('aws-sdk-mock');
 const sinon = require('sinon');
@@ -6,7 +6,7 @@ const dbQueryHelper = require('../dbQueryHelper');
 
 describe('Broadly speaking, translations work', () => {
     test("we can translate an individual patient", () => {
-        expect(translator.main(given.aNewRecord)).toEqual({
+        expect(main.main(given.aNewRecord)).toEqual({
             status: "COMPLETED",
             correlationId: "101",
             translation: {
@@ -20,7 +20,7 @@ describe('Broadly speaking, translations work', () => {
         })
     });
     test("that when an invalid patient is sent, it causes a failure", () => {
-        expect(translator.main(given.invalidNhsNoRecord)).toEqual({
+        expect(main.main(given.invalidNhsNoRecord)).toEqual({
             status: "FAILED",
             correlationId: "101",
             reason: {
@@ -31,7 +31,7 @@ describe('Broadly speaking, translations work', () => {
         })
     });
     test("that when an invalid patient is sent, it causes a failure again", () => {
-        expect(translator.main(given.invalidNhsNoRecord2)).toEqual({
+        expect(main.main(given.invalidNhsNoRecord2)).toEqual({
             status: "FAILED",
             correlationId: "101",
             reason: {
@@ -48,7 +48,7 @@ describe("Broadly speaking, we integrate our logic with AWS DynamoDB", () => {
 
     beforeAll(async () => {
         AWS.mock('DynamoDB.DocumentClient', 'update', updateSpy);
-        await translator.handler(given.twoNewRecords);
+        await main.handler(given.twoNewRecords);
     });
 
     test("it should update the status to PROCESSING", async () => {
@@ -64,7 +64,7 @@ describe("Broadly speaking, we integrate our logic with AWS DynamoDB", () => {
     test("it should update status to FAILED", async () => {
         var expectedParams = dbQueryHelper.changeStatusTo('FAILED', '101');
 
-        await translator.handler(given.invalidNhsNoRecords);
+        await main.handler(given.invalidNhsNoRecords);
         expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
     });
 
@@ -75,7 +75,7 @@ describe("Broadly speaking, we integrate our logic with AWS DynamoDB", () => {
 
 describe("Broadly speaking, we integrate our logic with AWS proxy", () => {
     test("we can send back an AWS response with the right status code if the translation was successful", async () => {
-        expect(await translator.handler(given.twoNewRecords)).toEqual({
+        expect(await main.handler(given.twoNewRecords)).toEqual({
             statusCode: 200,
             body: '',
             isBase64Encoded: false
@@ -83,21 +83,19 @@ describe("Broadly speaking, we integrate our logic with AWS proxy", () => {
     });
 
     test("we can send back an AWS response with the right status code if the translation was unsuccessful", async () => {
-        expect(await translator.handler(given.invalidNhsNoRecords)).toEqual({
+        expect(await main.handler(given.invalidNhsNoRecords)).toEqual({
             statusCode: 404,
             body: '',
             isBase64Encoded: false
         });
     });
-
-
 });
 
 test("we can translate a group of patients with invalid NHS numbers", async () => {
     var updateSpy = sinon.spy();
     AWS.mock('DynamoDB.DocumentClient', 'update', updateSpy);
 
-    await translator.handler(given.invalidNhsNoRecords);
+    await main.handler(given.invalidNhsNoRecords);
     var expectedParams = dbQueryHelper.changeStatusTo('FAILED', '101');
     expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
 
@@ -137,12 +135,12 @@ xdescribe("Calling lambda", () => {
     beforeAll(() => {
         AWS.mock('DynamoDB.DocumentClient', 'update', updateSpy);
         let event = given.twoNewRecords;
-        result = translator.handler(event);
+        result = main.handler(event);
     });
 
     test("it should translate the record if its given NHS number is valid", () => {
         let event = given.twoNewRecords;
-        result = translator.handler(event);
+        result = main.handler(event);
 
         var expectedParams = dbQueryHelper.changeStatusTo('COMPLETED', '101');
         expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
@@ -150,7 +148,7 @@ xdescribe("Calling lambda", () => {
 
     test("it should not translate the record if its given NHS number is invalid", () => {
         let event = given.invalidNhsNoRecords;
-        result = translator.handler(event);
+        result = main.handler(event);
 
         var expectedParams = dbQueryHelper.changeStatusTo('FAILED', '101');
         expect(updateSpy.calledWith(expectedParams)).toBeTruthy();

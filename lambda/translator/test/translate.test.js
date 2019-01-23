@@ -17,7 +17,6 @@ describe("When Translator is given an event", () => {
       }
     };
 
-    // var expectedParams = dbQueryHelper.changePayloadTo(payload, '101');
     expect(translator.translate(given.aNewRecord)).toEqual(payload);
   });
 });
