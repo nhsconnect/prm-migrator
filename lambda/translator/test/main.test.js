@@ -1,5 +1,5 @@
 const translator = require("../main");
-const given = require("./given")
+const given = require("./given");
 const AWS = require('aws-sdk-mock');
 const sinon = require('sinon');
 const dbQueryHelper = require('../dbQueryHelper');
@@ -11,7 +11,9 @@ describe('Broadly speaking, translations work', () => {
             correlationId: "101",
             translation: {
                 patient: {
-                    nhsNumber: "3474710087"
+                    identifier: {
+                        value: "3474710087"
+                    }
                 }
             },
             original: given.aNewRecord,

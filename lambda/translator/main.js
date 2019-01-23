@@ -24,14 +24,11 @@ exports.handler = async (event, context) => {
 
 exports.main = function (record) {
     if (validator.isNhsNoValid(record) === true) {
+
         return {
             status: "COMPLETED",
             correlationId: "101",
-            translation: {
-                patient: {
-                    nhsNumber: "3474710087"
-                }
-            },
+            translation: translator.translate(record),
             original: record
         }
 

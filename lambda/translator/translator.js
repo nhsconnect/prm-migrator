@@ -23,4 +23,6 @@ exports.translate = function(event){
 
     client.update(dbQueryHelper.changePayloadTo(payload, uuid));
     client.update(dbQueryHelper.changeStatusTo('COMPLETED', uuid));
+
+    return payload;
 };
