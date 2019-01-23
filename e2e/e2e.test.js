@@ -1,4 +1,4 @@
-const Url = require("url");
+const Url = require('url');
 const request = require("request-promise-native");
 const errors = require("request-promise-native/errors");
 const sleep = m => new Promise(r => setTimeout(r, m));
@@ -73,13 +73,10 @@ test.skip("As a supplier, I can see my message has been completed", async () => 
     expect(status).toBe("COMPLETED");
 });
 
-test.skip("As a supplier, I can retrieve my processed ehrExtract in form of a payload", async () => {
+test("As a supplier, I can retrieve my processed ehrExtract in the form of an encoded xml payload", async () => {
     const retrieveUrl = `${PRM_URL.origin}${PRM_URL.pathname}/retrieve/${testUuid}`;
     const retrieveResponse = await request.post(retrieveUrl, {
         resolveWithFullResponse: true
     });
-    
-    const outputXml = `<Patient><identifier><value>1234567890</value></identifier></Patient>`;
-
-    expect(retrieveResponse.body).toBe(outputXml);
+    expect(retrieveResponse.body).toBe(given.processed_ehr_extract_encodedXml);
 });
