@@ -74,24 +74,55 @@ describe("Broadly speaking, we integrate our logic with AWS DynamoDB", () => {
 });
 
 describe("Broadly speaking, we integrate our logic with AWS proxy", () => {
-    test("we can send back an AWS response with the right status code if the translation was successful", async () => {
-        expect(await main.handler(given.twoNewRecords)).toEqual({
-            statusCode: 200,
-            body: '',
-            isBase64Encoded: false
-        });
+
+    var updateSpy = sinon.spy();
+
+    beforeAll(async () => {
+        AWS.mock('DynamoDB.DocumentClient', 'update', updateSpy);
+        await main.handler(given.twoNewRecords);
     });
 
-    test("we can send back an AWS response with the right status code if the translation was unsuccessful", async () => {
-        expect(await main.handler(given.invalidNhsNoRecords)).toEqual({
-            statusCode: 404,
-            body: '',
-            isBase64Encoded: false
-        });
+
+    test("We update the database correctly if the translation was successful", async () => {
+
+        expect(await main.handler(given.oneFailingOneSuccessfulRecord)).toEqual(
+            [{
+                status: "COMPLETED",
+                correlationId: "101",
+                translation: {
+                    patient: {
+                        identifier: {
+                            value: "3474710087"
+                        }
+                    }
+                },
+                original: given.oneFailingOneSuccessfulRecord.Records[0]
+            },
+            {
+                status: "FAILED",
+                correlationId: "102",
+                reason: {
+                    code: "PATIENT_VALIDATION_10001",
+                    message: "Given NHS Number could not be found on PDS"
+                },
+                original: given.oneFailingOneSuccessfulRecord.Records[1]
+            }]
+        );
+
+        const expectedParams1 = dbQueryHelper.changeStatusTo('COMPLETED', '101');
+        const expectedParams2 = dbQueryHelper.changeStatusTo('FAILED', '102');
+
+        // check our mock database
+        expect(updateSpy.calledWith(expectedParams1)).toBeTruthy();
+        expect(updateSpy.calledWith(expectedParams2)).toBeTruthy();
+    });
+
+    afterAll(() => {
+        AWS.restore('DynamoDB.DocumentClient');
     });
 });
 
-test("we can translate a group of patients with invalid NHS numbers", async () => {
+xtest("we can translate a group of patients with invalid NHS numbers", async () => {
     var updateSpy = sinon.spy();
     AWS.mock('DynamoDB.DocumentClient', 'update', updateSpy);
 
@@ -101,30 +132,7 @@ test("we can translate a group of patients with invalid NHS numbers", async () =
 
     var expectedParams2 = dbQueryHelper.changeStatusTo('FAILED', '102');
     expect(updateSpy.calledWith(expectedParams2)).toBeTruthy();
-    // expect(await translator.handler(given.twoNewRecords)).toEqual(
-    //     {
-    //         status: "COMPLETED",
-    //         correlationId: "101",
-    //         translation: {
-    //             patient: {
-    //                 identifier: {
-    //                     value: "3474710087"
-    //                 }
-    //             }
-    //         }
-    //     },
-    //     {
-    //         status: "FAILED",
-    //         correlationId: "101",
-    //         translation: {
-    //             patient: {
-    //                 identifier: {
-    //                     value: "1234567"
-    //                 }
-    //             }
-    //         }
-    //     }
-    // )
+
 });
 
 

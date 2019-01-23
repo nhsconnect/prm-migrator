@@ -259,6 +259,70 @@ exports.invalidNhsNoRecords = {
     ]
 };
 
+exports.oneFailingOneSuccessfulRecord = {
+    "Records": [
+        {
+            "eventID": "1",
+            "eventVersion": "1.0",
+            "dynamodb": {
+                "Keys": {
+                    "PROCESS_ID": {
+                        "S": "101"
+                    }
+                },
+                "NewImage": {
+                    "PROCESS_PAYLOAD": {
+                        "S": `${convertedXmlWtihValidNhsNo}`
+                    },
+                    "PROCESS_STATUS": {
+                        "S": "PROCESSING"
+                    },
+                    "PROCESS_ID": {
+                        "S": "101"
+                    }
+                },
+                "StreamViewType": "NEW_IMAGE",
+                "SequenceNumber": "111",
+                "SizeBytes": 26
+            },
+            "awsRegion": "eu-west-2",
+            "eventName": "INSERT",
+            "eventSourceARN": "arn:aws:dynamodb:eu-west-2:account-id:table/ExampleTableWithStream/stream/2015-06-27T00:48:05.899",
+            "eventSource": "aws:dynamodb"
+        },
+        {
+            "eventID": "2",
+            "eventVersion": "1.0",
+            "dynamodb": {
+                "Keys": {
+                    "PROCESS_ID": {
+                        "S": "102"
+                    }
+                },
+                "NewImage": {
+                    "PROCESS_PAYLOAD": {
+                        "S": `${convertedXmlWtihInvalidNhsNo}`
+                    },
+                    "PROCESS_STATUS": {
+                        "S": "PROCESSING"
+                    },
+                    "PROCESS_ID": {
+                        "S": "102"
+                    }
+                },
+                "StreamViewType": "NEW_IMAGE",
+                "SizeBytes": 28
+            },
+            "awsRegion": "eu-west-2",
+            "eventName": "MODIFY",
+            "eventSourceARN": "arn:aws:dynamodb:eu-west-2:account-id:table/ExampleTableWithStream/stream/2015-06-27T00:48:05.899",
+            "eventSource": "aws:dynamodb"
+        }
+    ]
+};
+
+// PDS test data
+
 exports.verifyNhsNoResponse = `<?xml version="1.0" encoding="UTF-8"?>
 <!--This example message is provided for illustrative purposes only. It has had no clinical validation. Whilst every effort has been taken to ensure that the examples are consistent with the message specification, where there are conflicts with the written message specification or schema, the specification or schema shall be considered to take precedence-->
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:itk="urn:nhs-itk:ns:201005">
