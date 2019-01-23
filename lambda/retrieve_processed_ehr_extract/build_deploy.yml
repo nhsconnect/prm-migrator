@@ -5,6 +5,7 @@ phases:
     commands:
       - apt-get update
       - apt-get install -y jq zip unzip
+      - apt-get install -y nodejs npm
   pre_build:
     commands:
       - export ASSUME_ROLE_NAME=arn:aws:iam::431593652018:role/PASTASLOTHVULGAR
@@ -13,7 +14,8 @@ phases:
   build:
     commands:
       - cd ./lambda/retrieve_processed_ehr_extract
-      - zip ../../retrieve_processed_ehr_extract.zip main.js
+      - npm install
+      - zip ../../retrieve_processed_ehr_extract.zip . -r -x *.test.js -x wallaby.js
       - cd -
       - aws s3 cp retrieve_processed_ehr_extract.zip s3://prm-431593652018-codebuild-lambda-artifact/retrieve_processed_ehr_extract.zip
       - aws lambda update-function-code --region $AWS_REGION --function-name dev-RetrieveProcessedEhrExtract --s3-bucket prm-431593652018-codebuild-lambda-artifact --s3-key retrieve_processed_ehr_extract.zip
