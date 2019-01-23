@@ -2,35 +2,32 @@ const Url = require("url");
 const request = require("request-promise-native");
 const errors = require("request-promise-native/errors");
 const sleep = m => new Promise(r => setTimeout(r, m));
+const given = require('./given');
 
 const PRM_URL = new Url.URL(process.env.PRM_ENDPOINT);
 
 let testUuid;
-const testPayload = `1234567890`;
 
 test("As a supplier, I can send my message and see that it has been accepted", async () => {
     const url = `${PRM_URL.origin}${PRM_URL.pathname}/send`;
 
-    var options = {
+    const options = {
         method: 'POST',
         uri: url,
-        body: JSON.stringify({
-            payload: testPayload
-        }),
+        body: given.tpp_sample_encodedXml,
         resolveWithFullResponse: true
     };
 
     const response = await request.post(options);
 
     expect(response.statusCode).toBe(200);
-    const {uuid, status, payload} = JSON.parse(response.body);
+    const {uuid, status} = JSON.parse(response.body);
     testUuid = uuid;
     expect(uuid).toBeDefined();
     expect(status).toBe("ACCEPTED");
-    expect(payload).toBe(testPayload);
 });
 
-test("As a supplier, I can see my message has been accepted", async () => {
+test.skip("As a supplier, I can see my message has been accepted", async () => {
     const statusUrl = `${PRM_URL.origin}${PRM_URL.pathname}/status/${testUuid}`;
 
     var options = {
@@ -45,7 +42,7 @@ test("As a supplier, I can see my message has been accepted", async () => {
     expect(status).toBe("ACCEPTED");
 });
 
-test("As a supplier, I can see my message is being processed", async () => {
+test.skip("As a supplier, I can see my message is being processed", async () => {
     const statusUrl = `${PRM_URL.origin}${PRM_URL.pathname}/status/${testUuid}`;
 
     var options = {
@@ -61,7 +58,7 @@ test("As a supplier, I can see my message is being processed", async () => {
 });
 
 
-test("As a supplier, I can see my message has been completed", async () => {
+test.skip("As a supplier, I can see my message has been completed", async () => {
     const statusUrl = `${PRM_URL.origin}${PRM_URL.pathname}/status/${testUuid}`;
 
     var options = {
@@ -76,7 +73,7 @@ test("As a supplier, I can see my message has been completed", async () => {
     expect(status).toBe("COMPLETED");
 });
 
-test("As a supplier, I can retrieve my processed ehrExtract in form of a payload", async () => {
+test.skip("As a supplier, I can retrieve my processed ehrExtract in form of a payload", async () => {
     const retrieveUrl = `${PRM_URL.origin}${PRM_URL.pathname}/retrieve/${testUuid}`;
     const retrieveResponse = await request.post(retrieveUrl, {
         resolveWithFullResponse: true
