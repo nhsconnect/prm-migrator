@@ -43,25 +43,32 @@ describe('Broadly speaking, translations work', () => {
     });
 });
 
-xdescribe("Broadly speaking, we integrate our logic with AWS DynamoDB", () => {
-    var updateSpy = sinon.spy();
+describe("Broadly speaking, we integrate our logic with AWS DynamoDB", () => {
+    let updateCallCount = 0;
 
     beforeAll(async () => {
-        AWS.mock('DynamoDB.DocumentClient', 'update', updateSpy);
+        AWS.mock('DynamoDB.DocumentClient', 'update', (params, callback) => {
+           updateCallCount++;
+           callback(null, {}); 
+        });
         await main.handler(given.twoNewRecords);
     });
 
-    test("it should update the status to PROCESSING", async () => {
+    test("it should update the status 6 times", async () => {
+        expect(updateCallCount).toBe(6);
+    });
+
+    xtest("it should update the status to PROCESSING", async () => {
         var expectedParams = dbQueryHelper.changeStatusTo('PROCESSING', '101');
         expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
     });
 
-    test("it should update status to COMPLETED", async () => {
+    xtest("it should update status to COMPLETED", async () => {
         var expectedParams = dbQueryHelper.changeStatusTo('COMPLETED', '101');
         expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
     });
 
-    test("it should update status to FAILED", async () => {
+    xtest("it should update status to FAILED", async () => {
         var expectedParams = dbQueryHelper.changeStatusTo('FAILED', '101');
 
         await main.handler(given.invalidNhsNoRecords);
