@@ -8,6 +8,7 @@ const dbQueryHelper = require('./dbQueryHelper');
 exports.handler = async (event, context) => {
     const client = new AWS.DynamoDB.DocumentClient();
     let translatedRecords = [];
+    console.log('Processing started');
 
     event.Records.forEach(async (record) => {
         const uuid = record.dynamodb.Keys.PROCESS_ID.S;
@@ -21,7 +22,9 @@ exports.handler = async (event, context) => {
 
         await client.update(dbQueryHelper.changePayloadTo(translation, translationResult.correlationId)).promise();
         await client.update(dbQueryHelper.changeStatusTo(status, translationResult.correlationId)).promise();
+        console.log('Processing single record completed');
     });
+    console.log('Processing complete');
     return translatedRecords;
 };
 
