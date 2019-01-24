@@ -1,12 +1,53 @@
 const convert = require('xml-js');
+const https = require('https');
 
 const NHS_NUMBER_VALIDITY_MAP = {
     "9999345201": true,
     "444444444444": false,
 };
 
+
+
 exports.verifyNhsNumber = async function (nhsNumber) {
-    return NHS_NUMBER_VALIDITY_MAP[nhsNumber] || false;
+
+
+    return new Promise((resolve, reject) => {
+
+        let response = false
+        // send the request
+        const options = {
+            hostname: 'www.pds.com',
+            port: 443,
+            path: '/',
+            method: 'GET'
+        };
+
+        function callback(error) {
+            // return the result
+            if (error) {
+                // if it errors, look it up in local database
+                resolve(NHS_NUMBER_VALIDITY_MAP[nhsNumber] || false)
+            }
+            return resolve(response)
+        }
+
+        const req = https.request(options, (res) => {
+            console.log('statusCode:', res.statusCode);
+            console.log('headers:', res.headers);
+
+            res.on('data', (d) => {
+                // parse the response
+                callback(true)
+            });
+        });
+
+        req.on('error', (e) => {
+            // parse the response
+            callback(true)
+        });
+        req.end();
+
+    });
 };
 
 // return new Promise((resolve, reject) => {
