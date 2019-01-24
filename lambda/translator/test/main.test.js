@@ -75,7 +75,7 @@ describe("Broadly speaking, we integrate our logic with AWS DynamoDB", () => {
         expect(updateSpy.calledWith(expectedParams)).toBeTruthy();
     });
 
-    afterAll(async () => {
+    afterAll(() => {
         AWS.restore('DynamoDB.DocumentClient');
     });
 });
