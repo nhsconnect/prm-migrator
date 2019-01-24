@@ -1,4 +1,4 @@
-const convert = require('xml-js');
+const convert = require('fast-xml-parser');
 const https = require('https');
 const NHS_NUMBER_VALIDITY_MAP = {
     "9999345201": true,
@@ -54,8 +54,8 @@ exports.verifyNhsNumber = async function (nhsNumber) {
 };
 
 function getNHSNumberFromRequest(queryXml) {
-    const options = {compact: true, spaces: 4};
-    const jsonQuery = JSON.parse(convert.xml2json(queryXml, options));
+    // const options = {compact: true, spaces: 4};
+    const jsonQuery = convert.parse(queryXml);
     return jsonQuery['soap:Envelope']['soap:Body']
         ['itk:DistributionEnvelope']['itk:payloads']['itk:payload']
         ['verifyNHSNumberRequest-v1-0']['queryEvent']['Person.NHSNumber']
@@ -63,12 +63,12 @@ function getNHSNumberFromRequest(queryXml) {
 };
 
 function getNHSNumberFromResponse(queryXml) {
-    const options = {compact: true, spaces: 4};
-    const jsonQuery = JSON.parse(convert.xml2json(queryXml, options));
+    // const options = {compact: true, spaces: 4};
+    const jsonQuery = convert.parse(queryXml, {ignoreAttributes : false});
     return jsonQuery['soap:Envelope']['soap:Body']
         ['itk:DistributionEnvelope']['itk:payloads']['itk:payload']
         ['verifyNHSNumberResponse-v1-0']['component']['validIdentifier']
-        ['subject']['patient']['id']['_attributes']['extension'];
+        ['subject']['patient']['id']['@_extension'];
 };
 
 function generateResponse(nhsNumber) {
