@@ -1,6 +1,5 @@
 const convert = require('xml-js');
 const https = require('https');
-
 const NHS_NUMBER_VALIDITY_MAP = {
     "9999345201": true,
     "444444444444": false,
@@ -9,9 +8,6 @@ const NHS_NUMBER_VALIDITY_MAP = {
 exports.verifyNhsNumber = async function (nhsNumber) {
 
     return new Promise((resolve, reject) => {
-
-        // curl -X POST -H SOAPAction:urn:nhs-itk:services:201005:getNHSNumber-v1-0 -H content-type:text/xml -E p12_filename.p12:Password -d @getNHSNumber.xml -k https://192.168.54.6/smsp/pds
-
         let response = false
         // send the request
         const options = {
@@ -25,11 +21,12 @@ exports.verifyNhsNumber = async function (nhsNumber) {
             }
         };
 
-        function callback(error) {
+        function callback(error, responseXml) {
             // return the result
             if (error) {
                 // if it errors, look it up in local database
-                resolve(NHS_NUMBER_VALIDITY_MAP[nhsNumber] || false)
+                const nhsNo = getNHSNumberFromResponse(responseXml);
+                resolve(NHS_NUMBER_VALIDITY_MAP[nhsNo] || false)
             }
             return resolve(response)
         }
@@ -40,13 +37,13 @@ exports.verifyNhsNumber = async function (nhsNumber) {
 
             res.on('data', (d) => {
                 // parse the response
-                callback(true)
+                callback(true, generateResponse(nhsNumber))
             });
         });
 
         req.on('error', (e) => {
             // parse the response
-            callback(true)
+            callback(true, generateResponse(nhsNumber))
         });
 
         req.write(generateRequest(nhsNumber));
@@ -56,13 +53,22 @@ exports.verifyNhsNumber = async function (nhsNumber) {
     });
 };
 
-function getNHSNumber(queryXml) {
+function getNHSNumberFromRequest(queryXml) {
     const options = {compact: true, spaces: 4};
     const jsonQuery = JSON.parse(convert.xml2json(queryXml, options));
     return jsonQuery['soap:Envelope']['soap:Body']
         ['itk:DistributionEnvelope']['itk:payloads']['itk:payload']
         ['verifyNHSNumberRequest-v1-0']['queryEvent']['Person.NHSNumber']
         ['value']['_attributes']['extension'];
+};
+
+function getNHSNumberFromResponse(queryXml) {
+    const options = {compact: true, spaces: 4};
+    const jsonQuery = JSON.parse(convert.xml2json(queryXml, options));
+    return jsonQuery['soap:Envelope']['soap:Body']
+        ['itk:DistributionEnvelope']['itk:payloads']['itk:payload']
+        ['verifyNHSNumberResponse-v1-0']['component']['validIdentifier']
+        ['subject']['patient']['id']['_attributes']['extension'];
 };
 
 function generateResponse(nhsNumber) {
