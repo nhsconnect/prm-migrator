@@ -18,7 +18,4 @@ exports.isNhsNoValid = function (record) {
 function parseResult(xml) {
     const options = {compact: true, spaces: 4};
     const jsonQuery = JSON.parse(convert.xml2json(xml, options));
-
-    console.log(jsonQuery)
-
 };
