@@ -5,16 +5,19 @@ const NHS_NUMBER_VALIDITY_MAP = {
     "444444444444": false,
 };
 
-exports.verifyNhsNumber = async function (queryXml) {
-    return new Promise((resolve, reject) => {
-        const nhsNumber = getNHSNumber(queryXml);
-        if (NHS_NUMBER_VALIDITY_MAP[nhsNumber]) {
-            resolve(successfulPayload);
-        } else {
-            reject(failedPayload);
-        }
-    });
+exports.verifyNhsNumber = async function (nhsNumber) {
+    return NHS_NUMBER_VALIDITY_MAP[nhsNumber] || false;
 };
+
+// return new Promise((resolve, reject) => {
+//     const nhsNumber = getNHSNumber(queryXml);
+//     if (NHS_NUMBER_VALIDITY_MAP[nhsNumber]) {
+//         resolve(successfulPayload);
+//     } else {
+//         reject(failedPayload);
+//     }
+// });
+
 
 function getNHSNumber(queryXml) {
     const options = {compact: true, spaces: 4};
