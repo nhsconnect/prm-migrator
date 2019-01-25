@@ -12,6 +12,7 @@
   "devDependencies": {
     "jest": "^23.6.0",
     "jest-cli": "^23.6.0",
+    "jest-matcher-one-of": "^1.0.0",
     "request-promise-native": "^1.0.5"
   },
   "dependencies": {

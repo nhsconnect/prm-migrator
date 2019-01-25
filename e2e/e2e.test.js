@@ -2,18 +2,12 @@ const Url = require('url');
 const request = require("request-promise-native");
 const errors = require("request-promise-native/errors");
 const sleep = m => new Promise(r => setTimeout(r, m));
+require('jest-matcher-one-of');
 const given = require('./given');
 
 const PRM_URL = new Url.URL(process.env.PRM_ENDPOINT);
 
 let testUuid;
-
-// call /send , get uuid
-// call /status given uuid repeatedly
-//      if status === completed
-//          call /retrieve
-//      else
-//          ?
 
 test("As a supplier, I can successfully translate a GP2GP message", async () => {
     // send 
@@ -38,59 +32,32 @@ test("As a supplier, I can successfully translate a GP2GP message", async () => 
 
     await sleep(1000)
 
+    //status
+    const statusUrl = `${PRM_URL.origin}${PRM_URL.pathname}/status/${testUuid}`;
+
+    var options2 = {
+        method: 'GET',
+        uri: statusUrl,
+        resolveWithFullResponse: true
+    };
+
+    let returnedStatus;
+
+    do {
+        const response = await request.get(options2);
+        const body = JSON.parse(response.body);
+        returnedStatus = body.status;
+        expect(returnedStatus).toBeOneOf(["PROCESSING", "ACCEPTED", "COMPLETED"]);
+    } while (returnedStatus !== "COMPLETED")
+
     // retrieve 
     const retrieveUrl = `${PRM_URL.origin}${PRM_URL.pathname}/retrieve/${testUuid}`;
     const retrieveResponse = await request.post(retrieveUrl, {
         resolveWithFullResponse: true
     });
-    console.log(retrieveResponse.body)
     expect(retrieveResponse.body).toBe(given.processed_ehr_extract_encodedXml);
 
 });
 
-test.skip("As a supplier, I can see my message has been accepted", async () => {
-    const statusUrl = `${PRM_URL.origin}${PRM_URL.pathname}/status/${testUuid}`;
 
-    var options = {
-        method: 'GET',
-        uri: statusUrl,
-        resolveWithFullResponse: true
-    };
-
-    const response = await request.get(options);
-
-    const { status } = JSON.parse(response.body);
-    expect(status).toBe("ACCEPTED");
-});
-
-test.skip("As a supplier, I can see my message is being processed", async () => {
-    const statusUrl = `${PRM_URL.origin}${PRM_URL.pathname}/status/${testUuid}`;
-
-    var options = {
-        method: 'GET',
-        uri: statusUrl,
-        resolveWithFullResponse: true
-    };
-
-    const response = await request.get(options);
-
-    const { status } = JSON.parse(response.body);
-    expect(status).toBe("PROCESSING");
-});
-
-
-test.skip("As a supplier, I can see my message has been completed", async () => {
-    const statusUrl = `${PRM_URL.origin}${PRM_URL.pathname}/status/${testUuid}`;
-
-    var options = {
-        method: 'GET',
-        uri: statusUrl,
-        resolveWithFullResponse: true
-    };
-
-    const response = await request.get(options);
-
-    const { status } = JSON.parse(response.body);
-    expect(status).toBe("COMPLETED");
-});
 
