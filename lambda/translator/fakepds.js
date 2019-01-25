@@ -2,6 +2,7 @@ const convert = require('fast-xml-parser');
 const https = require('https');
 const NHS_NUMBER_VALIDITY_MAP = {
     "9999345201": true,
+    "3474710087": true,
     "444444444444": false,
 };
 
