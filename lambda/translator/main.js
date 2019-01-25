@@ -8,7 +8,7 @@ const dbQueryHelper = require('./dbQueryHelper');
 exports.handler = async (event, context) => {
     const client = new AWS.DynamoDB.DocumentClient();
     let translatedRecords = [];
-    console.log('Processing started');
+    console.log('Translator: Processing started');
 
     await asyncForEach(event.Records, async (record) => {
         if (record.eventName === 'INSERT') {
@@ -37,6 +37,8 @@ async function asyncForEach(array, callback) {
 }
 
 exports.main = function (record) {
+    console.log("Translate: record ------->", record);
+    console.log("Translate: ", validator.isNhsNoValid(record))
     if (validator.isNhsNoValid(record) === true) {
         return {
             status: "COMPLETED",

@@ -27,6 +27,8 @@ test("As a supplier, I can send my message and see that it has been accepted", a
     console.log(testUuid);
     expect(uuid).toBeDefined();
     expect(status).toBe("ACCEPTED");
+
+    sleep(()=>{}, 8000);
 });
 
 test.skip("As a supplier, I can see my message has been accepted", async () => {
