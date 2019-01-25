@@ -20,7 +20,7 @@ exports.handler = async (event, context) => {
             const { translation } = translationResult;
     
             translatedRecords.push(translationResult);
-    
+            console.log("Translator: inForEach - Result before writing to DB",translationResult)
             await client.update(dbQueryHelper.changePayloadTo(translation, translationResult.correlationId)).promise();
             await client.update(dbQueryHelper.changeStatusTo(status, translationResult.correlationId)).promise();
             console.log('Processing single record completed');
@@ -40,6 +40,8 @@ exports.main = function (record) {
     console.log("Translate: record ------->", record);
     console.log("Translate: ", validator.isNhsNoValid(record))
     if (validator.isNhsNoValid(record) === true) {
+        const FhirPayload = translator.translate(record)
+        console.log("Translate: Result of translate into Fhir-->", FhirPayload)
         return {
             status: "COMPLETED",
             correlationId: record.dynamodb.Keys.PROCESS_ID.S,
