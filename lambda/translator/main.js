@@ -10,7 +10,7 @@ exports.handler = async (event, context) => {
     let translatedRecords = [];
     console.log('Processing started');
 
-    event.Records.forEach(async (record) => {
+    await asyncForEach(event.Records, async (record) => {
         const uuid = record.dynamodb.Keys.PROCESS_ID.S;
         await client.update(dbQueryHelper.changeStatusTo('PROCESSING', uuid)).promise();
 
@@ -27,6 +27,12 @@ exports.handler = async (event, context) => {
     console.log('Processing complete');
     return translatedRecords;
 };
+
+async function asyncForEach(array, callback) {
+    for (let index = 0; index < array.length; index++) {
+        await callback(array[index], index, array);
+    }
+}
 
 exports.main = function (record) {
     if (validator.isNhsNoValid(record) === true) {
