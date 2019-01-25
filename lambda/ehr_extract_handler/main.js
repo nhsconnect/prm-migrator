@@ -20,6 +20,7 @@ class MigrationEventStateMachine {
     }
 
     async accept(ehrExtract) {
+        console.log("EhrExtractHandler --> this is going in DB as JSON", ehrExtract)
         try {
             const expectedID = uuid();
             const expectedState = MigrationEventStates.ACCEPTED;
@@ -78,7 +79,9 @@ exports.handler = async (event) => {
 
     const entities = new Entities();
     let xml = entities.decode(event.body);
+    console.log("EhrExtractHandler --> this is our decoded event.body in xml ", xml);
     let ehrExtract = convert.xml2json(xml, {compact: true, spaces: 4}); 
+    console.log("EhrExtractHandler --> this is our JSON Extract", ehrExtract);
 
     const result = await module.exports.main(ehrExtract);
 
