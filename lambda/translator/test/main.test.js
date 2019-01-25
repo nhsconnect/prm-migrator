@@ -43,7 +43,27 @@ describe('Broadly speaking, translations work', () => {
     });
 });
 
-describe("Broadly speaking, we integrate our logic with AWS DynamoDB", () => {
+describe("Broadly speaking, we integrate our logic with AWS DynamoDB and we ignore MODIFY events", () => {
+    let updateCallCount = 0;
+
+    beforeAll(async () => {
+        AWS.mock('DynamoDB.DocumentClient', 'update', (params, callback) => {
+           updateCallCount++;
+           callback(null, {}); 
+        });
+        await main.handler(given.twoModifiedRecords);
+    });
+
+    test("it should not update the status at all", async () => {
+        expect(updateCallCount).toBe(0);
+    });
+
+    afterAll(() => {
+        AWS.restore('DynamoDB.DocumentClient');
+    });
+});
+
+describe("Broadly speaking, we integrate our logic with AWS DynamoDB for INSERT events only", () => {
     let updateCallCount = 0;
 
     beforeAll(async () => {
