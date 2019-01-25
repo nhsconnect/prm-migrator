@@ -15,7 +15,7 @@ let testUuid;
 //      else
 //          ?
 
-test("As a supplier, I can send my message and see that it has been accepted", async () => {
+test("As a supplier, I can successfully translate a GP2GP message", async () => {
     // send 
     const url = `${PRM_URL.origin}${PRM_URL.pathname}/send`;
 

@@ -26,8 +26,6 @@ exports.main = async function (dbClient, uuid) {
 
         let extractXml = convert.json2xml(result.Item.PROCESS_PAYLOAD, { compact: true, spaces: 4 });
         let encodedXml = entities.encode(extractXml);
-        console.log('Retrieve Processed EHR Extract: encoded XML', encodedXml);
-        console.log('Retrieve Processed EHR Extract: extract XML', extractXml)
         return encodedXml;
     } catch (err) {
         return "Entry not found";

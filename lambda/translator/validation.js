@@ -3,8 +3,6 @@ const convert = require('xml-js');
 const util = require('util');
 
 exports.isNhsNoValid = function (record) {
-    console.log('record------------>>', util.inspect(record, {showHidden: false, depth: null}));
-    console.log('expect this to be extract data', record.dynamodb.NewImage.PROCESS_PAYLOAD);
     let extractData = JSON.parse(record.dynamodb.NewImage.PROCESS_PAYLOAD.S);
     let nhsNumber = extractData.EhrExtract.recordTarget.patient.id._attributes.extension;
 
