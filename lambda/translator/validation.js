@@ -2,6 +2,7 @@ const fakePDS = require('./fakepds');
 const convert = require('xml-js');
 
 exports.isNhsNoValid = function (record) {
+    console.log('record------------>>', record);
     let extractData = JSON.parse(record.dynamodb.NewImage.PROCESS_PAYLOAD.S);
     let nhsNumber = extractData.EhrExtract.recordTarget.patient.id._attributes.extension;
 
