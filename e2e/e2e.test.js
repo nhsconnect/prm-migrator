@@ -4,68 +4,65 @@ const errors = require("request-promise-native/errors");
 const sleep = m => new Promise(r => setTimeout(r, m));
 require('jest-matcher-one-of');
 const given = require('./given');
-const prefix = "«««E2Etest««« ";
 
-const PRM_URL = new Url.URL(process.env.PRM_ENDPOINT);
+describe("As a supplier, I can successfully translate a GP2GP message", async () => {
 
-let testUuid;
+    const PRM_URL = new Url.URL(process.env.PRM_ENDPOINT);
 
-test("As a supplier, I can successfully translate a GP2GP message", async () => {
-    // send 
-    const url = `${PRM_URL.origin}${PRM_URL.pathname}/send`;
-    console.log(`${prefix}${url}`);
+    describe("I can successfully send a payload", async () => {
 
-    const options = {
-        method: 'POST',
-        uri: url,
-        body: given.tpp_sample_encodedXml,
-        resolveWithFullResponse: true
-    };
+        let postPayloadResponse;
+        let testUuid;
 
-    const response = await request.post(options);
+        beforeAll(async () => {
+            const url = `${PRM_URL.origin}${PRM_URL.pathname}/send`;
 
-    expect(response.statusCode).toBe(200);
-    const { uuid, status } = JSON.parse(response.body);
-    testUuid = uuid;
+            const options = {
+                method: 'POST',
+                uri: url,
+                body: given.tpp_sample_encodedXml,
+                resolveWithFullResponse: true
+            };
 
-    console.log(`${prefix}${testUuid}`);
-    expect(uuid).toBeDefined();
-    expect(status).toBe("ACCEPTED");
+            postPayloadResponse = await request.post(options);
+        });
 
-    await sleep(3000);
+        it("it should return an ok response", () => {
+            expect(postPayloadResponse.statusCode).toBe(200);
+        });
 
-    /*
-    //status
-    const statusUrl = `${PRM_URL.origin}${PRM_URL.pathname}/status/${testUuid}`;
-    console.log(`${prefix}${statusUrl}`);
+        it("it should return a uuid", () => {
+            const { uuid } = JSON.parse(postPayloadResponse.body);
+            testUuid = uuid;
+            expect(testUuid).toBeDefined();    
+        });
 
-    var options2 = {
-        method: 'GET',
-        uri: statusUrl,
-        resolveWithFullResponse: true
-    };
+        it("it should return an ACCEPTED status", () => {
+            const { status } = JSON.parse(postPayloadResponse.body);
+            expect(status).toBe("ACCEPTED");
+        });
 
-    let returnedStatus;
+        describe("I can see the payload has been successfully processed", async () => {
 
-    do {
-        console.log(`${prefix}_start_doing`);
-        const response = await request.get(options2);
-        const body = JSON.parse(response.body);
-        returnedStatus = body.status;
-        console.log(`${prefix}${returnedStatus}`);
-        expect(returnedStatus).toBeOneOf(["PROCESSING", "ACCEPTED", "COMPLETED"]);
-    } while (returnedStatus !== "COMPLETED")
-    */
+            beforeAll(async () => {
+                await sleep(3000);
+            });
 
-    // retrieve 
-    const retrieveUrl = `${PRM_URL.origin}${PRM_URL.pathname}/retrieve/${testUuid}`;
-    console.log(`${prefix}${retrieveUrl}`);
-    const retrieveResponse = await request.post(retrieveUrl, {
-        resolveWithFullResponse: true
-    });
-    console.log(`${prefix}${retrieveResponse.body}`);
-    expect(retrieveResponse.body).toBe(given.processed_ehr_extract_encodedXml);
+            describe("I can retrieve the processed payload", async () => {
+
+                let retrievePayloadResponse;
+
+                beforeAll(async () => {
+                    const retrieveUrl = `${PRM_URL.origin}${PRM_URL.pathname}/retrieve/${testUuid}`;
+                    retrievePayloadResponse = await request.post(retrieveUrl, {
+                        resolveWithFullResponse: true
+                    });
+                });
+
+                it("it should return the processed payload", () => {
+                    expect(retrievePayloadResponse.body).toBe(given.processed_ehr_extract_encodedXml);
+                });
+            })
+        })
+    })
 });
-
-
-
