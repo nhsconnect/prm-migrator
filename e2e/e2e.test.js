@@ -30,8 +30,6 @@ test("As a supplier, I can successfully translate a GP2GP message", async () => 
     expect(uuid).toBeDefined();
     expect(status).toBe("ACCEPTED");
 
-    await sleep(1000)
-
     //status
     const statusUrl = `${PRM_URL.origin}${PRM_URL.pathname}/status/${testUuid}`;
 
