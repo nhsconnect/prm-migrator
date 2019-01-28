@@ -9,7 +9,7 @@ const PRM_URL = new Url.URL(process.env.PRM_ENDPOINT);
 
 let testUuid;
 
-test("As a supplier, I can successfully translate a GP2GP message", async () => {
+test("As a supplier, I can successfully translate a GP2GP message", async (done) => {
     // send 
     const url = `${PRM_URL.origin}${PRM_URL.pathname}/send`;
 
@@ -55,6 +55,7 @@ test("As a supplier, I can successfully translate a GP2GP message", async () => 
     });
     expect(retrieveResponse.body).toBe(given.processed_ehr_extract_encodedXml);
 
+    done();
 });
 
 
