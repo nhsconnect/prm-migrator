@@ -32,6 +32,8 @@ test("As a supplier, I can successfully translate a GP2GP message", async () => 
     expect(uuid).toBeDefined();
     expect(status).toBe("ACCEPTED");
 
+    await sleep(3000);
+
     /*
     //status
     const statusUrl = `${PRM_URL.origin}${PRM_URL.pathname}/status/${testUuid}`;
@@ -53,6 +55,7 @@ test("As a supplier, I can successfully translate a GP2GP message", async () => 
         console.log(`${prefix}${returnedStatus}`);
         expect(returnedStatus).toBeOneOf(["PROCESSING", "ACCEPTED", "COMPLETED"]);
     } while (returnedStatus !== "COMPLETED")
+    */
 
     // retrieve 
     const retrieveUrl = `${PRM_URL.origin}${PRM_URL.pathname}/retrieve/${testUuid}`;
@@ -62,7 +65,6 @@ test("As a supplier, I can successfully translate a GP2GP message", async () => 
     });
     console.log(`${prefix}${retrieveResponse.body}`);
     expect(retrieveResponse.body).toBe(given.processed_ehr_extract_encodedXml);
-    */
 });
 
 
