@@ -32,6 +32,7 @@ test("As a supplier, I can successfully translate a GP2GP message", async () => 
     expect(uuid).toBeDefined();
     expect(status).toBe("ACCEPTED");
 
+    /*
     //status
     const statusUrl = `${PRM_URL.origin}${PRM_URL.pathname}/status/${testUuid}`;
     console.log(`${prefix}${statusUrl}`);
@@ -61,6 +62,7 @@ test("As a supplier, I can successfully translate a GP2GP message", async () => 
     });
     console.log(`${prefix}${retrieveResponse.body}`);
     expect(retrieveResponse.body).toBe(given.processed_ehr_extract_encodedXml);
+    */
 });
 
 
