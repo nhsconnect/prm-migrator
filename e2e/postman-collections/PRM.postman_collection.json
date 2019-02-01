@@ -56,6 +56,51 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "2. Retrieve status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0997e458-6af0-471d-9ab7-a529301b73e9",
+						"exec": [
+							"pm.test(\"It should return an OK response\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"It should return a status property\", function () {",
+							"    pm.response.to.have.jsonBody(\"status\");",
+							"});",
+							"",
+							"pm.test(\"It should return an COMPLETED status\", function () {",
+							"    var response = pm.response.json();",
+							"    pm.expect(response.status).to.eql(\"COMPLETED\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{PRM_ENDPOINT}}/status/{{test-uuid}}",
+					"host": [
+						"{{PRM_ENDPOINT}}"
+					],
+					"path": [
+						"status",
+						"{{test-uuid}}"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
