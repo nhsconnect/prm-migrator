@@ -1,151 +1,157 @@
 {
 	"info": {
-		"_postman_id": "9407ba95-6366-48a0-bfdd-c5672c294d6b",
+		"_postman_id": "480d0372-d5d6-4e12-b88d-9782aa93fb57",
 		"name": "PRM",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "1. Upload payload",
-			"event": [
+			"name": "End to end happy path",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"id": "40bf8f65-987c-4d82-8ce0-dbcb5c844e9a",
-						"exec": [
-							"pm.environment.unset(\"test-uuid\");",
-							"pm.test(\"It should return an OK response\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"pm.test(\"It should return a status property\", function () {",
-							"    pm.response.to.have.jsonBody(\"status\");",
-							"});",
-							"",
-							"pm.test(\"It should return an ACCEPTED status\", function () {",
-							"    var response = pm.response.json();",
-							"    pm.expect(response.status).to.eql(\"ACCEPTED\");",
-							"});",
-							"",
-							"pm.test(\"It should return a UUID\", function () {",
-							"    var response = pm.response.json();",
-							"    pm.expect(response).to.have.property(\"uuid\");",
-							"    pm.environment.set(\"test-uuid\", response.uuid);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
+					"name": "1. Upload payload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "40bf8f65-987c-4d82-8ce0-dbcb5c844e9a",
+								"exec": [
+									"pm.environment.unset(\"test-uuid\");",
+									"pm.test(\"It should return an OK response\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"It should return a status property\", function () {",
+									"    pm.response.to.have.jsonBody(\"status\");",
+									"});",
+									"",
+									"pm.test(\"It should return an ACCEPTED status\", function () {",
+									"    var response = pm.response.json();",
+									"    pm.expect(response.status).to.eql(\"ACCEPTED\");",
+									"});",
+									"",
+									"pm.test(\"It should return a UUID\", function () {",
+									"    var response = pm.response.json();",
+									"    pm.expect(response).to.have.property(\"uuid\");",
+									"    pm.environment.set(\"test-uuid\", response.uuid);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{ehr-extract}}"
+						},
+						"url": {
+							"raw": "{{PRM_ENDPOINT}}/send",
+							"host": [
+								"{{PRM_ENDPOINT}}"
+							],
+							"path": [
+								"send"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Retrieve status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0997e458-6af0-471d-9ab7-a529301b73e9",
+								"exec": [
+									"pm.test(\"It should return an OK response\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"It should return a status property\", function () {",
+									"    pm.response.to.have.jsonBody(\"status\");",
+									"});",
+									"",
+									"pm.test(\"It should return a valid status\", function () {",
+									"    var response = pm.response.json();",
+									"    if (response.process_status !== \"COMPLETED\"){",
+									"        postman.setNextRequest(\"2. Retrieve status\");",
+									"    }",
+									"    pm.expect(response.process_status).to.be.oneOf([\"COMPLETED\", \"PROCESSING\", \"ACCEPTED\"]);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PRM_ENDPOINT}}/status/{{test-uuid}}",
+							"host": [
+								"{{PRM_ENDPOINT}}"
+							],
+							"path": [
+								"status",
+								"{{test-uuid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. Retrieve payload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ea65207c-1491-4f97-98c7-2a6343cefa85",
+								"exec": [
+									"pm.test(\"It should return an OK response\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"It should return a translated message\", function () {",
+									"    var response = pm.response.text();",
+									"    pm.expect(response).to.eql(pm.environment.get(\"expected-payload\"));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PRM_ENDPOINT}}/retrieve/{{test-uuid}}",
+							"host": [
+								"{{PRM_ENDPOINT}}"
+							],
+							"path": [
+								"retrieve",
+								"{{test-uuid}}"
+							]
+						}
+					},
+					"response": []
 				}
 			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{{ehr-extract}}"
-				},
-				"url": {
-					"raw": "{{PRM_ENDPOINT}}/send",
-					"host": [
-						"{{PRM_ENDPOINT}}"
-					],
-					"path": [
-						"send"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "2. Retrieve status",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "0997e458-6af0-471d-9ab7-a529301b73e9",
-						"exec": [
-							"pm.test(\"It should return an OK response\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"pm.test(\"It should return a status property\", function () {",
-							"    pm.response.to.have.jsonBody(\"status\");",
-							"});",
-							"",
-							"pm.test(\"It should return a valid status\", function () {",
-							"    var response = pm.response.json();",
-							"    if (response.status !== \"COMPLETED\"){",
-							"        postman.setNextRequest(\"2. Retrieve status\");",
-							"    }",
-							"    pm.expect(response.status).to.be.oneOf([\"COMPLETED\", \"PROCESSING\", \"ACCEPTED\"]);",
-							"});",
-							"",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "{{PRM_ENDPOINT}}/status/{{test-uuid}}",
-					"host": [
-						"{{PRM_ENDPOINT}}"
-					],
-					"path": [
-						"status",
-						"{{test-uuid}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "3. Retrieve payload",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "ea65207c-1491-4f97-98c7-2a6343cefa85",
-						"exec": [
-							"pm.test(\"It should return an OK response\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"pm.test(\"It should return a translated message\", function () {",
-							"    var response = pm.response.text();",
-							"    pm.expect(response).to.eql(pm.environment.get(\"expected-payload\"));",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "{{PRM_ENDPOINT}}/retrieve/{{test-uuid}}",
-					"host": [
-						"{{PRM_ENDPOINT}}"
-					],
-					"path": [
-						"retrieve",
-						"{{test-uuid}}"
-					]
-				}
-			},
-			"response": []
+			"description": "Upload payload, check status through to completion, then retrieve translated payload."
 		}
 	]
 }
