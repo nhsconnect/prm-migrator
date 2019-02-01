@@ -72,10 +72,15 @@
 							"    pm.response.to.have.jsonBody(\"status\");",
 							"});",
 							"",
-							"pm.test(\"It should return an COMPLETED status\", function () {",
+							"pm.test(\"It should return a valid status\", function () {",
 							"    var response = pm.response.json();",
-							"    pm.expect(response.status).to.eql(\"COMPLETED\");",
-							"});"
+							"    if (response.status !== \"COMPLETED\"){",
+							"        postman.setNextRequest(\"2. Retrieve status\");",
+							"    }",
+							"    pm.expect(response.status).to.be.oneOf([\"COMPLETED\", \"PROCESSING\", \"ACCEPTED\"]);",
+							"});",
+							"",
+							""
 						],
 						"type": "text/javascript"
 					}
