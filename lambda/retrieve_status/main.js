@@ -47,20 +47,6 @@ class ProcessStatusWrapper {
         
         return result;
     }
-
-    async update(uuid, status) {
-        return await this.dbClient.update({
-            TableName: "PROCESS_STORAGE",
-            Key: {
-                "PROCESS_ID": uuid
-            },
-            UpdateExpression: "set PROCESS_STATUS = :p",
-            ExpressionAttributeValues: {
-                ":p": status,
-            },
-            ReturnValues: "UPDATED_NEW"
-        }).promise();
-    }
 }
 
 exports.handler = async (event, context) => {

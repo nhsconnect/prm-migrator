@@ -1,16 +1,13 @@
 const retrieveStatus = require("./main");
 var AWS = require('aws-sdk-mock');
+const ProcessStatusMessage = require('./constants').ProcessStatusMessage;
 
 describe("When asked for a status given a UUID, and the payload is not yet being processed", () => {
     let result;
 
     beforeAll(async () => {
         AWS.mock('DynamoDB.DocumentClient', 'get', function (params, callback){
-            callback(null, {Item: {PROCESS_STATUS: 'ACCEPTED'}});
-          });
-
-          AWS.mock('DynamoDB.DocumentClient', 'update', function (params, callback){
-            callback(null, {Item: {PROCESS_STATUS: 'ACCEPTED'}});
+            callback(null, {Item: {PROCESS_STATUS: ProcessStatusMessage.ACCEPTED}});
           });
 
         let event = {pathParameters: {uuid: "7"}};
@@ -22,7 +19,7 @@ describe("When asked for a status given a UUID, and the payload is not yet being
     });
 
     test("It should return ACCEPTED status", async () => {
-        expect(result.body).toBe('{"status":"ACCEPTED"}');
+        expect(result.body).toBe(`{"status":"${ProcessStatusMessage.ACCEPTED}"}`);
     });
 
     afterAll(() => {
@@ -35,11 +32,7 @@ describe("When asked for a status given a UUID, and the payload is being process
 
     beforeAll(async () => {
         AWS.mock('DynamoDB.DocumentClient', 'get', function (params, callback){
-            callback(null, {Item: {PROCESS_STATUS: 'PROCESSING'}});
-          });
-
-          AWS.mock('DynamoDB.DocumentClient', 'update', function (params, callback){
-            callback(null, {Item: {PROCESS_STATUS: 'PROCESSING'}});
+            callback(null, {Item: {PROCESS_STATUS: ProcessStatusMessage.PROCESSING}});
           });
 
         let event = {pathParameters: {uuid: "7"}};
@@ -51,7 +44,7 @@ describe("When asked for a status given a UUID, and the payload is being process
     });
 
     test("It should return PROCESSING status", async () => {
-        expect(result.body).toBe('{"status":"PROCESSING"}');
+        expect(result.body).toBe(`{"status":"${ProcessStatusMessage.PROCESSING}"}`);
     });
 
     afterAll(() => {
@@ -64,11 +57,7 @@ describe("When asked for a status given a UUID, and the payload has been process
 
     beforeAll(async () => {
         AWS.mock('DynamoDB.DocumentClient', 'get', function (params, callback){
-            callback(null, {Item: {PROCESS_STATUS: 'COMPLETED'}});
-          });
-
-        AWS.mock('DynamoDB.DocumentClient', 'update', function (params, callback){
-            callback(null, {Item: {PROCESS_STATUS: 'COMPLETED'}});
+            callback(null, {Item: {PROCESS_STATUS: ProcessStatusMessage.COMPLETED}});
           });
 
         let event = {pathParameters: {uuid: "7"}};
@@ -80,7 +69,7 @@ describe("When asked for a status given a UUID, and the payload has been process
     });
 
     test("It should return COMPLETED status", async () => {
-        expect(result.body).toBe('{"status":"COMPLETED"}');
+        expect(result.body).toBe(`{"status":"${ProcessStatusMessage.COMPLETED}"}`);
     });
 
     afterAll(() => {
@@ -102,10 +91,6 @@ describe("When asked for a status given a UUID, and the there is an error when s
 
     test("It should return a not found status code", async () => {
         expect(result.statusCode).toBe(404);
-    });
-
-    test("It should return NOT FOUND status", async () => {
-        expect(result.body).toBe('{"status":"NOT FOUND"}');
     });
 
     afterAll(() => {
