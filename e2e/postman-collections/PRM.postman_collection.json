@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "19fb4e3a-a6c3-661f-9223-bf460fa602f6",
+		"_postman_id": "9407ba95-6366-48a0-bfdd-c5672c294d6b",
 		"name": "PRM",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -13,6 +13,7 @@
 					"script": {
 						"id": "40bf8f65-987c-4d82-8ce0-dbcb5c844e9a",
 						"exec": [
+							"pm.environment.unset(\"test-uuid\");",
 							"pm.test(\"It should return an OK response\", function () {",
 							"    pm.response.to.have.status(200);",
 							"});",
@@ -23,7 +24,14 @@
 							"",
 							"pm.test(\"It should return an ACCEPTED status\", function () {",
 							"    var response = pm.response.json();",
-							"    response.status.to.be(\"dsdsdsds\");",
+							"    pm.expect(response.status).to.eql(\"ACCEPTED\");",
+							"});",
+							"",
+							"pm.test(\"It should return a UUID\", function () {",
+							"    var response = pm.response.json();",
+							"    pm.expect(response).to.have.property(\"uuid\");",
+							"    ",
+							"    pm.environment.set(\"test-uuid\", response.uuid);",
 							"});"
 						],
 						"type": "text/javascript"
