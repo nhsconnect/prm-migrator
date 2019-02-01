@@ -100,8 +100,8 @@ describe("When asked for a status given a UUID, and the there is an error when s
         result = await retrieveStatus.handler(event);
     });
 
-    test("It should return a successful status code", async () => {
-        expect(result.statusCode).toBe(200);
+    test("It should return a not found status code", async () => {
+        expect(result.statusCode).toBe(404);
     });
 
     test("It should return NOT FOUND status", async () => {

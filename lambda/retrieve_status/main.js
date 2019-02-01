@@ -70,7 +70,7 @@ exports.handler = async (event, context) => {
     const result = await module.exports.main(client, uuid);
     // handle converting back to AWS
     return {
-        statusCode: 200,
+        statusCode: result.currentStatus === "NOT FOUND" ? 404 : 200,
         body: JSON.stringify({
             uuid: result.correlationId,
             status: result.currentStatus,
