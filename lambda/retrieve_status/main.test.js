@@ -19,7 +19,7 @@ describe("When asked for a status given a UUID, and the payload is not yet being
     });
 
     test("It should return ACCEPTED status", async () => {
-        expect(result.body).toBe(`{"status":"${ProcessStatusMessage.ACCEPTED}"}`);
+        expect(result.body).toBe(`{"process_status":"${ProcessStatusMessage.ACCEPTED}"}`);
     });
 
     afterAll(() => {
@@ -44,7 +44,7 @@ describe("When asked for a status given a UUID, and the payload is being process
     });
 
     test("It should return PROCESSING status", async () => {
-        expect(result.body).toBe(`{"status":"${ProcessStatusMessage.PROCESSING}"}`);
+        expect(result.body).toBe(`{"process_status":"${ProcessStatusMessage.PROCESSING}"}`);
     });
 
     afterAll(() => {
@@ -69,7 +69,7 @@ describe("When asked for a status given a UUID, and the payload has been process
     });
 
     test("It should return COMPLETED status", async () => {
-        expect(result.body).toBe(`{"status":"${ProcessStatusMessage.COMPLETED}"}`);
+        expect(result.body).toBe(`{"process_status":"${ProcessStatusMessage.COMPLETED}"}`);
     });
 
     afterAll(() => {

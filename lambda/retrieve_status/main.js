@@ -59,7 +59,7 @@ exports.handler = async (event, context) => {
         statusCode: result.currentStatus === "NOT FOUND" ? 404 : 200,
         body: JSON.stringify({
             uuid: result.correlationId,
-            status: result.currentStatus,
+            process_status: result.currentStatus,
         }),
         isBase64Encoded: false
     };
