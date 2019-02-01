@@ -30,7 +30,6 @@
 							"pm.test(\"It should return a UUID\", function () {",
 							"    var response = pm.response.json();",
 							"    pm.expect(response).to.have.property(\"uuid\");",
-							"    ",
 							"    pm.environment.set(\"test-uuid\", response.uuid);",
 							"});"
 						],
@@ -43,7 +42,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "&lt;EhrExtract classCode=&quot;EXTRACT&quot; moodCode=&quot;EVN&quot;&gt;&lt;recordTarget typeCode=&quot;RCT&quot;&gt;&lt;patient classCode=&quot;PAT&quot;&gt;&lt;id root=&quot;2.16.840.1.113883.2.1.4.1&quot; extension=&quot;3474710087&quot;/&gt;&lt;/patient&gt;&lt;/recordTarget&gt;&lt;/EhrExtract&gt;"
+					"raw": "{{ehr-extract}}"
 				},
 				"url": {
 					"raw": "{{PRM_ENDPOINT}}/send",
@@ -96,6 +95,47 @@
 					],
 					"path": [
 						"status",
+						"{{test-uuid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Retrieve payload",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ea65207c-1491-4f97-98c7-2a6343cefa85",
+						"exec": [
+							"pm.test(\"It should return an OK response\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"It should return a translated message\", function () {",
+							"    var response = pm.response.text();",
+							"    pm.expect(response).to.eql(pm.environment.get(\"expected-payload\"));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{PRM_ENDPOINT}}/retrieve/{{test-uuid}}",
+					"host": [
+						"{{PRM_ENDPOINT}}"
+					],
+					"path": [
+						"retrieve",
 						"{{test-uuid}}"
 					]
 				}
