@@ -13,5 +13,5 @@ phases:
   build:
     commands:
       - cd ./e2e
-      - npm install
-      - npm test
+      - npm install -g newman
+      - newman run postman-collections/PRM.postman_collection.json --environment postman-collections/PRM-Dev.postman_environment.json --delay-request 2000
