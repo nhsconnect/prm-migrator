@@ -1,0 +1,53 @@
+{
+	"info": {
+		"_postman_id": "19fb4e3a-a6c3-661f-9223-bf460fa602f6",
+		"name": "PRM",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Upload payload",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "40bf8f65-987c-4d82-8ce0-dbcb5c844e9a",
+						"exec": [
+							"pm.test(\"It should return an OK response\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"It should return a status property\", function () {",
+							"    pm.response.to.have.jsonBody(\"status\");",
+							"});",
+							"",
+							"pm.test(\"It should return an ACCEPTED status\", function () {",
+							"    var response = pm.response.json();",
+							"    response.status.to.be(\"dsdsdsds\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "&lt;EhrExtract classCode=&quot;EXTRACT&quot; moodCode=&quot;EVN&quot;&gt;&lt;recordTarget typeCode=&quot;RCT&quot;&gt;&lt;patient classCode=&quot;PAT&quot;&gt;&lt;id root=&quot;2.16.840.1.113883.2.1.4.1&quot; extension=&quot;3474710087&quot;/&gt;&lt;/patient&gt;&lt;/recordTarget&gt;&lt;/EhrExtract&gt;"
+				},
+				"url": {
+					"raw": "{{PRM_ENDPOINT}}/send",
+					"host": [
+						"{{PRM_ENDPOINT}}"
+					],
+					"path": [
+						"send"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
