@@ -11,22 +11,29 @@ exports.handler = async (event, context) => {
     let translatedRecords = [];
     console.log('Translator: Processing started');
 
-    await asyncForEach(event.Records, async (record) => {
-        if (record.eventName === 'INSERT') {
-            const uuid = record.dynamodb.Keys.PROCESS_ID.S;
-            await client.update(dbQueryHelper.changeStatusTo('PROCESSING', uuid)).promise();
-            await sleep(1000)
+    try {
+        await asyncForEach(event.Records, async (record) => {
+            if (record.eventName === 'INSERT') {
+                const uuid = record.dynamodb.Keys.PROCESS_ID.S;
+                await client.update(dbQueryHelper.changeStatusTo('PROCESSING', uuid)).promise();
+                await sleep(1000)
 
-            const translationResult = this.main(record);
-            const { status } = translationResult;
-            const { translation } = translationResult;
-    
-            translatedRecords.push(translationResult);
-            await client.update(dbQueryHelper.changePayloadTo(translation, translationResult.correlationId)).promise();
-            await client.update(dbQueryHelper.changeStatusTo(status, translationResult.correlationId)).promise();
-        }
-    });
-    console.log('Processing complete');
+                const translationResult = this.main(record);
+                const { status } = translationResult;
+                const { translation } = translationResult;
+
+                translatedRecords.push(translationResult);
+                await client.update(dbQueryHelper.changePayloadTo(translation, translationResult.correlationId)).promise();
+                await client.update(dbQueryHelper.changeStatusTo(status, translationResult.correlationId)).promise();
+            }
+        });
+        console.log('Processing complete');
+
+    } catch (error) {
+        console.log(error)
+    }
+
+
     return translatedRecords;
 };
 

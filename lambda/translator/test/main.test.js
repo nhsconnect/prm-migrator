@@ -43,6 +43,15 @@ describe('Broadly speaking, translations work', () => {
     });
 });
 
+describe("When garbage is sent in,", () => {
+
+    test("it should not return an error", async () => {
+      let result = await main.handler(given.aBadRecord);
+      expect(result).toEqual([]);
+    });
+  
+  });
+
 describe("Broadly speaking, we integrate our logic with AWS DynamoDB and we ignore MODIFY events", () => {
     let updateCallCount = 0;
 

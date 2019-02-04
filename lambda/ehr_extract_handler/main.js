@@ -80,11 +80,11 @@ exports.handler = async (event) => {
         return {
             statusCode: 400
         };
-    } 
+    }
 
     const entities = new Entities();
     let xml = entities.decode(event.body);
-    let ehrExtract = convert.xml2json(xml, {compact: true, spaces: 4}); 
+    let ehrExtract = convert.xml2json(xml, { compact: true, spaces: 4 });
 
     const result = await module.exports.main(ehrExtract);
 
