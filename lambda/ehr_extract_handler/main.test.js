@@ -2,6 +2,22 @@ const ehrExtract = require("./main");
 const given = require('./given')
 const AWS = require("aws-sdk-mock");
 
+describe("When passing in invalid payloads", () => {
+
+  test("a bad request response is returned, for an empty string", async () => {
+    let event = {"body": "" };
+    let result = await ehrExtract.handler(event);
+    expect(result.statusCode).toBe(400);
+  });
+
+  test("a bad request response is returned, for an empty event", async () => {
+    let event = {};
+    let result = await ehrExtract.handler(event);
+    expect(result.statusCode).toBe(400);
+  });
+
+});
+
 describe("ERROR responses", () => {
   let result;
 

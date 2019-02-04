@@ -76,6 +76,12 @@ exports.main = async function (ehrExtract) {
 
 exports.handler = async (event) => {
 
+    if (!event.body) {
+        return {
+            statusCode: 400
+        };
+    } 
+
     const entities = new Entities();
     let xml = entities.decode(event.body);
     let ehrExtract = convert.xml2json(xml, {compact: true, spaces: 4}); 
