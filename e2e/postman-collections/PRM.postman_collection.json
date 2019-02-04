@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "480d0372-d5d6-4e12-b88d-9782aa93fb57",
+		"_postman_id": "5847079f-66ad-45f7-83c2-ef468c4ea6fe",
 		"name": "PRM",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -152,6 +152,60 @@
 				}
 			],
 			"description": "Upload payload, check status through to completion, then retrieve translated payload."
+		},
+		{
+			"name": "Unhappy path",
+			"item": [
+				{
+					"name": "Not found",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0997e458-6af0-471d-9ab7-a529301b73e9",
+								"exec": [
+									"pm.test(\"It should return a not found response\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "9aeb9b22-6c3b-45e6-9c81-780a51629304",
+								"exec": [
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PRM_ENDPOINT}}/status/{{$guid}}",
+							"host": [
+								"{{PRM_ENDPOINT}}"
+							],
+							"path": [
+								"status",
+								"{{$guid}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
