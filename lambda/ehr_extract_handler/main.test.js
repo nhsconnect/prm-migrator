@@ -16,6 +16,11 @@ describe("When passing in invalid payloads", () => {
     expect(result.statusCode).toBe(400);
   });
 
+  test("a bad request response is returned, for invalid xml", async () => {
+    let event = {"body": "blah" };
+    let result = await ehrExtract.handler(event);
+    expect(result.statusCode).toBe(400);
+  });
 });
 
 describe("ERROR responses", () => {
