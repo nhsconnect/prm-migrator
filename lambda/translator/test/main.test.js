@@ -44,10 +44,27 @@ describe('Broadly speaking, translations work', () => {
 });
 
 describe("When garbage is sent in,", () => {
+    let updateCallCount = 0;
+    let result;
+
+    beforeAll(async () => {
+        AWS.mock('DynamoDB.DocumentClient', 'update', (params, callback) => {
+           updateCallCount++;
+           callback(null, {}); 
+        });
+       result = await main.handler(given.aBadRecord);
+    });
 
     test("it should not return an error", async () => {
-      let result = await main.handler(given.aBadRecord);
       expect(result).toEqual([]);
+    });
+
+    test("it should make two calls to update", async () => {
+        expect(updateCallCount).toBe(2);
+      });
+
+    afterAll(() => {
+        AWS.restore('DynamoDB.DocumentClient');
     });
   
   });
