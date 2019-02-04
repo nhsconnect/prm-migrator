@@ -154,8 +154,44 @@
 			"description": "Upload payload, check status through to completion, then retrieve translated payload."
 		},
 		{
-			"name": "Unhappy path",
+			"name": "Unhappy paths",
 			"item": [
+				{
+					"name": "Invalid input data",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "40bf8f65-987c-4d82-8ce0-dbcb5c844e9a",
+								"exec": [
+									"pm.test(\"It should return a bad request response\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\"blah\""
+						},
+						"url": {
+							"raw": "{{PRM_ENDPOINT}}/send",
+							"host": [
+								"{{PRM_ENDPOINT}}"
+							],
+							"path": [
+								"send"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "Not found",
 					"event": [
@@ -178,7 +214,6 @@
 							"script": {
 								"id": "9aeb9b22-6c3b-45e6-9c81-780a51629304",
 								"exec": [
-									"",
 									""
 								],
 								"type": "text/javascript"
