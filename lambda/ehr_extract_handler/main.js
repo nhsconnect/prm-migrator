@@ -75,7 +75,7 @@ exports.main = async function (ehrExtract) {
 };
 
 exports.handler = async (event) => {
-
+console.log(event);
     const entities = new Entities();
     let xml = entities.decode(event.body);
     let ehrExtract;
