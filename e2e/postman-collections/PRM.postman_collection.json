@@ -72,7 +72,7 @@
 									"});",
 									"",
 									"pm.test(\"It should return a status property\", function () {",
-									"    pm.response.to.have.jsonBody(\"status\");",
+									"    pm.response.to.have.jsonBody(\"process_status\");",
 									"});",
 									"",
 									"pm.test(\"It should return a valid status\", function () {",
