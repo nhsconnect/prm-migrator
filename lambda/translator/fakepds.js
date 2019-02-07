@@ -1,3 +1,4 @@
+/* ignore file coverage: as it's just a fake */
 const convert = require('fast-xml-parser');
 const https = require('https');
 const NHS_NUMBER_VALIDITY_MAP = {

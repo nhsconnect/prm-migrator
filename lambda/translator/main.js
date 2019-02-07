@@ -22,7 +22,7 @@ exports.handler = async (event, context) => {
 
             let log_event = {
                 correlation_id: uuid,
-                time_created: dayjs(Date.now()).toISOString(),
+                time_created: "",
                 event_type: "process",
                 event: {
                     source: "Unknown",
@@ -35,23 +35,25 @@ exports.handler = async (event, context) => {
             };
 
             try {
+                translationResult = this.main(record);
+
                 extractData = JSON.parse(record.dynamodb.NewImage.PROCESS_PAYLOAD.S);
                 log_event.event.source = extractData.EhrExtract.author.AgentOrgSDS.agentOrganizationSDS.id._attributes.extension;
                 log_event.event.destination = extractData.EhrExtract.destination.AgentOrgSDS.agentOrganizationSDS.id._attributes.extension;
-
-                translationResult = this.main(record);
                 status = translationResult.status;
                 const { translation } = translationResult;
+
                 translatedRecords.push(translationResult);
                 await client.update(dbQueryHelper.changePayloadTo(translation, translationResult.correlationId)).promise();
-
             } catch (error) {
                 status = "ERROR";
+                console.error(error);
             }
             await client.update(dbQueryHelper.changeStatusTo(status, uuid)).promise();
 
             let end_time = dayjs(Date.now());
             log_event.event.process_status = status;
+            log_event.time_created = dayjs(Date.now()).toISOString();
             log_event.event.translation.time_taken = end_time.diff(start_time, "millisecond");
 
             console.log(log_event);
