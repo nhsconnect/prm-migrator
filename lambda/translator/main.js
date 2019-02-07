@@ -18,11 +18,15 @@ exports.handler = async (event, context) => {
             let status;
             let translationResult;
 
-            let extractData = JSON.parse(record.dynamodb.NewImage.PROCESS_PAYLOAD.S);
-            let extractData_source = extractData.EhrExtract.author.AgentOrgSDS.agentOrganizationSDS.id._attributes.extension;
-            let extractData_destination = extractData.EhrExtract.destination.AgentOrgSDS.agentOrganizationSDS.id._attributes.extension;
+            let extractData;
+            let extractData_source;
+            let extractData_destination;
 
             try {
+                extractData = JSON.parse(record.dynamodb.NewImage.PROCESS_PAYLOAD.S);
+                extractData_source = extractData.EhrExtract.author.AgentOrgSDS.agentOrganizationSDS.id._attributes.extension;
+                extractData_destination = extractData.EhrExtract.destination.AgentOrgSDS.agentOrganizationSDS.id._attributes.extension;
+
                 translationResult = this.main(record);
                 status = translationResult.status;
                 const { translation } = translationResult;
