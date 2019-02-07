@@ -4,6 +4,7 @@ const translator = require('./translate');
 const validator = require('./validation');
 const dbQueryHelper = require('./dbQueryHelper');
 const sleep = m => new Promise(r => setTimeout(r, m));
+const dayjs = require('dayjs');
 
 // AWS specific stuff
 exports.handler = async (event, context) => {
@@ -28,7 +29,11 @@ exports.handler = async (event, context) => {
                 status = "ERROR";
             }
             await client.update(dbQueryHelper.changeStatusTo(status, uuid)).promise();
-            console.log({correlation_id: uuid});
+            console.log({
+                correlation_id: uuid,
+                time_created: dayjs(Date.now()).toISOString(),
+                event_type: "process"
+            });
         }
     });
     return translatedRecords;

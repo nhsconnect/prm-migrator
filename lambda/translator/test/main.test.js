@@ -103,7 +103,9 @@ describe("Broadly speaking, we log structured events for translated payloads", (
 
     test("it should log a structured event", async () => {
         expect(spyLog).toHaveBeenCalledWith({
-            correlation_id: expect.any(String)
+            correlation_id: expect.any(String),
+            event_type: "process",
+            time_created: expect.any(String)
         });
     });
 
@@ -114,14 +116,12 @@ describe("Broadly speaking, we log structured events for translated payloads", (
 
 describe("Broadly speaking, we integrate our logic with AWS DynamoDB for INSERT events only", () => {
     let updateCallCount = 0;
-    const spyLog = jest.spyOn( console, 'log' );
 
     beforeAll(async () => {
         AWS.mock('DynamoDB.DocumentClient', 'update', (params, callback) => {
            updateCallCount++;
            callback(null, {}); 
         });
-        spyLog.mockReset()
         await main.handler(given.twoNewRecords);
     });
 
