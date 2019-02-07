@@ -18,15 +18,26 @@ exports.handler = async (event, context) => {
             let status;
             let translationResult;
 
-            let extractData;
-            let extractData_source;
-            let extractData_destination;
             let start_time = dayjs(Date.now());
+
+            let log_event = {
+                correlation_id: uuid,
+                time_created: dayjs(Date.now()).toISOString(),
+                event_type: "process",
+                event: {
+                    source: "Unknown",
+                    destination: "Unknown",
+                    process_status: "",
+                    translation: {
+                        time_taken: 0
+                    }
+                }
+            };
 
             try {
                 extractData = JSON.parse(record.dynamodb.NewImage.PROCESS_PAYLOAD.S);
-                extractData_source = extractData.EhrExtract.author.AgentOrgSDS.agentOrganizationSDS.id._attributes.extension;
-                extractData_destination = extractData.EhrExtract.destination.AgentOrgSDS.agentOrganizationSDS.id._attributes.extension;
+                log_event.event.source = extractData.EhrExtract.author.AgentOrgSDS.agentOrganizationSDS.id._attributes.extension;
+                log_event.event.destination = extractData.EhrExtract.destination.AgentOrgSDS.agentOrganizationSDS.id._attributes.extension;
 
                 translationResult = this.main(record);
                 status = translationResult.status;
@@ -40,19 +51,10 @@ exports.handler = async (event, context) => {
             await client.update(dbQueryHelper.changeStatusTo(status, uuid)).promise();
 
             let end_time = dayjs(Date.now());
-            console.log({
-                correlation_id: uuid,
-                time_created: dayjs(Date.now()).toISOString(),
-                event_type: "process",
-                event: {
-                    source: extractData_source,
-                    destination: extractData_destination,
-                    process_status: status,
-                    translation: {
-                        time_taken: end_time.diff(start_time, "millisecond")
-                    }
-                }
-            });
+            log_event.event.process_status = status;
+            log_event.event.translation.time_taken = end_time.diff(start_time, "millisecond");
+
+            console.log(log_event);
         }
     });
     return translatedRecords;

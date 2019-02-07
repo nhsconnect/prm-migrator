@@ -67,7 +67,39 @@ describe("When garbage is sent in,", () => {
         AWS.restore('DynamoDB.DocumentClient');
     });
   
-  });
+});
+
+describe("Broadly speaking, we log structured events for garbage payloads", () => {
+    const spyLog = jest.spyOn( console, 'log' );
+
+    beforeAll(async () => {
+        AWS.mock('DynamoDB.DocumentClient', 'update', (params, callback) => {
+           callback(null, {}); 
+        });
+        spyLog.mockReset();
+        await main.handler(given.aBadRecord);
+    });
+
+    test("it should log a structured event", async () => {
+        expect(spyLog).toHaveBeenCalledWith({
+            correlation_id: expect.any(String),
+            event_type: "process",
+            time_created: expect.any(String),
+            event: {
+                source: "Unknown",
+                destination: "Unknown",
+                process_status: "ERROR",
+                translation: {
+                    time_taken: expect.any(Number)
+                }
+            }
+        });
+    });
+
+    afterAll(() => {
+        AWS.restore('DynamoDB.DocumentClient');
+    });
+});
 
 describe("Broadly speaking, we integrate our logic with AWS DynamoDB and we ignore MODIFY events", () => {
     let updateCallCount = 0;
