@@ -89,14 +89,39 @@ describe("Broadly speaking, we integrate our logic with AWS DynamoDB and we igno
     });
 });
 
+describe("Broadly speaking, we log structured events for translated payloads", () => {
+    const spyLog = jest.spyOn( console, 'log' );
+
+    beforeAll(async () => {
+        AWS.mock('DynamoDB.DocumentClient', 'update', (params, callback) => {
+           callback(null, {}); 
+        });
+        spyLog.mockReset();
+        const event = {"Records": [given.aNewRecord]};
+        await main.handler(event);
+    });
+
+    test("it should log a structured event", async () => {
+        expect(spyLog).toHaveBeenCalledWith({
+            correlation_id: expect.any(String)
+        });
+    });
+
+    afterAll(() => {
+        AWS.restore('DynamoDB.DocumentClient');
+    });
+});
+
 describe("Broadly speaking, we integrate our logic with AWS DynamoDB for INSERT events only", () => {
     let updateCallCount = 0;
+    const spyLog = jest.spyOn( console, 'log' );
 
     beforeAll(async () => {
         AWS.mock('DynamoDB.DocumentClient', 'update', (params, callback) => {
            updateCallCount++;
            callback(null, {}); 
         });
+        spyLog.mockReset()
         await main.handler(given.twoNewRecords);
     });
 

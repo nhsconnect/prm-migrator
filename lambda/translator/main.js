@@ -9,8 +9,6 @@ const sleep = m => new Promise(r => setTimeout(r, m));
 exports.handler = async (event, context) => {
     const client = new AWS.DynamoDB.DocumentClient();
     let translatedRecords = [];
-    console.log('Translator: Processing started');
-
     await asyncForEach(event.Records, async (record) => {
         if (record.eventName === 'INSERT') {
             const uuid = record.dynamodb.Keys.PROCESS_ID.S;
@@ -28,13 +26,11 @@ exports.handler = async (event, context) => {
 
             } catch (error) {
                 status = "ERROR";
-                console.log(error);
             }
-
             await client.update(dbQueryHelper.changeStatusTo(status, uuid)).promise();
+            console.log({correlation_id: uuid});
         }
     });
-    console.log('Processing complete');
     return translatedRecords;
 };
 
