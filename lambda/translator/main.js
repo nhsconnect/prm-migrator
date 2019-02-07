@@ -18,6 +18,10 @@ exports.handler = async (event, context) => {
             let status;
             let translationResult;
 
+            let extractData = JSON.parse(record.dynamodb.NewImage.PROCESS_PAYLOAD.S);
+            let extractData_source = extractData.EhrExtract.author.AgentOrgSDS.agentOrganizationSDS.id._attributes.extension;
+            let extractData_destination = extractData.EhrExtract.destination.AgentOrgSDS.agentOrganizationSDS.id._attributes.extension;
+
             try {
                 translationResult = this.main(record);
                 status = translationResult.status;
@@ -32,7 +36,12 @@ exports.handler = async (event, context) => {
             console.log({
                 correlation_id: uuid,
                 time_created: dayjs(Date.now()).toISOString(),
-                event_type: "process"
+                event_type: "process",
+                event: {
+                    source: extractData_source,
+                    destination: extractData_destination,
+                    process_status: status
+                }
             });
         }
     });

@@ -105,7 +105,12 @@ describe("Broadly speaking, we log structured events for translated payloads", (
         expect(spyLog).toHaveBeenCalledWith({
             correlation_id: expect.any(String),
             event_type: "process",
-            time_created: expect.any(String)
+            time_created: expect.any(String),
+            event: {
+                source: "Test_Source",
+                destination: "Test_Destination",
+                process_status: "COMPLETED"
+            }
         });
     });
 
