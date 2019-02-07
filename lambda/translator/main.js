@@ -21,6 +21,7 @@ exports.handler = async (event, context) => {
             let extractData;
             let extractData_source;
             let extractData_destination;
+            let start_time = dayjs(Date.now());
 
             try {
                 extractData = JSON.parse(record.dynamodb.NewImage.PROCESS_PAYLOAD.S);
@@ -37,6 +38,8 @@ exports.handler = async (event, context) => {
                 status = "ERROR";
             }
             await client.update(dbQueryHelper.changeStatusTo(status, uuid)).promise();
+
+            let end_time = dayjs(Date.now());
             console.log({
                 correlation_id: uuid,
                 time_created: dayjs(Date.now()).toISOString(),
@@ -44,7 +47,10 @@ exports.handler = async (event, context) => {
                 event: {
                     source: extractData_source,
                     destination: extractData_destination,
-                    process_status: status
+                    process_status: status,
+                    translation: {
+                        time_taken: end_time.diff(start_time, "millisecond")
+                    }
                 }
             });
         }

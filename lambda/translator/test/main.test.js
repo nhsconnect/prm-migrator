@@ -109,7 +109,10 @@ describe("Broadly speaking, we log structured events for translated payloads", (
             event: {
                 source: "Test_Source",
                 destination: "Test_Destination",
-                process_status: "COMPLETED"
+                process_status: "COMPLETED",
+                translation: {
+                    time_taken: expect.any(Number)
+                }
             }
         });
     });
