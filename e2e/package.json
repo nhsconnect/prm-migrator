@@ -4,7 +4,7 @@
   "description": "The e2e tests for PRM",
   "main": "index.js",
   "scripts": {
-    "test": "PRM_ENDPOINT=https://wgb1etz8td.execute-api.eu-west-2.amazonaws.com/dev jest"
+    "test": "newman run postman-collections/PRM.postman_collection.json --environment postman-collections/PRM-Dev.postman_environment.json --delay-request 200"
   },
   "author": "",
   "license": "ISC",
