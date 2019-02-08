@@ -55,7 +55,7 @@ exports.handler = async (event, context) => {
             log_event.time_created = dayjs(Date.now()).toISOString();
             log_event.event.translation.time_taken = end_time.diff(start_time, "millisecond");
 
-            console.log(log_event);
+            console.log(JSON.stringify(log_event));
         }
     });
     return translatedRecords;

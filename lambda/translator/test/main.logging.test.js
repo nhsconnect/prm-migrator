@@ -4,17 +4,23 @@ const AWS = require('aws-sdk-mock');
 
 describe("We log structured events for garbage payloads", () => {
     const spyLog = jest.spyOn( console, 'log' );
+    const spyJsonStringify = jest.spyOn( JSON, 'stringify' );
 
     beforeAll(async () => {
         AWS.mock('DynamoDB.DocumentClient', 'update', (params, callback) => {
            callback(null, {}); 
         });
         spyLog.mockReset();
+        spyJsonStringify.mockReset();
         await main.handler(given.aBadRecord);
     });
 
     test("it should log a structured event", async () => {
-        expect(spyLog).toHaveBeenCalledWith({
+        expect(spyLog).toHaveBeenCalledWith(JSON.stringify(expect.any(String)));
+    });
+
+    test("it should json stringify the structured event", async () => {
+        expect(spyJsonStringify).toHaveBeenCalledWith({
             correlation_id: "101",
             event_type: "process",
             time_created: expect.any(String),
@@ -37,18 +43,24 @@ describe("We log structured events for garbage payloads", () => {
 
 describe("We log structured events for invalid payloads", () => {
     const spyLog = jest.spyOn( console, 'log' );
+    const spyJsonStringify = jest.spyOn( JSON, 'stringify' );
 
     beforeAll(async () => {
         AWS.mock('DynamoDB.DocumentClient', 'update', (params, callback) => {
            callback(null, {}); 
         });
         spyLog.mockReset();
+        spyJsonStringify.mockReset();
         const event = { "Records": [given.invalidNhsNoRecord]};
         await main.handler(event);
     });
 
     test("it should log a structured event", async () => {
-        expect(spyLog).toHaveBeenCalledWith({
+        expect(spyLog).toHaveBeenCalledWith(JSON.stringify(expect.any(String)));
+    });
+
+    test("it should json stringify the structured event", async () => {
+        expect(spyJsonStringify).toHaveBeenCalledWith({
             correlation_id: "101",
             event_type: "process",
             time_created: expect.any(String),
@@ -70,6 +82,7 @@ describe("We log structured events for invalid payloads", () => {
 
 describe("We log structured events for translated payloads", () => {
     const spyLog = jest.spyOn( console, 'log' );
+    const spyJsonStringify = jest.spyOn( JSON, 'stringify' );
 
     beforeAll(async () => {
         AWS.mock('DynamoDB.DocumentClient', 'update', (params, callback) => {
@@ -81,7 +94,11 @@ describe("We log structured events for translated payloads", () => {
     });
 
     test("it should log a structured event", async () => {
-        expect(spyLog).toHaveBeenCalledWith({
+        expect(spyLog).toHaveBeenCalledWith(JSON.stringify(expect.any(String)));
+    });
+
+    test("it should json stringify the structured event", async () => {
+        expect(spyJsonStringify).toHaveBeenCalledWith({
             correlation_id: "101",
             event_type: "process",
             time_created: expect.any(String),
