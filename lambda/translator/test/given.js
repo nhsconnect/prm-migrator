@@ -115,7 +115,7 @@ exports.aBadRecord = {
                 },
                 "NewImage": {
                     "PROCESS_PAYLOAD": {
-                        "S": 'blahh'
+                        "S": 'Xlahh'
                     },
                     "PROCESS_STATUS": {
                         "S": "ACCEPTED"

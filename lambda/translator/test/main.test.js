@@ -69,77 +69,6 @@ describe("When garbage is sent in,", () => {
   
 });
 
-describe("Broadly speaking, we log structured events for garbage payloads", () => {
-    const spyLog = jest.spyOn( console, 'log' );
-    const spyError = jest.spyOn( console, 'error' );
-
-    beforeAll(async () => {
-        AWS.mock('DynamoDB.DocumentClient', 'update', (params, callback) => {
-           callback(null, {}); 
-        });
-        spyLog.mockReset();
-        spyError.mockReset();
-        await main.handler(given.aBadRecord);
-    });
-
-    test("it should log a structured event", async () => {
-        expect(spyLog).toHaveBeenCalledWith({
-            correlation_id: "101",
-            event_type: "process",
-            time_created: expect.any(String),
-            event: {
-                source: "Unknown",
-                destination: "Unknown",
-                process_status: "ERROR",
-                translation: {
-                    time_taken: expect.any(Number)
-                }
-            }
-        });
-    });
-
-    test("it should log an error", async () => {
-        expect(spyError).toHaveBeenCalledTimes(1);
-    });
-
-    afterAll(() => {
-        AWS.restore('DynamoDB.DocumentClient');
-    });
-});
-
-describe("Broadly speaking, we log structured events for invalid payloads", () => {
-    const spyLog = jest.spyOn( console, 'log' );
-
-    beforeAll(async () => {
-        AWS.mock('DynamoDB.DocumentClient', 'update', (params, callback) => {
-           callback(null, {}); 
-        });
-        spyLog.mockReset();
-        const event = { "Records": [given.invalidNhsNoRecord]};
-        await main.handler(event);
-    });
-
-    test("it should log a structured event", async () => {
-        expect(spyLog).toHaveBeenCalledWith({
-            correlation_id: "101",
-            event_type: "process",
-            time_created: expect.any(String),
-            event: {
-                source: "Test_Source",
-                destination: "Test_Destination",
-                process_status: "FAILED",
-                translation: {
-                    time_taken: expect.any(Number)
-                }
-            }
-        });
-    });
-
-    afterAll(() => {
-        AWS.restore('DynamoDB.DocumentClient');
-    });
-});
-
 describe("Broadly speaking, we integrate our logic with AWS DynamoDB and we ignore MODIFY events", () => {
     let updateCallCount = 0;
 
@@ -153,39 +82,6 @@ describe("Broadly speaking, we integrate our logic with AWS DynamoDB and we igno
 
     test("it should not update the status at all", async () => {
         expect(updateCallCount).toBe(0);
-    });
-
-    afterAll(() => {
-        AWS.restore('DynamoDB.DocumentClient');
-    });
-});
-
-describe("Broadly speaking, we log structured events for translated payloads", () => {
-    const spyLog = jest.spyOn( console, 'log' );
-
-    beforeAll(async () => {
-        AWS.mock('DynamoDB.DocumentClient', 'update', (params, callback) => {
-           callback(null, {}); 
-        });
-        spyLog.mockReset();
-        const event = {"Records": [given.aNewRecord]};
-        await main.handler(event);
-    });
-
-    test("it should log a structured event", async () => {
-        expect(spyLog).toHaveBeenCalledWith({
-            correlation_id: "101",
-            event_type: "process",
-            time_created: expect.any(String),
-            event: {
-                source: "Test_Source",
-                destination: "Test_Destination",
-                process_status: "COMPLETED",
-                translation: {
-                    time_taken: expect.any(Number)
-                }
-            }
-        });
     });
 
     afterAll(() => {

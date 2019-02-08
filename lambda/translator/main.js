@@ -29,7 +29,6 @@ exports.handler = async (event, context) => {
                     destination: "Unknown",
                     process_status: "",
                     translation: {
-                        time_taken: 0
                     }
                 }
             };
@@ -47,7 +46,7 @@ exports.handler = async (event, context) => {
                 await client.update(dbQueryHelper.changePayloadTo(translation, translationResult.correlationId)).promise();
             } catch (error) {
                 status = "ERROR";
-                console.error(error);
+                log_event.event.translation.error = error;
             }
             await client.update(dbQueryHelper.changeStatusTo(status, uuid)).promise();
 
