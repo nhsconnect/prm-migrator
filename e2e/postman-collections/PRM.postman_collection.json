@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "5847079f-66ad-45f7-83c2-ef468c4ea6fe",
+		"_postman_id": "edbe8df9-ad11-471a-b221-536663758b20",
 		"name": "PRM",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -60,7 +60,7 @@
 					"response": []
 				},
 				{
-					"name": "2. Retrieve status",
+					"name": "2. Retrieve status until completed",
 					"event": [
 						{
 							"listen": "test",
@@ -78,7 +78,7 @@
 									"pm.test(\"It should return a valid status\", function () {",
 									"    var response = pm.response.json();",
 									"    if (response.process_status !== \"COMPLETED\"){",
-									"        postman.setNextRequest(\"2. Retrieve status\");",
+									"        postman.setNextRequest(\"2. Retrieve status until completed\");",
 									"    }",
 									"    pm.expect(response.process_status).to.be.oneOf([\"COMPLETED\", \"PROCESSING\", \"ACCEPTED\"]);",
 									"});",
@@ -208,7 +208,7 @@
 					"response": []
 				},
 				{
-					"name": "2. Retrieve status",
+					"name": "2. Retrieve status until errored",
 					"event": [
 						{
 							"listen": "test",
@@ -226,7 +226,7 @@
 									"pm.test(\"It should return a valid status\", function () {",
 									"    var response = pm.response.json();",
 									"    if (response.process_status !== \"ERROR\"){",
-									"        postman.setNextRequest(\"2. Retrieve status\");",
+									"        postman.setNextRequest(\"2. Retrieve status until errored\");",
 									"    }",
 									"    pm.expect(response.process_status).to.be.oneOf([\"ERROR\", \"PROCESSING\", \"ACCEPTED\"]);",
 									"});",
