@@ -76,7 +76,7 @@ exports.main = function (record) {
         return {
             status: "COMPLETED",
             correlationId: record.dynamodb.Keys.PROCESS_ID.S,
-            translation: translator.translate(record),
+            translation: FhirPayload,
             original: record
         }
     } else {
