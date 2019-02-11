@@ -1,12 +1,12 @@
 {
 	"info": {
-		"_postman_id": "edbe8df9-ad11-471a-b221-536663758b20",
+		"_postman_id": "4188fc52-6529-4e94-b603-bcb05622f9bc",
 		"name": "PRM",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "End to end happy path",
+			"name": "Happy Path",
 			"item": [
 				{
 					"name": "1. Upload payload",
@@ -121,7 +121,7 @@
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.test(\"It should return a translated message\", function () {",
+									"pm.test(\"It should return the expected translated message\", function () {",
 									"    var response = pm.response.text();",
 									"    pm.expect(response).to.eql(pm.environment.get(\"expected-payload\"));",
 									"});"
@@ -151,7 +151,29 @@
 					"response": []
 				}
 			],
-			"description": "Upload payload, check status through to completion, then retrieve translated payload."
+			"description": "Upload payload, check status through to completion, then retrieve translated payload.",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "60e2531b-c725-47ea-b337-361dc4accad0",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "5c8aab5a-8405-404d-97e5-129117954b7a",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
 		},
 		{
 			"name": "End to end, unmappable XML",
@@ -342,6 +364,214 @@
 							"path": [
 								"status",
 								"{{$guid}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Error Path",
+			"item": [
+				{
+					"name": "1. Upload payload ",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "40bf8f65-987c-4d82-8ce0-dbcb5c844e9a",
+								"exec": [
+									"pm.environment.unset(\"test-uuid\");",
+									"pm.test(\"It should return an OK response\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"It should return a status property\", function () {",
+									"    pm.response.to.have.jsonBody(\"status\");",
+									"});",
+									"",
+									"pm.test(\"It should return an ACCEPTED status\", function () {",
+									"    var response = pm.response.json();",
+									"    pm.expect(response.status).to.eql(\"ACCEPTED\");",
+									"});",
+									"",
+									"pm.test(\"It should return a UUID\", function () {",
+									"    var response = pm.response.json();",
+									"    pm.expect(response).to.have.property(\"uuid\");",
+									"    pm.environment.set(\"test-uuid\", response.uuid);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "<EhrExtract classCode=\"EXTRACT\" moodCode=\"EVN\">\n                <recordTarget typeCode=\"RCT\">\n                    <patient classCode=\"PAT\">\n                        <id root=\"2.16.840.1.113883.2.1.4.1\" extension=\"444444444\"/>\n                    </patient>\n                </recordTarget>\n                <author typeCode=\"AUT\">\n                    <time value=\"20131114110655\"/>\n                    <AgentOrgSDS classCode=\"AGNT\">\n                        <agentOrganizationSDS classCode=\"ORG\" determinerCode=\"INSTANCE\">\n                            <id extension=\"Test_Source\" root=\"1.2.826.0.1285.0.1.10\"/>\n                        </agentOrganizationSDS>\n                    </AgentOrgSDS>\n                </author>\n                <destination typeCode=\"DST\">\n                    <AgentOrgSDS classCode=\"AGNT\">\n                        <agentOrganizationSDS classCode=\"ORG\" determinerCode=\"INSTANCE\">\n                            <id extension=\"Test_Destination\" root=\"1.2.826.0.1285.0.1.10\"/>\n                        </agentOrganizationSDS>\n                    </AgentOrgSDS>\n                </destination>\n            </EhrExtract>"
+						},
+						"url": {
+							"raw": "{{PRM_ENDPOINT}}/send",
+							"host": [
+								"{{PRM_ENDPOINT}}"
+							],
+							"path": [
+								"send"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Retrieve status until errored",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0997e458-6af0-471d-9ab7-a529301b73e9",
+								"exec": [
+									"pm.test(\"It should return an OK response\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"It should return a status property\", function () {",
+									"    pm.response.to.have.jsonBody(\"process_status\");",
+									"});",
+									"",
+									"pm.test(\"It should return a valid status\", function () {",
+									"    var response = pm.response.json();",
+									"    if (response.process_status !== \"ERROR\"){",
+									"        postman.setNextRequest(\"2. Retrieve status until errored\");",
+									"    }",
+									"    pm.expect(response.process_status).to.be.oneOf([\"ERROR\", \"PROCESSING\", \"ACCEPTED\"]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PRM_ENDPOINT}}/status/{{test-uuid}}",
+							"host": [
+								"{{PRM_ENDPOINT}}"
+							],
+							"path": [
+								"status",
+								"{{test-uuid}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Failure Path",
+			"item": [
+				{
+					"name": "1. Upload payload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "40bf8f65-987c-4d82-8ce0-dbcb5c844e9a",
+								"exec": [
+									"pm.environment.unset(\"test-uuid\");",
+									"pm.test(\"It should return an OK response\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"It should return a status property\", function () {",
+									"    pm.response.to.have.jsonBody(\"status\");",
+									"});",
+									"",
+									"pm.test(\"It should return an ACCEPTED status\", function () {",
+									"    var response = pm.response.json();",
+									"    pm.expect(response.status).to.eql(\"ACCEPTED\");",
+									"});",
+									"",
+									"pm.test(\"It should return a UUID\", function () {",
+									"    var response = pm.response.json();",
+									"    pm.expect(response).to.have.property(\"uuid\");",
+									"    pm.environment.set(\"test-uuid\", response.uuid);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "<EhrExtract classCode=\"EXTRACT\" moodCode=\"EVN\">\n                <recordTarget typeCode=\"RCT\">\n                    <patient classCode=\"PAT\">\n                        <id root=\"2.16.840.1.113883.2.1.4.1\" extension=\"444444444\"/>\n                    </patient>\n                </recordTarget>\n                <author typeCode=\"AUT\">\n                    <time value=\"20131114110655\"/>\n                    <AgentOrgSDS classCode=\"AGNT\">\n                        <agentOrganizationSDS classCode=\"ORG\" determinerCode=\"INSTANCE\">\n                            <id extension=\"Test_Source\" root=\"1.2.826.0.1285.0.1.10\"/>\n                        </agentOrganizationSDS>\n                    </AgentOrgSDS>\n                </author>\n                <destination typeCode=\"DST\">\n                    <AgentOrgSDS classCode=\"AGNT\">\n                        <agentOrganizationSDS classCode=\"ORG\" determinerCode=\"INSTANCE\">\n                            <id extension=\"Test_Destination\" root=\"1.2.826.0.1285.0.1.10\"/>\n                        </agentOrganizationSDS>\n                    </AgentOrgSDS>\n                </destination>\n            </EhrExtract>"
+						},
+						"url": {
+							"raw": "{{PRM_ENDPOINT}}/send",
+							"host": [
+								"{{PRM_ENDPOINT}}"
+							],
+							"path": [
+								"send"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2. Retrieve status until failed",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0997e458-6af0-471d-9ab7-a529301b73e9",
+								"exec": [
+									"pm.test(\"It should return an OK response\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"It should return a status property\", function () {",
+									"    pm.response.to.have.jsonBody(\"process_status\");",
+									"});",
+									"",
+									"pm.test(\"It should return a valid status\", function () {",
+									"    var response = pm.response.json();",
+									"    if (response.process_status !== \"FAILED\"){",
+									"        postman.setNextRequest(\"2. Retrieve status until failed\");",
+									"    }",
+									"    pm.expect(response.process_status).to.be.oneOf([\"FAILED\", \"PROCESSING\", \"ACCEPTED\"]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PRM_ENDPOINT}}/status/{{test-uuid}}",
+							"host": [
+								"{{PRM_ENDPOINT}}"
+							],
+							"path": [
+								"status",
+								"{{test-uuid}}"
 							]
 						}
 					},
