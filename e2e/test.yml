@@ -14,8 +14,4 @@ phases:
     commands:
       - cd ./e2e
       - npm install -g newman
-<<<<<<< HEAD
       - npm t
-=======
-      - newman run postman-collections/PRM.postman_collection.json --environment postman-collections/PRM-Dev.postman_environment.json --delay-request 2000 --bail
->>>>>>> PRM-101: Add --bail flag when running postman tests
