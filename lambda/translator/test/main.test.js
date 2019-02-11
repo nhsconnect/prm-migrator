@@ -69,6 +69,32 @@ describe("When garbage is sent in,", () => {
   
 });
 
+describe("When invalid NHS number is sent in,", () => {
+    let updateCallCount = 0;
+    let result;
+
+    beforeAll(async () => {
+        AWS.mock('DynamoDB.DocumentClient', 'update', (params, callback) => {
+           updateCallCount++;
+           callback(null, {}); 
+        });
+       result = await main.handler({"Records": [given.invalidNhsNoRecord]});
+    });
+
+    test("it should not return an error", async () => {
+      expect(result).toEqual([]);
+    });
+
+    test("it should make two calls to update", async () => {
+        expect(updateCallCount).toBe(2);
+      });
+
+    afterAll(() => {
+        AWS.restore('DynamoDB.DocumentClient');
+    });
+  
+});
+
 describe("Broadly speaking, we integrate our logic with AWS DynamoDB and we ignore MODIFY events", () => {
     let updateCallCount = 0;
 

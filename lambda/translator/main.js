@@ -40,10 +40,13 @@ exports.handler = async (event, context) => {
                 log_event.event.source = extractData.EhrExtract.author.AgentOrgSDS.agentOrganizationSDS.id._attributes.extension;
                 log_event.event.destination = extractData.EhrExtract.destination.AgentOrgSDS.agentOrganizationSDS.id._attributes.extension;
                 status = translationResult.status;
-                const { translation } = translationResult;
 
-                translatedRecords.push(translationResult);
-                await client.update(dbQueryHelper.changePayloadTo(translation, translationResult.correlationId)).promise();
+                if (status === "COMPLETED") {
+                    const { translation } = translationResult;
+
+                    translatedRecords.push(translationResult);
+                    await client.update(dbQueryHelper.changePayloadTo(translation, translationResult.correlationId)).promise();
+                }
             } catch (error) {
                 status = "ERROR";
                 log_event.event.translation.error = error;
