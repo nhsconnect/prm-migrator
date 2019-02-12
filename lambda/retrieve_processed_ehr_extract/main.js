@@ -1,6 +1,4 @@
 const AWS = require("aws-sdk");
-const Entities = require('html-entities').XmlEntities;
-const entities = new Entities();
 const convert = require('xml-js');
 
 class ProcessStatusWrapper {
@@ -25,8 +23,7 @@ exports.main = async function (dbClient, uuid) {
         const result = await client.get(uuid);
 
         let extractXml = convert.json2xml(result.Item.PROCESS_PAYLOAD, { compact: true, spaces: 4 });
-        let encodedXml = entities.encode(extractXml);
-        return encodedXml;
+        return extractXml;
     } catch (err) {
         return "Entry not found";
     }

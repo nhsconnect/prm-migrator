@@ -1,6 +1,4 @@
 const convert = require('xml-js');
-const Entities = require('html-entities').XmlEntities;
-const entities = new Entities();
 
 let processedData = {
     patient: {
@@ -13,7 +11,7 @@ let processedData = {
 let options = {compact: true, spaces: 4};
 
 let xml = convert.json2xml(processedData, options);
-exports.processed_ehr_extract_encodedXml = entities.encode(xml);;
+exports.processed_ehr_extract_xml = xml;
 
 let json = convert.xml2json(xml, options);
 exports.processed_ehr_extract_json = json; 

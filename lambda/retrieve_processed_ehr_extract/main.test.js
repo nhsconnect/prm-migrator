@@ -43,6 +43,6 @@ describe("Build handler", () => {
         let event = { pathParameters: { uuid: "7" } };
         const result = await retrieveProcessed.handler(event);
         expect(result.statusCode).toBe(200);
-        expect(result.body).toBe(given.processed_ehr_extract_encodedXml);
+        expect(result.body).toBe(given.processed_ehr_extract_xml);
     });
 });
