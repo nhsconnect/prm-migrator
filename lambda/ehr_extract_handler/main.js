@@ -1,7 +1,6 @@
 const uuid = require("uuid/v4");
 const AWS = require("aws-sdk");
 AWS.config.update({ region: "eu-west-2" });
-const Entities = require('html-entities').XmlEntities;
 let convert = require('xml-js');
 
 const MigrationEventStates = {
@@ -76,8 +75,7 @@ exports.main = async function (ehrExtract) {
 
 exports.handler = async (event) => {
 console.log(event);
-    const entities = new Entities();
-    let xml = entities.decode(event.body);
+    let xml = event.body;
     let ehrExtract;
 
     try {

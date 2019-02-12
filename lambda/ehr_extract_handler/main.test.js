@@ -30,7 +30,7 @@ describe("ERROR responses", () => {
     AWS.mock('DynamoDB.DocumentClient', 'put', function (params, callback){
       callback(null, Promise.reject('Oops!'));
     });
-    let event = {"body": given.tpp_sample_encodedXml };
+    let event = {"body": given.tpp_sample_xml };
     result = await ehrExtract.handler(event);
   });
 
@@ -55,7 +55,7 @@ describe("ACCEPTED responses", () => {
       } 
       callback(null, {});
     });
-    let event = {"body": given.tpp_sample_encodedXml};
+    let event = {"body": given.tpp_sample_xml};
     result = await ehrExtract.handler(event);
   });
 

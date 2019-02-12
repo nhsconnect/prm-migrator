@@ -1,6 +1,4 @@
 const convert = require('xml-js');
-const Entities = require('html-entities').XmlEntities;
-const entities = new Entities();
 
 let xml = `
             <EhrExtract classCode="EXTRACT" moodCode="EVN">
@@ -12,5 +10,5 @@ let xml = `
             </EhrExtract>
         `;
 
-exports.tpp_sample_encodedXml = entities.encode(xml);;
+exports.tpp_sample_xml = xml;
 exports.tpp_sample_json = convert.xml2json(xml, {compact: true, spaces: 4});
