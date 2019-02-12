@@ -1,0 +1,4 @@
+fileignoreconfig:
+- filename: lambda/ehr_extract_handler/package-lock.json
+  checksum: 3f8aed35cdab98b2665d7a9bb62d1bee61a448984c86bb097fc3eabb43114b42
+  ignore_detectors: []
