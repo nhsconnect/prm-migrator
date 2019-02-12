@@ -6,3 +6,7 @@ fileignoreconfig:
 - filename: lambda/retrieve_processed_ehr_extract/package-lock.json
   checksum: 65715679f99777a47128b10a133e3515e9a3963c1863aa8792b563e034ea46dd
   ignore_detectors: []
+
+- filename: e2e/postman-collections/PRM-Dev.postman_environment.json
+  checksum: 4818d2f8080339df31376166bb28b3e3f420583043327ba35b8c8b972be24196
+  ignore_detectors: []
