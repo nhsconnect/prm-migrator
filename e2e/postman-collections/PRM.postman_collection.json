@@ -117,18 +117,15 @@
 							"script": {
 								"id": "ea65207c-1491-4f97-98c7-2a6343cefa85",
 								"exec": [
-									"",
-									"const expectedPayloadJson = xml2Json(pm.environment.get(\"expected-payload\"));",
-									"",
 									"pm.test(\"It should return an OK response\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
 									"pm.test(\"It should return the expected translated message\", function () {",
-									"    var response = pm.response.text();",
-									"    var responseAsJson = xml2Json(response);",
-									"    console.log(expectedPayloadJson)",
-									"    pm.expect(responseAsJson).to.eql(expectedPayloadXml);",
+									"    const expectedPayloadJson = xml2Json(pm.environment.get(\"expected-payload\"));",
+									"    const response = pm.response.text();",
+									"    const responseAsJson = xml2Json(response);",
+									"    pm.expect(responseAsJson).to.eql(expectedPayloadJson);",
 									"});"
 								],
 								"type": "text/javascript"
