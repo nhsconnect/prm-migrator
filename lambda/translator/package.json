@@ -10,11 +10,15 @@
   "license": "ISC",
   "devDependencies": {
     "aws-sdk-mock": "^4.3.0",
-    "jest": "^23.6.0"
+    "axios-mock-adapter": "^1.16.0",
+    "jest": "^23.6.0",
+    "jest-mock-axios": "^2.1.11"
   },
   "dependencies": {
     "aws-sdk": "^2.390.0",
+    "axios": "^0.18.0",
     "dayjs": "^1.8.5",
+    "easy-soap-request": "^2.3.7",
     "easyxml": "^2.0.1",
     "fast-xml-parser": "^3.12.12",
     "xml-js": "^1.6.9"
