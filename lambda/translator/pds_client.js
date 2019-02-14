@@ -1,4 +1,5 @@
 const soapRequest = require('easy-soap-request');
+const convert = require('fast-xml-parser');
 
 exports.verifyNhsNumber = async function (nhsNumber) {
     const url = 'https://192.168.128.11';
@@ -11,8 +12,17 @@ exports.verifyNhsNumber = async function (nhsNumber) {
     let xmlRequest = this.generateRequest(nhsNumber);
     let timeout_ms = 3000;
     const { response } = await soapRequest(`${url}/${path}`, headers, xmlRequest, timeout_ms);
-    return response.body.includes('SMSP-0000');
+    let responseCode = getResponseCodeFromResponse(response.body);
+    return responseCode === 'SMSP-0000';
 }
+
+function getResponseCodeFromResponse(queryXml) {
+    // const options = {compact: true, spaces: 4};
+    const jsonQuery = convert.parse(queryXml, {ignoreAttributes : false});
+    return jsonQuery['soap:Envelope']['soap:Body']
+        ['itk:DistributionEnvelope']['itk:payloads']['itk:payload']
+        ['verifyNHSNumberResponse-v1-0']['value']['@_code'];
+};
 
 exports.generateRequest = function(nhsNumber) {
     return `<?xml version="1.0" encoding="UTF-8"?>
