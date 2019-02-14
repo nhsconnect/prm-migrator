@@ -9,7 +9,8 @@ exports.verifyNhsNumber = async function (nhsNumber) {
     };
 
     let xmlRequest = this.generateRequest(nhsNumber);
-    const { response } = await soapRequest(`${url}/${path}`, headers, xmlRequest, 10000);
+    let timeout_ms = 3000;
+    const { response } = await soapRequest(`${url}/${path}`, headers, xmlRequest, timeout_ms);
     return response.body.includes('SMSP-0000');
 }
 
