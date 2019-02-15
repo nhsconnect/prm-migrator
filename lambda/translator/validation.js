@@ -1,4 +1,4 @@
-const fakePDS = require('./fakepds');
+const pds_client = require('./fakepds');
 const convert = require('xml-js');
 const util = require('util');
 
@@ -6,7 +6,7 @@ exports.isNhsNoValid = function (record) {
     let extractData = JSON.parse(record.dynamodb.NewImage.PROCESS_PAYLOAD.S);
     let nhsNumber = extractData.EhrExtract.recordTarget.patient.id._attributes.extension;
 
-    fakePDS.verifyNhsNumber(nhsNumber)
+    pds_client.verifyNhsNumber(nhsNumber)
         .then((result) => {
         // parse the XML result here
         return parseResult(result);
