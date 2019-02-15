@@ -90,7 +90,7 @@ resource "aws_codepipeline" "pipeline" {
 
       configuration {
         Owner      = "nhsconnect"
-        Repo       = "prm-infra"
+        Repo       = "prm-migrator"
         Branch     = "prm-new-migrator"
         OAuthToken = "${var.github_token}"
       }
