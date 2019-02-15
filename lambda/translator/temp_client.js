@@ -12,27 +12,9 @@ exports.verifyNhsNumber = async function (nhsNumber) {
     };
 
     let xmlRequest = this.generateRequest(nhsNumber);
-    let certKey = getCertKey();
     let timeout_ms = 3000;
-    const { response } = await soapRequest(`${url}/${path}`, headers, xmlRequest, certKey, timeout_ms);
+    const { response } = await soapRequest(`${url}/${path}`, headers, xmlRequest, timeout_ms);
     return isValid(response.body);
-}
-
-function getCertKey() {
-    let ssm = new AWS.SSM();
-    let certKey;
-    var params = {
-        Name: '/Debug/dale_peakall_key.pem',
-        WithDecryption: true
-      };
-      ssm.getParameter(params, function(err, data) {
-        if (err) {
-            console.log(err, err.stack);
-        } else {
-            certKey = data;
-        }
-      });
-    return certKey;
 }
 
 function isValid(xmlResponse) {

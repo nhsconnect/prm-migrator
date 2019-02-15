@@ -11,8 +11,7 @@
   "devDependencies": {
     "aws-sdk-mock": "^4.3.0",
     "axios-mock-adapter": "^1.16.0",
-    "jest": "^23.6.0",
-    "jest-mock-axios": "^2.1.11"
+    "jest": "^23.6.0"
   },
   "dependencies": {
     "aws-sdk": "^2.390.0",

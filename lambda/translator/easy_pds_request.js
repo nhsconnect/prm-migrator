@@ -1,7 +1,6 @@
 const axios = require('axios');
 const https = require('https');
-const AWS = require('aws-sdk');
-AWS.config.update({ region: "eu-west-2" });
+const cert_handler = require('./cert_handler');
 /**
  * @author Caleb Lemoine
  * @param {string} url endpoint URL
@@ -13,8 +12,10 @@ AWS.config.update({ region: "eu-west-2" });
  * @fulfill {body,statusCode}
  * @returns {Promise.response{body,statusCode}}
  */
-module.exports = function soapRequest(url, headers, xml, certKey, timeout = 10000) {
+module.exports = function soapRequest(url, headers, xml, timeout = 10000) {
     
+    let certKey = cert_handler.get_cert();
+
     let agent = new https.Agent({ 
         ca: certKey
     });

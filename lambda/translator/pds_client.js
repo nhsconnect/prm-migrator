@@ -1,4 +1,4 @@
-const soapRequest = require('easy-soap-request');
+const soapRequest = require('./easy_pds_request');
 const convert = require('fast-xml-parser');
 
 exports.verifyNhsNumber = async function (nhsNumber) {
