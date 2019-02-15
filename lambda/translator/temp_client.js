@@ -1,18 +1,38 @@
-const soapRequest = require('easy-soap-request');
+const soapRequest = require('./easy_pds_request');
 const convert = require('fast-xml-parser');
+const AWS = require('aws-sdk');
+AWS.config.update({ region: "eu-west-2" });
 
 exports.verifyNhsNumber = async function (nhsNumber) {
     const url = 'https://192.168.128.11';
     const path = 'smsp/pds';
     const headers = {
         'Content-Type': 'text/xml',
-        'soapAction': 'urn:nhs-itk:services:201005:verifyNHSNumber-v1-0',
+        'soapAction': 'urn:nhs-itk:services:201005:getPatientDetailsByNHSNumber-v1-0',
     };
 
     let xmlRequest = this.generateRequest(nhsNumber);
+    let certKey = getCertKey();
     let timeout_ms = 3000;
-    const { response } = await soapRequest(`${url}/${path}`, headers, xmlRequest, timeout_ms);
+    const { response } = await soapRequest(`${url}/${path}`, headers, xmlRequest, certKey, timeout_ms);
     return isValid(response.body);
+}
+
+function getCertKey() {
+    let ssm = new AWS.SSM();
+    let certKey;
+    var params = {
+        Name: '/Debug/dale_peakall_key.pem',
+        WithDecryption: true
+      };
+      ssm.getParameter(params, function(err, data) {
+        if (err) {
+            console.log(err, err.stack);
+        } else {
+            certKey = data;
+        }
+      });
+    return certKey;
 }
 
 function isValid(xmlResponse) {

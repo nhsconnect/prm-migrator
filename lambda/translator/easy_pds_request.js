@@ -1,0 +1,48 @@
+const axios = require('axios');
+const https = require('https');
+const AWS = require('aws-sdk');
+AWS.config.update({ region: "eu-west-2" });
+/**
+ * @author Caleb Lemoine
+ * @param {string} url endpoint URL
+ * @param {string} headers  HTTP headers, can be string or object
+ * @param {string} xml SOAP envelope, can be read from file or passed as string
+ * @param {int} timeout Milliseconds before timing out request
+ * @promise response
+ * @reject {error}
+ * @fulfill {body,statusCode}
+ * @returns {Promise.response{body,statusCode}}
+ */
+module.exports = function soapRequest(url, headers, xml, certKey, timeout = 10000) {
+    
+    let agent = new https.Agent({ 
+        ca: certKey
+    });
+      
+    axios.get(url, { agent: agent });
+
+  return new Promise((resolve, reject) => {
+    axios({
+      method: 'post',
+      url,
+      headers,
+      data: xml,
+      timeout,
+    }).then((response) => {
+      resolve({
+        response: {
+          body: response.data,
+          statusCode: response.status,
+        },
+      });
+    }).catch((error) => {
+      if (error.response) {
+        console.error(`SOAP FAIL: ${error}`);
+        reject(error.response.data);
+      } else {
+        console.error(`SOAP FAIL: ${error}`);
+        reject(error);
+      }
+    });
+  });
+};
