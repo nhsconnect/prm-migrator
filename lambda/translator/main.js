@@ -13,9 +13,7 @@ exports.handler = async (event, context) => {
     await asyncForEach(event.Records, async (record) => {
         if (record.eventName === 'INSERT') {
             const uuid = record.dynamodb.Keys.PROCESS_ID.S;
-            console.log("About to update status")
             await client.update(dbQueryHelper.changeStatusTo('PROCESSING', uuid)).promise();
-            console.log("I updated the status!")
             await sleep(1000);
             let status;
             let translationResult;
