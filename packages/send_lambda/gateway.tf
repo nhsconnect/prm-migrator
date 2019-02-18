@@ -29,7 +29,7 @@ resource "aws_api_gateway_method" "send_post_method" {
 
 resource "aws_api_gateway_integration" "api_gw_integration" {
   rest_api_id = "${data.aws_api_gateway_rest_api.api_gw_endpoint.id}"
-  resource_id = "${data.aws_api_gateway_resource.api_gw_resource.id}"
+  resource_id = "${aws_api_gateway_resource.send_post_method.id}"
   http_method = "POST"
 
   integration_http_method = "POST"
