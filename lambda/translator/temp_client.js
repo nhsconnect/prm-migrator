@@ -4,7 +4,7 @@ const AWS = require('aws-sdk');
 AWS.config.update({ region: "eu-west-2" });
 
 exports.verifyNhsNumber = async function (nhsNumber) {
-    const url = 'https://192.168.128.11';
+    const url = 'https://msg.opentest.hscic.gov.uk';
     const path = 'smsp/pds';
     const headers = {
         'Content-Type': 'text/xml',
