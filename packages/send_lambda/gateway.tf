@@ -10,13 +10,8 @@ resource "aws_lambda_permission" "allow_invoke_from_api_gw" {
   source_arn    = "arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${data.aws_api_gateway_rest_api.api_gw_api.id}/*/POST${data.aws_api_gateway_resource.api_gw_resource.path}"
 }
 
-data "aws_api_gateway_rest_api" "api_gw_api" {
+data "aws_api_gateway_rest_api" "api_gw_endpoint" {
   name = "ehr-extract-${var.environment}"
-}
-
-data "aws_api_gateway_resource" "api_gw_resource" {
-  rest_api_id = "${data.aws_api_gateway_rest_api.api_gw_api.id}"
-  path = "/send"
 }
 
 resource "aws_api_gateway_resource" "send_resource" {
@@ -33,7 +28,7 @@ resource "aws_api_gateway_method" "send_post_method" {
 }
 
 resource "aws_api_gateway_integration" "api_gw_integration" {
-  rest_api_id = "${data.aws_api_gateway_rest_api.api_gw_api.id}"
+  rest_api_id = "${data.aws_api_gateway_rest_api.api_gw_endpoint.id}"
   resource_id = "${data.aws_api_gateway_resource.api_gw_resource.id}"
   http_method = "POST"
 
