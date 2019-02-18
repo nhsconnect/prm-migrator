@@ -7,7 +7,7 @@ resource "aws_lambda_permission" "allow_invoke_from_api_gw" {
   action        = "lambda:InvokeFunction"
   function_name = "${local.function_name}"
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${data.aws_api_gateway_rest_api.api_gw_api.id}/*/POST${data.aws_api_gateway_resource.api_gw_resource.path}"
+  source_arn    = "arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${data.aws_api_gateway_rest_api.api_gw_endpoint.id}/*/POST${aws_api_gateway_resource.api_gw_resource.path}"
 }
 
 data "aws_api_gateway_rest_api" "api_gw_endpoint" {
