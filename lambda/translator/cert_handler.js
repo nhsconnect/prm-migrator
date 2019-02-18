@@ -2,7 +2,7 @@ const AWS = require('aws-sdk');
 AWS.config.update({ region: "eu-west-2" });
 
 exports.get_cert = function() {
-    let certKey = getCertKey('/Debug/dale_peakall_key.pem');
+    let certKey = getCertKey(process.env.PDS_PRIVATE_KEY_SSM_PARAM_NAME);
     return certKey;
 }
 
