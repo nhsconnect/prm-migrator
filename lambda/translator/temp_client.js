@@ -14,9 +14,9 @@ exports.verifyNhsNumber = async function (nhsNumber) {
     let xmlRequest = this.generateRequest(nhsNumber);
     let timeout_ms = 3000;
     const { response } = await soapRequest(`${url}/${path}`, headers, xmlRequest, timeout_ms);
-    let isValid = isValid(response.body);
-    console.log(`Response from PDS validity is: ${isValid}`);
-    return isValid;
+    let responseValidity = isValid(response.body);
+    console.log(`Response from PDS validity is: ${responseValidity}`);
+    return responseValidity;
 }
 
 function isValid(xmlResponse) {
