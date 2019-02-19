@@ -1,9 +1,17 @@
 const AWS = require('aws-sdk');
+const https = require('https');
 AWS.config.update({ region: "eu-west-2" });
 
-exports.get_cert = function() {
-    let certKey = getCertKey(process.env.PDS_PRIVATE_KEY_SSM_PARAM_NAME);
-    return certKey;
+exports.getHttpAgent = function() {
+    let ca = getCertKey(process.env.PDS_PRIVATE_KEY_SSM_PARAM_NAME);
+    // let key = getCertKey('dale_peakall_get_real_name');
+    // let cert = ''
+
+    let agent = new https.Agent({
+       ca: ca
+    });
+
+    return agent;
 }
 
 function getCertKey(key_name) {
@@ -20,5 +28,6 @@ function getCertKey(key_name) {
             certKey = data;
         }
       });
+
     return certKey;
 }

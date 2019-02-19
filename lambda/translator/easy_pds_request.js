@@ -1,7 +1,7 @@
 const axios = require('axios');
 const https = require('https');
 require('https').globalAgent.options.ca = require('ssl-root-cas/latest').create();
-const cert_handler = require('./cert_handler');
+const agentBuilder = require('./agentBuilder');
 /**
  * @author Caleb Lemoine
  * @param {string} url endpoint URL
@@ -15,11 +15,7 @@ const cert_handler = require('./cert_handler');
  */
 module.exports = function soapRequest(url, headers, xml, timeout = 10000) {
     
-    let certKey = cert_handler.get_cert();
-
-    let agent = new https.Agent({ 
-        ca: certKey
-    });
+    let agent = agentBuilder.getHttpAgent();
       
     axios.get(url, { agent: agent });
 
