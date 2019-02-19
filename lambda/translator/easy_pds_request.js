@@ -1,6 +1,5 @@
 const axios = require('axios');
 const https = require('https');
-require('https').globalAgent.options.ca = require('ssl-root-cas/latest').create();
 const agentBuilder = require('./agentBuilder');
 /**
  * @author Caleb Lemoine
