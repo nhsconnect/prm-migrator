@@ -1,20 +1,24 @@
 const AWS = require('aws-sdk');
 const https = require('https');
+const fs = require("fs");
+const path = require("path");
 AWS.config.update({ region: "eu-west-2" });
 
 exports.getHttpAgent = function() {
-    let ca = getCertKey(process.env.PDS_PRIVATE_KEY_SSM_PARAM_NAME);
-    // let key = getCertKey('dale_peakall_get_real_name');
-    // let cert = ''
+    const ca = getFileContent("/tls/ca.pem");
+    const cert = getFileContent("/tls/cert.pem");
+    const key = getSsmValueForKey(process.env.PDS_PRIVATE_KEY_SSM_PARAM_NAME);
 
     let agent = new https.Agent({
-       ca: ca
+        ca: ca,
+        cert: cert,
+        key: key
     });
 
     return agent;
 }
 
-function getCertKey(key_name) {
+function getSsmValueForKey(key_name) {
     let ssm = new AWS.SSM();
     let certKey;
     var params = {
@@ -30,4 +34,8 @@ function getCertKey(key_name) {
       });
 
     return certKey;
+}
+
+function getFileContent(relativeFilePath) {
+    return fs.readFileSync(path.resolve(__dirname + relativeFilePath))
 }
