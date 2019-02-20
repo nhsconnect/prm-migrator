@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 AWS.config.update({ region: "eu-west-2" });
 
-exports.getHttpAgent = function() {
+exports.getHttpsAgent = function() {
     const ca = getFileContent("/tls/ca.pem");
     const cert = getFileContent("/tls/cert.pem");
     const key = getSsmValueForKey(process.env.PDS_PRIVATE_KEY_SSM_PARAM_NAME);

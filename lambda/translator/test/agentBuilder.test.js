@@ -11,7 +11,7 @@ describe("Return a HTTP agent", () => {
     beforeAll(() => {
         process.env.PDS_PRIVATE_KEY_SSM_PARAM_NAME = "abc"
         AWS.mock('SSM', 'getParameter', "1234ABCD");
-        agent = agentBuilder.getHttpAgent();
+        agent = agentBuilder.getHttpsAgent();
         
         CERT_DATA = fs.readFileSync(path.resolve(__dirname + "/../tls/cert.pem")); 
         CA_DATA = fs.readFileSync(path.resolve(__dirname + "/../tls/ca.pem"))
