@@ -15,12 +15,16 @@ exports.getHttpsAgent = function() {
         key: key
     });
 
+    console.log(`ca length: ${ca.length}`);
+    console.log(`cert length: ${cert.length}`);
+    console.log(`key length: ${key.length}`);
+
     return agent;
 }
 
 function getSsmValueForKey(key_name) {
     let ssm = new AWS.SSM();
-    let certKey;
+    let item_value;
     var params = {
         Name: key_name,
         WithDecryption: true
@@ -29,11 +33,11 @@ function getSsmValueForKey(key_name) {
         if (err) {
             console.log(err, err.stack);
         } else {
-            certKey = data.Parameter.Value;
+            item_value = data.Parameter.Value;
         }
       });
 
-    return certKey;
+    return item_value;
 }
 
 function getFileContent(relativeFilePath) {

@@ -9,7 +9,8 @@ describe("PDS calls work", () => {
 
     beforeAll(() => {
         mock = new MockAdapter(axios);
-        AWS.mock('SSM', 'getParameter', "1234ABCD");
+        process.env.PDS_PRIVATE_KEY_SSM_PARAM_NAME = "abc"
+        AWS.mock('SSM', 'getParameter', { Parameter: { Value: "1234ABCD"}});
     });
 
     test('we should be able to get an adequate response when validating a valid NHS number', async () => {

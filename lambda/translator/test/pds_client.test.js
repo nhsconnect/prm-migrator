@@ -2,11 +2,14 @@ const pds_client = require('../pds_client');
 const given = require('./given');
 const axios = require('axios');
 const MockAdapter = require('axios-mock-adapter');
+const AWS = require('aws-sdk-mock');
 
 let mock;
 
 beforeAll(() => {
     mock = new MockAdapter(axios);
+    process.env.PDS_PRIVATE_KEY_SSM_PARAM_NAME = "abc"
+    AWS.mock('SSM', 'getParameter', { Parameter: { Value: "1234ABCD"}});
 });
 
 describe("PDS calls work", () => {
