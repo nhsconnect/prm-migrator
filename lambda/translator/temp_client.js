@@ -28,6 +28,8 @@ function isValid(xmlResponse) {
     if (xmlResponse && xmlResponse.body) {
         var names = getNamesFromResponse(xmlResponse.body);
         return (names.first_name === 'John' && names.family_name === 'Smith');
+    } else {
+        console.log(`Response is not in the expected format: ${xmlResponse}`);
     }
     return false;
 }

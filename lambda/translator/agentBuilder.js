@@ -29,7 +29,7 @@ function getSsmValueForKey(key_name) {
         if (err) {
             console.log(err, err.stack);
         } else {
-            certKey = data;
+            certKey = data.Parameter.Value;
         }
       });
 
