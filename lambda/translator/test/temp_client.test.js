@@ -24,6 +24,12 @@ describe("PDS calls work", () => {
         expect(await pds_client.verifyNhsNumber(nhsNoToVerify)).toBe(false);
     });
 
+    test('we should be able to handle an error when calling PDS', async () => {
+        const nhsNoToVerify = "9999345201";
+        mock.onPost('https://msg.opentest.hscic.gov.uk/smsp/pds').networkError();
+        expect(await pds_client.verifyNhsNumber(nhsNoToVerify)).toBe(false);
+    });
+
     afterAll(() => {
         mock.restore();
         AWS.restore('SSM');

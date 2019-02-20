@@ -12,16 +12,24 @@ exports.verifyNhsNumber = async function (nhsNumber) {
     };
 
     let xmlRequest = this.generateRequest(nhsNumber);
-    let timeout_ms = 3000;
-    const { response } = await soapRequest(`${url}/${path}`, headers, xmlRequest, timeout_ms);
-    let responseValidity = isValid(response.body);
-    console.log(`Response from PDS validity is: ${responseValidity}`);
-    return responseValidity;
+    try {
+        let timeout_ms = 3000;
+        const { response } = await soapRequest(`${url}/${path}`, headers, xmlRequest, timeout_ms);
+        let responseValidity = isValid(response);
+        console.log(`Response from PDS validity is: ${responseValidity}`);
+        return responseValidity;    
+    } catch (error) {
+        console.error(error);
+    }
+    return false;
 }
 
 function isValid(xmlResponse) {
-    var names = getNamesFromResponse(xmlResponse);
-    return (names.first_name === 'John' && names.family_name === 'Smith');
+    if (xmlResponse && xmlResponse.body) {
+        var names = getNamesFromResponse(xmlResponse.body);
+        return (names.first_name === 'John' && names.family_name === 'Smith');
+    }
+    return false;
 }
 
 function getNamesFromResponse(queryXml) {

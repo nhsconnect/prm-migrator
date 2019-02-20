@@ -14,9 +14,7 @@ const agentBuilder = require('./agentBuilder');
  */
 module.exports = function soapRequest(url, headers, xml, timeout = 10000) {
     
-    let agent = agentBuilder.getHttpAgent();
-      
-    axios.get(url, { agent: agent });
+  let agent = agentBuilder.getHttpAgent();
 
   return new Promise((resolve, reject) => {
     axios({
@@ -25,6 +23,7 @@ module.exports = function soapRequest(url, headers, xml, timeout = 10000) {
       headers,
       data: xml,
       timeout,
+      httpAgent: agent
     }).then((response) => {
       resolve({
         response: {
@@ -33,7 +32,7 @@ module.exports = function soapRequest(url, headers, xml, timeout = 10000) {
         },
       });
     }).catch((error) => {
-      if (error.response) {
+      if (error.response && error.response.data) {
         console.error(`SOAP FAIL: ${error}`);
         reject(error.response.data);
       } else {
