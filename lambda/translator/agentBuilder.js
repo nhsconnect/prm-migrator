@@ -4,10 +4,10 @@ const fs = require("fs");
 const path = require("path");
 AWS.config.update({ region: "eu-west-2" });
 
-exports.getHttpsAgent = function() {
+exports.getHttpsAgent = async function() {
     const ca = getFileContent("/tls/ca.pem");
     const cert = getFileContent("/tls/cert.pem");
-    const key = getSsmValueForKey(process.env.PDS_PRIVATE_KEY_SSM_PARAM_NAME);
+    const key = await getSsmValueForKey(process.env.PDS_PRIVATE_KEY_SSM_PARAM_NAME);
 
     let agent = new https.Agent({
         ca: ca,
@@ -22,22 +22,15 @@ exports.getHttpsAgent = function() {
     return agent;
 }
 
-function getSsmValueForKey(key_name) {
+async function getSsmValueForKey(key_name) {
     let ssm = new AWS.SSM();
-    let item_value;
     var params = {
         Name: key_name,
         WithDecryption: true
       };
-      ssm.getParameter(params, function(err, data) {
-        if (err) {
-            console.log(err, err.stack);
-        } else {
-            item_value = data.Parameter.Value;
-        }
-      });
 
-    return item_value;
+    let item_value = await ssm.getParameter(params).promise();
+    return item_value.Parameter.Value;
 }
 
 function getFileContent(relativeFilePath) {

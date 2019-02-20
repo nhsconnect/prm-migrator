@@ -12,9 +12,9 @@ const agentBuilder = require('./agentBuilder');
  * @fulfill {body,statusCode}
  * @returns {Promise.response{body,statusCode}}
  */
-module.exports = function soapRequest(url, headers, xml, timeout = 10000) {
-    
-  let agent = agentBuilder.getHttpsAgent();
+module.exports = async function soapRequest(url, headers, xml, timeout = 10000) {
+
+  let agent = await agentBuilder.getHttpsAgent();
 
   return new Promise((resolve, reject) => {
     axios({
