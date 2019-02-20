@@ -1,6 +1,8 @@
 const main = require("../main");
 const given = require("./given");
 const AWS = require('aws-sdk-mock');
+const validation = require('../validation');
+jest.mock('../validation');
 
 describe("We log structured events for garbage payloads", () => {
     const spyLog = jest.spyOn( console, 'log' );
@@ -60,6 +62,8 @@ describe("We log structured events for invalid payloads", () => {
     });
 
     test("it should json stringify the structured event", async () => {
+        validation.isNhsNoValid = function() {return true;};
+
         expect(spyJsonStringify).toHaveBeenCalledWith({
             correlation_id: "101",
             event_type: "process",

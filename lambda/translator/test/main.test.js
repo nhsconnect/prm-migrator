@@ -1,11 +1,14 @@
 const main = require("../main");
 const given = require("./given");
 const AWS = require('aws-sdk-mock');
-const sinon = require('sinon');
-const dbQueryHelper = require('../dbQueryHelper');
+const validation = require('../validation');
+jest.mock('../validation');
 
 describe('Broadly speaking, translations work', () => {
+
     test("we can translate an individual patient", () => {
+        validation.isNhsNoValid = function() {return true;};
+
         expect(main.main(given.aNewRecord)).toEqual({
             status: "COMPLETED",
             correlationId: "101",
@@ -20,6 +23,8 @@ describe('Broadly speaking, translations work', () => {
         })
     });
     test("that when an invalid patient is sent, it causes a failure", () => {
+        validation.isNhsNoValid = function() {return false;};
+
         expect(main.main(given.invalidNhsNoRecord)).toEqual({
             status: "FAILED",
             correlationId: "101",
@@ -31,6 +36,8 @@ describe('Broadly speaking, translations work', () => {
         })
     });
     test("that when an invalid patient is sent, it causes a failure again", () => {
+        validation.isNhsNoValid = function() {return false;};
+
         expect(main.main(given.invalidNhsNoRecord2)).toEqual({
             status: "FAILED",
             correlationId: "101",
@@ -123,6 +130,7 @@ describe("Broadly speaking, we integrate our logic with AWS DynamoDB for INSERT 
            updateCallCount++;
            callback(null, {}); 
         });
+        validation.isNhsNoValid = function() {return true;};
         await main.handler(given.twoNewRecords);
     });
 

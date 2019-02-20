@@ -3,6 +3,7 @@ const AWS = require('aws-sdk-mock');
 const fs = require("fs");
 const path = require("path");
 
+
 describe("Return a HTTP agent", () => {
     let agent;
     let CERT_DATA;
