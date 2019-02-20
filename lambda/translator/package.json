@@ -19,6 +19,7 @@
     "dayjs": "^1.8.5",
     "easyxml": "^2.0.1",
     "fast-xml-parser": "^3.12.12",
+    "libxmljs": "^0.19.5",
     "xml-js": "^1.6.9"
   }
 }

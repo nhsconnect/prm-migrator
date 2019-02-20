@@ -12,5 +12,5 @@ fileignoreconfig:
   ignore_detectors: []
 
 - filename: lambda/translator/package-lock.json
-  checksum: 3ca2b46205880fdd6c97a9139a2dff4b29f0791533581b723741b8c1eae9ff73
+  checksum: ee93b542aa85083c17fdbfeb65627440fbc97606ed92948a4a1879b121981a1b
   ignore_detectors: []
