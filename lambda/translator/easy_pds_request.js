@@ -1,45 +1,20 @@
-const axios = require('axios');
 const agentBuilder = require('./agentBuilder');
-/**
- * @author Caleb Lemoine
- * @param {string} url endpoint URL
- * @param {string} headers  HTTP headers, can be string or object
- * @param {string} xml SOAP envelope, can be read from file or passed as string
- * @param {int} timeout Milliseconds before timing out request
- * @promise response
- * @reject {error}
- * @fulfill {body,statusCode}
- * @returns {Promise.response{body,statusCode}}
- */
+const request = require('request-promise-native');
+
 module.exports = async function soapRequest(url, headers, xml, timeout = 10000) {
 
-  let agent = await agentBuilder.getHttpsAgent();
+  let agentOptions = await agentBuilder.getHttpsAgent();
 
   console.log(`RequestMessage length: ${xml.length}`);
 
-  return new Promise((resolve, reject) => {
-    axios({
-      method: 'post',
-      url,
-      headers,
-      data: xml,
-      timeout,
-      httpsAgent: agent
-    }).then((response) => {
-      resolve({
-        response: {
-          body: response.data,
-          statusCode: response.status,
-        },
-      });
-    }).catch((error) => {
-      if (error.response && error.response.data) {
-        console.error(`SOAP FAIL: ${error}`);
-        reject(error.response.data);
-      } else {
-        console.error(`SOAP FAIL: ${error}`);
-        reject(error);
-      }
-    });
-  });
+  const requestOptions = {    
+    method: 'POST',
+    url: url,
+    agentOptions: agentOptions,
+    body: xml,
+    headers: headers,
+    timeout: timeout
+  };
+  
+  return await request.post(requestOptions);
 };

@@ -19,27 +19,27 @@ describe("Return a HTTP agent", () => {
     });
 
     test('that the agent has the property of ca', async () => {
-        expect(agent.options).toHaveProperty('ca');
+        expect(agent).toHaveProperty('ca');
     });
 
     test("that the agent's ca property is the expected value", async () => {
-        expect(agent.options.ca).toEqual(CA_DATA);
+        expect(agent.ca).toEqual(CA_DATA);
     });
 
     test('that the agent has the property of cert', async () => {
-        expect(agent.options).toHaveProperty('cert');
+        expect(agent).toHaveProperty('cert');
     });
 
     test("that the agent's cert property is the expected value", async () => {
-        expect(agent.options.cert).toEqual(CERT_DATA);
+        expect(agent.cert).toEqual(CERT_DATA);
     });
 
     test('that the agent has the property of key', async () => {
-        expect(agent.options).toHaveProperty('key');
+        expect(agent).toHaveProperty('key');
     });
 
     test("that the agent's key property is the expected value", async () => {
-        expect(agent.options.key).toEqual("1234ABCD");
+        expect(agent.key).toEqual("1234ABCD");
     });
 
     afterAll(() => {

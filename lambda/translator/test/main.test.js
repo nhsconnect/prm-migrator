@@ -7,7 +7,7 @@ jest.mock('../validation');
 describe('Broadly speaking, translations work', () => {
 
     test("we can translate an individual patient", async () => {
-        validation.isNhsNoValid = function() {return true;};
+        validation.isNhsNoValid = async function() {return true;};
 
         expect(await main.main(given.aNewRecord)).toEqual({
             status: "COMPLETED",
@@ -72,6 +72,7 @@ describe("When garbage is sent in,", async () => {
 
     afterAll(() => {
         AWS.restore('DynamoDB.DocumentClient');
+        jest.clearAllMocks();
     });
   
 });
@@ -98,6 +99,7 @@ describe("When invalid NHS number is sent in,", async () => {
 
     afterAll(() => {
         AWS.restore('DynamoDB.DocumentClient');
+        jest.clearAllMocks();
     });
   
 });
@@ -119,6 +121,7 @@ describe("Broadly speaking, we integrate our logic with AWS DynamoDB and we igno
 
     afterAll(() => {
         AWS.restore('DynamoDB.DocumentClient');
+        jest.clearAllMocks();
     });
 });
 
@@ -140,5 +143,6 @@ describe("Broadly speaking, we integrate our logic with AWS DynamoDB for INSERT 
 
     afterAll(() => {
         AWS.restore('DynamoDB.DocumentClient');
+        jest.clearAllMocks();
     });
 });

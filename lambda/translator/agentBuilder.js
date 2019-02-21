@@ -9,11 +9,11 @@ exports.getHttpsAgent = async function() {
     const cert = getFileContent("/tls/cert.pem");
     const key = await getSsmValueForKey(process.env.PDS_PRIVATE_KEY_SSM_PARAM_NAME);
 
-    let agent = new https.Agent({
+    let agent = {
         ca: ca,
         cert: cert,
         key: key
-    });
+    };
 
     console.log(`ca length: ${ca.length}`);
     console.log(`cert length: ${cert.length}`);
