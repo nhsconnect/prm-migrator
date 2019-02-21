@@ -13,20 +13,14 @@ describe("PDS calls work", () => {
 
     test('we should be able to get an adequate response when validating a valid NHS number', async () => {
         const nhsNoToVerify = "9999345201";
-        request.post = async function() { return {
-          body: given.generateValidPdsGetNHSNumberResponseFor(nhsNoToVerify),
-          statusCode: 200,
-        }};
+        request.post = async function() { return given.generateValidPdsGetNHSNumberResponseFor(nhsNoToVerify); };
     
         expect(await pds_client.verifyNhsNumber(nhsNoToVerify)).toBe(true);
     });
 
     test('we should be able to get an adequate response when validating a invalid NHS number', async () => {
         const nhsNoToVerify = "9999345201";
-        request.post = async function() { return {
-          body: given.generateInvalidPdsGetNHSNumberResponse(),
-          statusCode: 200,
-        }};
+        request.post = async function() { return given.generateInvalidPdsGetNHSNumberResponse(); };
 
         expect(await pds_client.verifyNhsNumber(nhsNoToVerify)).toBe(false);
     });

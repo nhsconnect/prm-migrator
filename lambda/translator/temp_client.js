@@ -28,8 +28,8 @@ exports.verifyNhsNumber = async function (nhsNumber) {
 }
 
 function isValid(xmlResponse, nhsNumber) {
-    if (xmlResponse && xmlResponse.body) {
-        var responseNhsNumber = getNhsNumberFromResponse(xmlResponse.body);
+    if (xmlResponse) {
+        var responseNhsNumber = getNhsNumberFromResponse(xmlResponse);
         return nhsNumber === responseNhsNumber;
     } else {
         console.log(`Response is not in the expected format: ${xmlResponse}`);
