@@ -8,7 +8,7 @@ fileignoreconfig:
   ignore_detectors: []
 
 - filename: e2e/postman-collections/PRM-Dev.postman_environment.json
-  checksum: edd31dc4325be7be7c1f26ef7c41efd9926e0ddfc39a3fec4fc3d6196090f4ec
+  checksum: 6b8ff41a65a84e0eceaf751d2d708f37c1dd600828924149bf6e1277a83393c4
   ignore_detectors: []
 
 - filename: lambda/translator/package-lock.json
