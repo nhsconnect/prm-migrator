@@ -14,11 +14,9 @@ describe("PDS calls work", () => {
     test('we should be able to get an adequate response when validating a valid NHS number', async () => {
         const nhsNoToVerify = "9999345201";
         request.post = async function() { return {
-            response: {
-              body: given.generateValidPdsGetNHSNumberResponseFor(nhsNoToVerify),
-              statusCode: 200,
-            },
-          }};
+          body: given.generateValidPdsGetNHSNumberResponseFor(nhsNoToVerify),
+          statusCode: 200,
+        }};
     
         expect(await pds_client.verifyNhsNumber(nhsNoToVerify)).toBe(true);
     });
@@ -26,18 +24,15 @@ describe("PDS calls work", () => {
     test('we should be able to get an adequate response when validating a invalid NHS number', async () => {
         const nhsNoToVerify = "9999345201";
         request.post = async function() { return {
-            response: {
-              body: given.generateInvalidPdsGetNHSNumberResponse(),
-              statusCode: 200,
-            },
-          }};
+          body: given.generateInvalidPdsGetNHSNumberResponse(),
+          statusCode: 200,
+        }};
 
         expect(await pds_client.verifyNhsNumber(nhsNoToVerify)).toBe(false);
     });
 
     afterAll(() => {
         jest.clearAllMocks();
-
         AWS.restore('SSM');
     });
 });
