@@ -1,7 +1,7 @@
 const validator = require("../validation");
 const given = require('./given');
-const pds_client = require('../temp_client');
-jest.mock('../temp_client');
+const pds_client = require('../pds_client');
+jest.mock('../pds_client');
 
 describe("Calling validation", () => {
     test("should return true if a given NHS number is valid.", async () => {

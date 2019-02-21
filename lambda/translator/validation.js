@@ -1,4 +1,4 @@
-const pds_client = require('./temp_client');
+const pds_client = require('./pds_client');
 const convert = require('xml-js');
 const util = require('util');
 

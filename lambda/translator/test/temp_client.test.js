@@ -1,5 +1,5 @@
-const pds_client = require('../temp_client');
-const given = require('./temp_given');
+const pds_client = require('../pds_client');
+const given = require('./given');
 const AWS = require('aws-sdk-mock');
 const request = require('request-promise-native');
 jest.mock('request-promise-native');
