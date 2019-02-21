@@ -49,7 +49,6 @@ exports.handler = async (event, context) => {
                 }
             } catch (error) {
                 status = "ERROR";
-                log_event.event.translation.error = error;
             }
             await client.update(dbQueryHelper.changeStatusTo(status, uuid)).promise();
 

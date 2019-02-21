@@ -31,8 +31,7 @@ describe("We log structured events for garbage payloads", () => {
                 destination: "Unknown",
                 process_status: "ERROR",
                 translation: {
-                    time_taken: expect.any(Number),
-                    error: expect.any(Object)
+                    time_taken: expect.any(Number)
                 }
             }
         });
@@ -62,16 +61,16 @@ describe("We log structured events for invalid payloads", async () => {
     });
 
     test("it should json stringify the structured event", async () => {
-        validation.isNhsNoValid = function() {return true;};
+        validation.isNhsNoValid = async function() {return true;};
 
         expect(spyJsonStringify).toHaveBeenCalledWith({
             correlation_id: "101",
             event_type: "process",
             time_created: expect.any(String),
             event: {
-                source: "Test_Source",
-                destination: "Test_Destination",
-                process_status: "FAILED",
+                source: "Unknown",
+                destination: "Unknown",
+                process_status: "ERROR",
                 translation: {
                     time_taken: expect.any(Number)
                 }
