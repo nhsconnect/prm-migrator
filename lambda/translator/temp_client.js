@@ -1,5 +1,4 @@
 const soapRequest = require('./easy_pds_request');
-const convert = require('fast-xml-parser');
 const AWS = require('aws-sdk');
 AWS.config.update({ region: "eu-west-2" });
 const libxmljs = require("libxmljs");
