@@ -14,6 +14,7 @@ describe("We log structured events for garbage payloads", () => {
         });
         spyLog.mockReset();
         spyJsonStringify.mockReset();
+        jest.clearAllMocks();
         await main.handler(given.aBadRecord);
     });
 
@@ -53,6 +54,7 @@ describe("We log structured events for invalid payloads", async () => {
         spyLog.mockReset();
         spyJsonStringify.mockReset();
         const event = { "Records": [given.invalidNhsNoRecord]};
+        validation.isNhsNoValid = async function() {return false;};
         await main.handler(event);
     });
 
@@ -61,16 +63,14 @@ describe("We log structured events for invalid payloads", async () => {
     });
 
     test("it should json stringify the structured event", async () => {
-        validation.isNhsNoValid = async function() {return true;};
-
         expect(spyJsonStringify).toHaveBeenCalledWith({
             correlation_id: "101",
             event_type: "process",
             time_created: expect.any(String),
             event: {
-                source: "Unknown",
-                destination: "Unknown",
-                process_status: "ERROR",
+                source: "Test_Source",
+                destination: "Test_Destination",
+                process_status: "FAILED",
                 translation: {
                     time_taken: expect.any(Number)
                 }
@@ -80,6 +80,7 @@ describe("We log structured events for invalid payloads", async () => {
 
     afterAll(() => {
         AWS.restore('DynamoDB.DocumentClient');
+        jest.clearAllMocks();
     });
 });
 
@@ -93,6 +94,7 @@ describe("We log structured events for translated payloads", () => {
         });
         spyLog.mockReset();
         const event = {"Records": [given.aNewRecord]};
+        validation.isNhsNoValid = async function() {return true;};
         await main.handler(event);
     });
 
@@ -118,5 +120,6 @@ describe("We log structured events for translated payloads", () => {
 
     afterAll(() => {
         AWS.restore('DynamoDB.DocumentClient');
+        jest.clearAllMocks();
     });
 });
