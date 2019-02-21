@@ -34,7 +34,7 @@ exports.handler = async (event, context) => {
             };
 
             try {
-                translationResult = this.main(record);
+                translationResult = await this.main(record);
 
                 extractData = JSON.parse(record.dynamodb.NewImage.PROCESS_PAYLOAD.S);
                 log_event.event.source = extractData.EhrExtract.author.AgentOrgSDS.agentOrganizationSDS.id._attributes.extension;
@@ -70,8 +70,8 @@ async function asyncForEach(array, callback) {
     }
 }
 
-exports.main = function (record) {
-    if (validator.isNhsNoValid(record) === true) {
+exports.main = async function (record) {
+    if (await validator.isNhsNoValid(record) === true) {
         const FhirPayload = translator.translate(record)
         return {
             status: "COMPLETED",

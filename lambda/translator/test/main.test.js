@@ -6,10 +6,10 @@ jest.mock('../validation');
 
 describe('Broadly speaking, translations work', () => {
 
-    test("we can translate an individual patient", () => {
+    test("we can translate an individual patient", async () => {
         validation.isNhsNoValid = function() {return true;};
 
-        expect(main.main(given.aNewRecord)).toEqual({
+        expect(await main.main(given.aNewRecord)).toEqual({
             status: "COMPLETED",
             correlationId: "101",
             translation: {
@@ -22,10 +22,10 @@ describe('Broadly speaking, translations work', () => {
             original: given.aNewRecord,
         })
     });
-    test("that when an invalid patient is sent, it causes a failure", () => {
-        validation.isNhsNoValid = function() {return false;};
+    test("that when an invalid patient is sent, it causes a failure", async () => {
+        validation.isNhsNoValid = async function() {return false;};
 
-        expect(main.main(given.invalidNhsNoRecord)).toEqual({
+        expect(await main.main(given.invalidNhsNoRecord)).toEqual({
             status: "FAILED",
             correlationId: "101",
             reason: {
@@ -35,10 +35,10 @@ describe('Broadly speaking, translations work', () => {
             original: given.invalidNhsNoRecord,
         })
     });
-    test("that when an invalid patient is sent, it causes a failure again", () => {
-        validation.isNhsNoValid = function() {return false;};
+    test("that when an invalid patient is sent, it causes a failure again", async () => {
+        validation.isNhsNoValid = async function() {return false;};
 
-        expect(main.main(given.invalidNhsNoRecord2)).toEqual({
+        expect(await main.main(given.invalidNhsNoRecord2)).toEqual({
             status: "FAILED",
             correlationId: "101",
             reason: {
@@ -50,7 +50,7 @@ describe('Broadly speaking, translations work', () => {
     });
 });
 
-describe("When garbage is sent in,", () => {
+describe("When garbage is sent in,", async () => {
     let updateCallCount = 0;
     let result;
 
@@ -76,7 +76,7 @@ describe("When garbage is sent in,", () => {
   
 });
 
-describe("When invalid NHS number is sent in,", () => {
+describe("When invalid NHS number is sent in,", async () => {
     let updateCallCount = 0;
     let result;
 
@@ -102,7 +102,7 @@ describe("When invalid NHS number is sent in,", () => {
   
 });
 
-describe("Broadly speaking, we integrate our logic with AWS DynamoDB and we ignore MODIFY events", () => {
+describe("Broadly speaking, we integrate our logic with AWS DynamoDB and we ignore MODIFY events", async () => {
     let updateCallCount = 0;
 
     beforeAll(async () => {
@@ -122,7 +122,7 @@ describe("Broadly speaking, we integrate our logic with AWS DynamoDB and we igno
     });
 });
 
-describe("Broadly speaking, we integrate our logic with AWS DynamoDB for INSERT events only", () => {
+describe("Broadly speaking, we integrate our logic with AWS DynamoDB for INSERT events only", async () => {
     let updateCallCount = 0;
 
     beforeAll(async () => {

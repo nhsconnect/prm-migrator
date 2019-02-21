@@ -43,7 +43,7 @@ describe("We log structured events for garbage payloads", () => {
     });
 });
 
-describe("We log structured events for invalid payloads", () => {
+describe("We log structured events for invalid payloads", async () => {
     const spyLog = jest.spyOn( console, 'log' );
     const spyJsonStringify = jest.spyOn( JSON, 'stringify' );
 
