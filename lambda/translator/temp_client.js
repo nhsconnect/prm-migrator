@@ -9,10 +9,11 @@ exports.verifyNhsNumber = async function (nhsNumber) {
     const path = 'smsp/pds';
     const headers = {
         'Content-Type': 'text/xml',
-        'soapAction': 'urn:nhs-itk:services:201005:getNHSNumber-v1-0',
+        'SOAPAction': 'urn:nhs-itk:services:201005:getNHSNumber-v1-0',
     };
 
     let xmlRequest = this.generateGetNHSNumberRequest();
+
     try {
         let timeout_ms = 10000;
         const { response } = await soapRequest(`${url}/${path}`, headers, xmlRequest, timeout_ms);
