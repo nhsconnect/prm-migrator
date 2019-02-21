@@ -20,7 +20,9 @@ exports.verifyNhsNumber = async function (nhsNumber) {
         console.log(`Response from PDS validity is: ${responseValidity}`);
         return responseValidity;    
     } catch (error) {
-        console.error(error);
+        if (error.error) {
+            console.error(error.error);
+        }
     }
     return false;
 }
@@ -99,8 +101,7 @@ exports.generateRequest = function(nhsNumber) {
 }
 
 exports.generateGetNHSNumberRequest = function() {
-    return `
-    <?xml version="1.0" encoding="UTF-8"?><!--This example message is provided for illustrative purposes only. It has had no clinical validation. Whilst every effort has been taken to ensure that the examples are consistent with the message specification, where there are conflicts with the written message specification or schema, the specification or schema shall be considered to take precedence-->
+    return `<?xml version="1.0" encoding="UTF-8"?><!--This example message is provided for illustrative purposes only. It has had no clinical validation. Whilst every effort has been taken to ensure that the examples are consistent with the message specification, where there are conflicts with the written message specification or schema, the specification or schema shall be considered to take precedence-->
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsa="http://www.w3.org/2005/08/addressing" xmlns:itk="urn:nhs-itk:ns:201005">
 	<soap:Header>
 		<wsa:MessageID>B72F7785-534C-11E6-ADCA-29C651A3BE6F</wsa:MessageID>
@@ -144,7 +145,6 @@ exports.generateGetNHSNumberRequest = function() {
 								<value code="2" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.25" />
 								<semanticsText>Person.Gender</semanticsText>
 							</Person.Gender>
-							
 							<Person.Name>
 								<value>
 									<given>LILITH</given>
@@ -164,6 +164,5 @@ exports.generateGetNHSNumberRequest = function() {
 			</itk:payloads>
 		</itk:DistributionEnvelope>
 	</soap:Body>
-</soap:Envelope>
-    `
+</soap:Envelope>`
 };
