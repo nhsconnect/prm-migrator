@@ -15,6 +15,8 @@ module.exports = async function soapRequest(url, headers, xml, timeout = 10000) 
 
   let agent = await agentBuilder.getHttpsAgent();
 
+  console.log(`RequestMessage length: ${xml.length}`);
+
   return new Promise((resolve, reject) => {
     axios({
       method: 'post',
