@@ -6,6 +6,7 @@ phases:
     - npm-recursive-install
     - /usr/share/dependency-check/bin/dependency-check.sh --project prm-migrator --scan . --out /report --format ALL
     - cat /report/dependency-check-report.json
+    - aws s3 cp /report/dependency-check-vulnerability.html s3://$REPORT_S3_BUCKET/dependency-check-vulnerability.html
 cache:
   paths:
     - /usr/share/dependency-check/data
