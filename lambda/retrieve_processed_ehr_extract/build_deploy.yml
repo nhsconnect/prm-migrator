@@ -3,7 +3,6 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - export ASSUME_ROLE_NAME=arn:aws:iam::431593652018:role/PASTASLOTHVULGAR
       - chmod a+x ./utils/*
       - eval $(./utils/aws-cli-assumerole.sh -r $ASSUME_ROLE_NAME)
   build:
@@ -12,5 +11,5 @@ phases:
       - npm install
       - zip ../../retrieve_processed_ehr_extract.zip . -r -x *.test.js -x wallaby.js
       - cd -
-      - aws s3 cp retrieve_processed_ehr_extract.zip s3://prm-431593652018-codebuild-lambda-artifact/retrieve_processed_ehr_extract.zip
-      - aws lambda update-function-code --region $AWS_REGION --function-name dev-RetrieveProcessedEhrExtract --s3-bucket prm-431593652018-codebuild-lambda-artifact --s3-key retrieve_processed_ehr_extract.zip
+      - aws s3 cp retrieve_processed_ehr_extract.zip s3://prm-${ACCOUNT_ID}-codebuild-lambda-artifact/retrieve_processed_ehr_extract.zip
+      - aws lambda update-function-code --region $AWS_REGION --function-name ${ENVIRONMENT}-RetrieveProcessedEhrExtract --s3-bucket prm-${ACCOUNT_ID}-codebuild-lambda-artifact --s3-key retrieve_processed_ehr_extract.zip
