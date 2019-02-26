@@ -1,0 +1,7 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+    - npm-recursive-install
+    - /usr/share/dependency-check/bin/dependency-check.sh --project prm-migrator --scan . --out /report --format ALL
