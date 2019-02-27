@@ -6,7 +6,7 @@ phases:
     - chmod a+x ./utils/dep-check.sh 
   build:
     commands:
-    - sh ./utils/dep-check.sh
+    - bash ./utils/dep-check.sh
 cache:
   paths:
     - /usr/share/dependency-check/data/**/*
