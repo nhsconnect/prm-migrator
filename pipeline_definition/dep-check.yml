@@ -5,7 +5,15 @@ phases:
     commands:
     - npm-recursive-install
     - /usr/share/dependency-check/bin/dependency-check.sh --project prm-migrator --scan . --out /report --format ALL
-    - cat /report/dependency-check-report.json | jq '.dependencies | .[] | select(.vulnerabilities != null) | {fileName, filePath, vulnerabilities:.vulnerabilities[] | {cvssScore,severity}}' | jq -n '[inputs]'
+    - export VULS=$(cat /report/dependency-check-report.json | jq '.dependencies | .[] | select(.vulnerabilities != null) | {fileName, filePath, vulnerabilities:.vulnerabilities[] | {cvssScore:.cvssScore | tonumber,severity}}' | jq -n '[inputs]')
+    - echo $VULS
+  post_build:
+    commands:
+    - export HIGH_VULS=$(echo $VULS | jq '.[] | .vulnerabilities | select(.cvssScore >= 0.0)')
+    - |
+      if [ "$HIGH_VULS" ]; then
+        export CODEBUILD_BUILD_SUCCEEDING=0
+      fi
 cache:
   paths:
     - /usr/share/dependency-check/data
