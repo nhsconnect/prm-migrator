@@ -1,10 +1,12 @@
 version: 0.2
 
 phases:
+  pre_build:
+    commands:
+    - chmod a+x ./utils/dep-check.sh 
   build:
     commands:
-    - npm-recursive-install
-    - /usr/share/dependency-check/bin/dependency-check.sh --project prm-migrator --scan . --out /report --format ALL
+    - sh ./utils/dep-check.sh
 cache:
   paths:
     - /usr/share/dependency-check/data/**/*
