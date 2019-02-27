@@ -10,7 +10,7 @@ echo "Scan complete"
 export VULS=$(cat /report/dependency-check-report.json | jq '.dependencies | .[] | select(.vulnerabilities != null) | {fileName, filePath, vulnerabilities:.vulnerabilities[] | {cvssScore:.cvssScore | tonumber,severity}}' | jq -n '[inputs]')
 echo $VULS
 
-export HIGH_VULS=$(echo $VULS | jq '.[] | .vulnerabilities | select(.cvssScore >= $FAIL_ON_CVSS)')
+export HIGH_VULS=$(echo $VULS | jq --arg FAIL_ON_CVSS "$FAIL_ON_CVSS" '.[] | .vulnerabilities | select(.cvssScore >= $FAIL_ON_CVSS)')
 
 if [ "$HIGH_VULS" ]; then
   echo "Vulnerabilities found!"
