@@ -5,7 +5,6 @@ phases:
     commands:
     - npm-recursive-install
     - /usr/share/dependency-check/bin/dependency-check.sh --project prm-migrator --scan . --out /report --format ALL
-    - cat /report/dependency-check-report.json | jq '.dependencies | .[] | select(.vulnerabilities != null) | [{fileName, filePath, vulnerabilities:.vulnerabilities[] | {cvssScore,severity}}]'
-cache:
+    - cat /report/dependency-check-report.json | jq '.dependencies | .[] | select(.vulnerabilities != null) | {fileName, filePath, vulnerabilities:.vulnerabilities[] | {cvssScore,severity}}' | jq -n '[inputs]'
   paths:
     - /usr/share/dependency-check/data
