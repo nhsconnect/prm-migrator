@@ -3,6 +3,7 @@
 npm-recursive-install
 
 echo "Starting scan"
+echo "FAIL_ON_CVSS is " + $FAIL_ON_CVSS
 /usr/share/dependency-check/bin/dependency-check.sh --project prm-migrator --scan . --out /report --format ALL --failOnCVSS $FAIL_ON_CVSS
 echo "Scan complete"
 
