@@ -55,6 +55,9 @@ data "aws_iam_policy_document" "pipeline_role_policy" {
     ]
 
     resources = [
+      "${aws_codebuild_project.test.arn}",
+      "${aws_codebuild_project.build.arn}",
+      "${aws_codebuild_project.terratest.arn}",
       "${aws_codebuild_project.deploy.arn}",
     ]
   }
