@@ -151,6 +151,7 @@ resource "aws_codepipeline" "pipeline" {
 
       configuration {
         ProjectName = "${aws_codebuild_project.terratest.name}"
+        PrimarySource = "source"
       }
     }
   }
@@ -168,6 +169,7 @@ resource "aws_codepipeline" "pipeline" {
 
       configuration {
         ProjectName = "${aws_codebuild_project.deploy.name}"
+        PrimarySource = "source"
       }
     }
   }

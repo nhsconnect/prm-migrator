@@ -15,7 +15,7 @@ resource "aws_codebuild_project" "terratest" {
 
   environment {
     compute_type = "BUILD_GENERAL1_SMALL"
-    image        = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.aws_region}.amazonaws.com/codebuild/terraform:latest"
+    image        = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.aws_region}.amazonaws.com/codebuild/terratest:latest"
     type         = "LINUX_CONTAINER"
 
     environment_variable {
