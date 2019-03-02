@@ -1,6 +1,6 @@
 account_id := $(shell aws sts get-caller-identity |  jq -r .Account)
 
-lambdas := send_lambda status_lambda
+lambdas := send status
 
 build : $(foreach lambda,$(lambdas),build-$(lambda))
 test : $(foreach lambda,$(lambdas),test-$(lambda))
