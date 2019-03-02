@@ -20,7 +20,8 @@ resource "aws_codebuild_project" "terratest" {
 
     environment_variable {
       name  = "ENVIRONMENT"
-      value = "${var.environment}"
+    #   value = "${var.environment}"
+      value = "dev"
     }
   }
 
