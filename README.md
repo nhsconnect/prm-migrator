@@ -39,88 +39,35 @@ Set your working directory to the directory containing the lambda source, e.g. s
 The source code uses the following structure:
 
 ```
-├── deploy
+├── deploy                              Terragrunt setup for deploying components
 |   ├── <env-name>-<account-id>         Environment specific terragrunt setup
-|   |   ├── apigw_deploy
-|   |   |   ├── Makefile                Makefile for deploying component
+|   |   ├── <component>
+|   |   |   ├── Makefile                Makefile for deploying individual component
 |   |   |   └── terraform.tfvars        Terragrunt configuration for component
-|   |   ├── apigw_setup
-|   |   |   ├── Makefile
-|   |   |   └── terraform.tfvars
-|   |   ├── retrieve_lambda
-|   |   |   ├── Makefile
-|   |   |   └── terraform.tfvars
-|   |   ├── send_lambda
-|   |   |   ├── Makefile
-|   |   |   └── terraform.tfvars
-|   |   ├── status_lambda
-|   |   |   ├── Makefile
-|   |   |   └── terraform.tfvars
 |   |   └── Makefile                    Makefile for deploying a whole environment
 |   ├── src                             Terraform code to deploy components
-|   |   ├── account_setup
-|   |   |   └── *.tf
-|   |   ├── apigw_deploy
-|   |   |   └── *.tf
-|   |   ├── apigw_setup
-|   |   |   └── *.tf
-|   |   ├── modules
-|   |   |   ├── apigw_deploy
-|   |   |   |   └── *.tf
-|   |   |   └── apigw_setup
-|   |   |       └── *.tf
-|   |   ├── retrieve_lambda
-|   |   |   └── *.tf
-|   |   ├── send_lambda
-|   |   |   └── *.tf
-|   |   └── status_lambda
+|   |   └── <component>
 |   |       └── *.tf
-|   └── test                            Functional tests (deploy and test components)
-|       ├── apigw_setup
-|       |   ├── post_setup              Terraform code used to create dependent resources
-|       |   |   └── *.tf
-|       |   ├── *.go                    Test application
-|       |   ├── Gopkg.lock              Dep locked dependencies
-|       |   └── Gopkg.toml              Dep dependencies
-|       ├── retrieve_lambda
-|       |   ├── post_setup
-|       |   |   └── *.tf
-|       |   ├── pre_setup
-|       |   |   └── *.tf
-|       |   ├── *.go
-|       |   ├── Gopkg.lock
-|       |   └── Gopkg.toml
-|       ├── send_lambda
-|       |   ├── post_setup
-|       |   |   └── *.tf
-|       |   ├── pre_setup
-|       |   |   └── *.tf
-|       |   ├── *.go
-|       |   ├── Gopkg.lock
-|       |   └── Gopkg.toml
-|       └── status_lambda
-|           ├── post_setup
+|   └── test                            Terraform tests (deploy and test components)
+|       └── <package>
+|           ├── pre_setup               Terraform code used to create dependent resources
 |           |   └── *.tf
-|           ├── pre_setup
+|           ├── post_setup              Terraform code used to create dependent resources
 |           |   └── *.tf
-|           ├── *.go
-|           ├── Gopkg.lock
-|           └── Gopkg.toml
-├── send_lambda                         Lambda code
-|       |   └── Gopkg.toml
+|           ├── *.go                    Test application
+|           ├── Gopkg.lock              Dep locked dependencies
+|           └── Gopkg.toml              Dep dependencies
+├── lambda                              Lambda code
+|   └── <lambda>
 |       ├── *.js                        Javascript code for lambda and unit tests
 |       ├── package.json                NPM dependencies
 |       ├── package-lock.json           NPM locked dependencies
 |       └── Makefile                    Makefile for use when developing lambda
-├── status_lambda
-|       ├── *.js
-|       ├── package.json
-|       ├── package-lock.json
-|       └── Makefile
-├── retrieve_lambda
-|       ├── *.js
-|       ├── package.json
-|       ├── package-lock.json
-|       └── Makefile
+├── pipeline                            Terragrunt setup for deploying pipeline
+|   ├── <env-name>-<account-id>         Environment specific terragrunt setup
+|   |   └── terraform.tfvars            Terragrunt configuration
+|   └── src                             Terraform code to build pipeline
+|       ├── *.yml                       CodeBuild buildspec files
+|       └── *.tf                        Terraform code
 └── Makefile                            Makefile for building and deploying the whole system
 ```

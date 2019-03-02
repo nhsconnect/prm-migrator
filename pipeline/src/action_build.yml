@@ -7,4 +7,4 @@ phases:
 artifacts:
   files:
   - lambda/*/lambda.zip
-  - lambda/*/prod_dep/**
+  - lambda/*/prod_dep/**/*
