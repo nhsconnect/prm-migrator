@@ -1,9 +1,9 @@
 .PHONY : test clean
 
-test : Gopkg.toml *.go
+test : vendor *.go
 	go test
 
-Gopkg.toml : 
+vendor : Gopkg.toml
 	dep ensure
 
 clean :
