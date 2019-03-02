@@ -22,7 +22,7 @@ test : node_modules *.js
 	npm test
 
 terratest : lambda.zip
-	$(MAKE) -C ../deploy/test/send_lambda
+	$(MAKE) -C ../../deploy/test/send_lambda
 
 clean :
 	rm -rf node_modules prod_dep lambda.zip
