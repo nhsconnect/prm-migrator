@@ -3,5 +3,5 @@ version: 0.2
 phases:
   build:
     commands:
-    - cp -r $CODEBUILD_SRC_DIR_build $CODEBUILD_SRC_DIR
+    - cp -rvT $CODEBUILD_SRC_DIR_build $CODEBUILD_SRC_DIR
     - make -j terratest
