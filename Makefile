@@ -18,7 +18,7 @@ terratest-% :
 terratest-apigw :
 	$(MAKE) -C deploy/test/apigw_setup
 
-deploy-% : build-$*
+deploy-% : build
 	$(MAKE) -C deploy/$*-$(account_id)
 
 destroy-% :
