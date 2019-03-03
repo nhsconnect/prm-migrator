@@ -1,10 +1,10 @@
-resource "aws_codebuild_project" "terratest" {
-  name        = "prm-apigw-terratest-${var.environment}"
-  description = "Test the APIGW Lambdas Deploys"
+resource "aws_codebuild_project" "terratest_status_lambda" {
+  name        = "prm-status-lambda-terratest-${var.environment}"
+  description = "Test the APIGW Status Lambdas Deploy"
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = "./pipeline/src/allinone/action_terratest.yml"
+    buildspec = "./pipeline/src/allinone/action_terratest_status_lambda.yml"
   }
 
   artifacts {

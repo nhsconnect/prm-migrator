@@ -22,13 +22,13 @@ test : node_modules *.js
 	npm test
 
 terratest : lambda.zip
-	$(MAKE) -C ../../deploy/test/send_lambda
+	$(MAKE) -C ../../deploy/test/status_lambda
 
 clean :
 	rm -rf node_modules prod_dep lambda.zip
 
 deploy-% : build test
-	$(MAKE) -C ../../deploy/$*-$(account_id)/send_lambda apply
+	$(MAKE) -C ../../deploy/$*-$(account_id)/status_lambda apply
 
 update-% : build test
-	$(MAKE) -C ../../deploy/$*-$(account_id)/send_lambda update
+	$(MAKE) -C ../../deploy/$*-$(account_id)/status_lambda update
