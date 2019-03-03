@@ -4,7 +4,7 @@ resource "aws_codebuild_project" "deploy" {
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = "./pipeline/src/action_deploy.yml"
+    buildspec = "./pipeline/src/allinone/action_deploy.yml"
   }
 
   artifacts {

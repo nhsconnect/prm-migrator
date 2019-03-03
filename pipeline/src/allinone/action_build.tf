@@ -1,10 +1,10 @@
-resource "aws_codebuild_project" "test" {
-  name        = "prm-apigw-test-${var.environment}"
-  description = "Test the APIGW Lambdas"
+resource "aws_codebuild_project" "build" {
+  name        = "prm-apigw-build-${var.environment}"
+  description = "Build the APIGW Lambdas"
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = "./pipeline/src/action_test.yml"
+    buildspec = "./pipeline/src/allinone/action_build.yml"
   }
 
   artifacts {

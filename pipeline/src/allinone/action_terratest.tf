@@ -4,7 +4,7 @@ resource "aws_codebuild_project" "terratest" {
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = "./pipeline/src/action_terratest.yml"
+    buildspec = "./pipeline/src/allinone/action_terratest.yml"
   }
 
   artifacts {

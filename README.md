@@ -65,9 +65,11 @@ The source code uses the following structure:
 |       └── Makefile                    Makefile for use when developing lambda
 ├── pipeline                            Terragrunt setup for deploying pipeline
 |   ├── <env-name>-<account-id>         Environment specific terragrunt setup
-|   |   └── terraform.tfvars            Terragrunt configuration
+|   |   └── <pipeline>
+|   |       └── terraform.tfvars        Terragrunt configuration
 |   └── src                             Terraform code to build pipeline
-|       ├── *.yml                       CodeBuild buildspec files
-|       └── *.tf                        Terraform code
+|       └── <pipeline>
+|           ├── *.yml                   CodeBuild buildspec files
+|           └── *.tf                    Terraform code
 └── Makefile                            Makefile for building and deploying the whole system
 ```

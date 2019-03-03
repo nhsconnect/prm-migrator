@@ -1,6 +1,6 @@
 terragrunt = {
   terraform {
-    source = "../src//"
+    source = "../../src//allinone"
   }
 
   remote_state {
