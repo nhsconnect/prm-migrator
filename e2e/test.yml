@@ -9,4 +9,4 @@ phases:
     commands:
       - cd ./e2e
       - npm install -g newman
-      - npm t
+      - newman run postman-collections/PRM.postman_collection.json --environment postman-collections/PRM-${ENVIRONMENT}-${ACCOUNT_ID}.postman_environment.json --delay-request 200
