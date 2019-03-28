@@ -16,7 +16,7 @@ This solution is a walking skeleton to explore the problem of a patient record b
 
 ![Solution overview](https://raw.githubusercontent.com/nhsconnect/prm-migrator/master/images/prm_migrator_overview.png "Solution overview")
 
-For further information on the solution, please see the [Core Infrastructure](https://gpitbjss.atlassian.net/wiki/spaces/TW/pages/1407385703/Core+Infrastructure) section in **Confluence**.
+For further information on the solution, please see the [Core Infrastructure](https://gpitbjss.atlassian.net/wiki/spaces/TW/pages/1407549555/2019-02-22+-+Outcomes+WIP) section in **Confluence**.
 
 ### Lambdas
 Each of the lambdas are independent of one another, so they can be packaged / deployed independently. As such, they each have their own `node_modules` and `packages.json`.
