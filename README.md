@@ -1,7 +1,5 @@
 # PRM-Migrator
 
-Overview of problem / solution.
-
 ## Pre-requisites
 - node v8.10.0 (or above)
 
