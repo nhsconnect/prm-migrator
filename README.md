@@ -5,8 +5,20 @@ Overview of problem / solution.
 ## Pre-requisites
 - node v8.10.0 (or above)
 
-## Solution structure
-*todo*
+## Walking skeleton overview
+This solution is a walking skeleton to explore the problem of a patient record being migrated from one practice to another.
+
+- It starts with an EHR extract being uploaded to the solution
+- We store the extract as JSON payload in a database (DynamoDB)
+  - The database is shared across the lambdas for simplicity
+- The payload is validated with data retrieved from PDS
+  - In this instance, it's just a very basic check to prove the concept of calling PDS via OpenTest
+- At any point after the extract is uploaded and stored as the payload, its translation status can be checked by calling the `status` endpoint
+- Once the stored payload has been fully translated, its status will be updated to reflect that, and it can be retrieved by calling the `retrieve` endpoint
+
+![Solution overview](https://github.com/nhsconnect/prm-migrator/prm_migrator_overview.png "Solution overview")
+
+For further information on the solution, please see the [Core Infrastructure](https://gpitbjss.atlassian.net/wiki/spaces/TW/pages/1407385703/Core+Infrastructure) section in **Confluence**.
 
 ### Lambdas
 Each of the lambdas are independent of one another, so they can be packaged / deployed independently. As such, they each have their own `node_modules` and `packages.json`.
@@ -41,4 +53,4 @@ You can also run the tests from Postman directly, by importing them. You'll find
 
 ### Pipelines
 
-The build pipelines for the lambdas are defined in the **pipelines** directory, however they are deployed by the [PRM-Infra](https://github.com/nhsconnect/prm-infra) solution.
+The build pipelines for the lambdas are defined in the **pipelines** directory, however they are deployed by the [PRM-Infra](https://github.com/nhsconnect/prm-infra) solution. All of the AWS dependencies, such as the API gateway and DynamoDB are deployed and configured by the the **prm-infra** solution as well.
