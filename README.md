@@ -16,7 +16,7 @@ This solution is a walking skeleton to explore the problem of a patient record b
 - At any point after the extract is uploaded and stored as the payload, its translation status can be checked by calling the `status` endpoint
 - Once the stored payload has been fully translated, its status will be updated to reflect that, and it can be retrieved by calling the `retrieve` endpoint
 
-![Solution overview](https://github.com/nhsconnect/prm-migrator/prm_migrator_overview.png "Solution overview")
+![Solution overview](https://github.com/nhsconnect/prm-migrator/images/prm_migrator_overview.png "Solution overview")
 
 For further information on the solution, please see the [Core Infrastructure](https://gpitbjss.atlassian.net/wiki/spaces/TW/pages/1407385703/Core+Infrastructure) section in **Confluence**.
 
