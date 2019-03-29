@@ -30,7 +30,9 @@ From a command prompt, `cd` into the root directory of the lambda you want to bu
 
 ### Running the tests
 
-Run the tests with `npm t`
+Run the tests with:
+
+`npm t`
 
 ### End to end tests
 
