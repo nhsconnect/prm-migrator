@@ -2,6 +2,8 @@
 
 ## Pre-requisites
 - node v8.10.0 (or above)
+- an IDE / text editor
+- Postman (optional, but useful to have)
 
 ## Walking skeleton overview
 This solution is a walking skeleton to explore the problem of a patient record being migrated from one practice to another.
