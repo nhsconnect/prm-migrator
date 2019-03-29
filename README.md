@@ -47,6 +47,7 @@ From a command prompt, `cd` into the **e2e** directory, then install its node pa
 Run the tests by passing the postman collection to newman, along with the relevant environment variables collection:
 
 *i.e.*
+
 `newman run postman-collections/PRM.postman_collection.json --environment postman-collections/PRM-dev-327778747031.postman_environment.json --delay-request 200`
 
 ### Postman
