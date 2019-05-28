@@ -10,5 +10,4 @@ phases:
       - cd ./e2e
       - npm install -g newman
       - npm install
-      - PRM_ENDPOINT_ID=$(aws apigateway get-rest-apis --query 'items[].[name,id]' --output text | grep dev-EhrExtractHandlerApi | cut -f2)
       - newman run postman-collections/PRM.postman_collection.json --environment postman-collections/PRM-${ENVIRONMENT}-${ACCOUNT_ID}.postman_environment.json --delay-request 200
