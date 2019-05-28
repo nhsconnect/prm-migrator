@@ -48,9 +48,9 @@
 							"raw": "{{ehr-extract}}"
 						},
 						"url": {
-							"raw": "{{PRM_ENDPOINT}}/send",
+							"raw": "https://{{PRM_ENDPOINT_ID}}.execute-api.eu-west-2.amazonaws.com/dev/send",
 							"host": [
-								"{{PRM_ENDPOINT}}"
+								"https://{{PRM_ENDPOINT_ID}}.execute-api.eu-west-2.amazonaws.com/dev"
 							],
 							"path": [
 								"send"
@@ -97,9 +97,9 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{PRM_ENDPOINT}}/status/{{test-uuid}}",
+							"raw": "https://{{PRM_ENDPOINT_ID}}.execute-api.eu-west-2.amazonaws.com/dev/status/{{test-uuid}}",
 							"host": [
-								"{{PRM_ENDPOINT}}"
+								"https://{{PRM_ENDPOINT_ID}}.execute-api.eu-west-2.amazonaws.com/dev"
 							],
 							"path": [
 								"status",
@@ -140,9 +140,9 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{PRM_ENDPOINT}}/retrieve/{{test-uuid}}",
+							"raw": "https://{{PRM_ENDPOINT_ID}}.execute-api.eu-west-2.amazonaws.com/dev/retrieve/{{test-uuid}}",
 							"host": [
-								"{{PRM_ENDPOINT}}"
+								"https://{{PRM_ENDPOINT_ID}}.execute-api.eu-west-2.amazonaws.com/dev"
 							],
 							"path": [
 								"retrieve",
@@ -220,9 +220,9 @@
 							"raw": "<EhrExtract classCode=\"EXTRACT\" moodCode=\"EVN\">\n</EhrExtract>"
 						},
 						"url": {
-							"raw": "{{PRM_ENDPOINT}}/send",
+							"raw": "https://{{PRM_ENDPOINT_ID}}.execute-api.eu-west-2.amazonaws.com/dev/send",
 							"host": [
-								"{{PRM_ENDPOINT}}"
+								"https://{{PRM_ENDPOINT_ID}}.execute-api.eu-west-2.amazonaws.com/dev"
 							],
 							"path": [
 								"send"
@@ -269,9 +269,9 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{PRM_ENDPOINT}}/status/{{test-uuid}}",
+							"raw": "https://{{PRM_ENDPOINT_ID}}.execute-api.eu-west-2.amazonaws.com/dev/status/{{test-uuid}}",
 							"host": [
-								"{{PRM_ENDPOINT}}"
+								"https://{{PRM_ENDPOINT_ID}}.execute-api.eu-west-2.amazonaws.com/dev"
 							],
 							"path": [
 								"status",
@@ -312,9 +312,9 @@
 							"raw": "\"blah\""
 						},
 						"url": {
-							"raw": "{{PRM_ENDPOINT}}/send",
+							"raw": "https://{{PRM_ENDPOINT_ID}}.execute-api.eu-west-2.amazonaws.com/dev/send",
 							"host": [
-								"{{PRM_ENDPOINT}}"
+								"https://{{PRM_ENDPOINT_ID}}.execute-api.eu-west-2.amazonaws.com/dev"
 							],
 							"path": [
 								"send"
@@ -359,9 +359,9 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{PRM_ENDPOINT}}/status/{{$guid}}",
+							"raw": "https://{{PRM_ENDPOINT_ID}}.execute-api.eu-west-2.amazonaws.com/dev/status/{{$guid}}",
 							"host": [
-								"{{PRM_ENDPOINT}}"
+								"https://{{PRM_ENDPOINT_ID}}.execute-api.eu-west-2.amazonaws.com/dev"
 							],
 							"path": [
 								"status",
@@ -416,9 +416,9 @@
 							"raw": "<EhrExtract classCode=\"EXTRACT\" moodCode=\"EVN\">\n                <recordTarget typeCode=\"RCT\">\n                    <patient classCode=\"PAT\">\n                        <id root=\"2.16.840.1.113883.2.1.4.1\" extension=\"444444444\"/>\n                    </patient>\n                </recordTarget>\n                <author typeCode=\"AUT\">\n                    <time value=\"20131114110655\"/>\n                    <AgentOrgSDS classCode=\"AGNT\">\n                        <agentOrganizationSDS classCode=\"ORG\" determinerCode=\"INSTANCE\">\n                            <id extension=\"Test_Source\" root=\"1.2.826.0.1285.0.1.10\"/>\n                        </agentOrganizationSDS>\n                    </AgentOrgSDS>\n                </author>\n                <destination typeCode=\"DST\">\n                    <AgentOrgSDS classCode=\"AGNT\">\n                        <agentOrganizationSDS classCode=\"ORG\" determinerCode=\"INSTANCE\">\n                            <id extension=\"Test_Destination\" root=\"1.2.826.0.1285.0.1.10\"/>\n                        </agentOrganizationSDS>\n                    </AgentOrgSDS>\n                </destination>\n            </EhrExtract>"
 						},
 						"url": {
-							"raw": "{{PRM_ENDPOINT}}/send",
+							"raw": "https://{{PRM_ENDPOINT_ID}}.execute-api.eu-west-2.amazonaws.com/dev/send",
 							"host": [
-								"{{PRM_ENDPOINT}}"
+								"https://{{PRM_ENDPOINT_ID}}.execute-api.eu-west-2.amazonaws.com/dev"
 							],
 							"path": [
 								"send"
@@ -463,9 +463,9 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{PRM_ENDPOINT}}/status/{{test-uuid}}",
+							"raw": "https://{{PRM_ENDPOINT_ID}}.execute-api.eu-west-2.amazonaws.com/dev/status/{{test-uuid}}",
 							"host": [
-								"{{PRM_ENDPOINT}}"
+								"https://{{PRM_ENDPOINT_ID}}.execute-api.eu-west-2.amazonaws.com/dev"
 							],
 							"path": [
 								"status",
@@ -520,9 +520,9 @@
 							"raw": "<EhrExtract classCode=\"EXTRACT\" moodCode=\"EVN\">\n                <recordTarget typeCode=\"RCT\">\n                    <patient classCode=\"PAT\">\n                        <id root=\"2.16.840.1.113883.2.1.4.1\" extension=\"444444444\"/>\n                    </patient>\n                </recordTarget>\n                <author typeCode=\"AUT\">\n                    <time value=\"20131114110655\"/>\n                    <AgentOrgSDS classCode=\"AGNT\">\n                        <agentOrganizationSDS classCode=\"ORG\" determinerCode=\"INSTANCE\">\n                            <id extension=\"Test_Source\" root=\"1.2.826.0.1285.0.1.10\"/>\n                        </agentOrganizationSDS>\n                    </AgentOrgSDS>\n                </author>\n                <destination typeCode=\"DST\">\n                    <AgentOrgSDS classCode=\"AGNT\">\n                        <agentOrganizationSDS classCode=\"ORG\" determinerCode=\"INSTANCE\">\n                            <id extension=\"Test_Destination\" root=\"1.2.826.0.1285.0.1.10\"/>\n                        </agentOrganizationSDS>\n                    </AgentOrgSDS>\n                </destination>\n            </EhrExtract>"
 						},
 						"url": {
-							"raw": "{{PRM_ENDPOINT}}/send",
+							"raw": "https://{{PRM_ENDPOINT_ID}}.execute-api.eu-west-2.amazonaws.com/dev/send",
 							"host": [
-								"{{PRM_ENDPOINT}}"
+								"https://{{PRM_ENDPOINT_ID}}.execute-api.eu-west-2.amazonaws.com/dev"
 							],
 							"path": [
 								"send"
@@ -567,9 +567,9 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{PRM_ENDPOINT}}/status/{{test-uuid}}",
+							"raw": "https://{{PRM_ENDPOINT_ID}}.execute-api.eu-west-2.amazonaws.com/dev/status/{{test-uuid}}",
 							"host": [
-								"{{PRM_ENDPOINT}}"
+								"https://{{PRM_ENDPOINT_ID}}.execute-api.eu-west-2.amazonaws.com/dev"
 							],
 							"path": [
 								"status",
