@@ -10,7 +10,7 @@
   "license": "ISC",
   "devDependencies": {
     "aws-sdk-mock": "^4.3.0",
-    "jest": "^23.6.0"
+    "jest": "^24.8.0"
   },
   "dependencies": {
     "aws-sdk": "^2.390.0",
